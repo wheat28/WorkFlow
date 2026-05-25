@@ -17,15 +17,18 @@ class TokenDataStore(private val context: Context) {
     companion object {
         private val TOKEN_KEY = stringPreferencesKey("token")
         private val USER_TYPE_KEY = stringPreferencesKey("user_type")
+        private val USER_ID_KEY = stringPreferencesKey("user_id")
     }
 
     val tokenFlow: Flow<String?> = context.dataStore.data.map { it[TOKEN_KEY] }
     val userTypeFlow: Flow<String?> = context.dataStore.data.map { it[USER_TYPE_KEY] }
+    val userIdFlow: Flow<String?> = context.dataStore.data.map { it[USER_ID_KEY] }
 
-    suspend fun saveToken(token: String, userType: String) {
+    suspend fun saveToken(token: String, userType: String, userId: String) {
         context.dataStore.edit {
             it[TOKEN_KEY] = token
             it[USER_TYPE_KEY] = userType
+            it[USER_ID_KEY] = userId
         }
     }
 
@@ -34,4 +37,6 @@ class TokenDataStore(private val context: Context) {
     }
 
     suspend fun getToken(): String? = tokenFlow.firstOrNull()
+    suspend fun getUserType(): String? = userTypeFlow.firstOrNull()
+    suspend fun getUserId(): String? = userIdFlow.firstOrNull()
 }
