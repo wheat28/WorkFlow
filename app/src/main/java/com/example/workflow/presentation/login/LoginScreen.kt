@@ -59,16 +59,13 @@ fun LoginScreen(
         contentAlignment = Alignment.Center
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("WorkFlow", style = MaterialTheme.typography.headlineSmall)
-            Text(
-                text = "Войдите в аккаунт",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Text("WorkFlow", style = MaterialTheme.typography.headlineMedium)
 
             OutlinedTextField(
                 value = email,

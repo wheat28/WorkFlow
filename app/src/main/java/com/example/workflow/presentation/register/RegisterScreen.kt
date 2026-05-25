@@ -20,12 +20,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,23 +40,35 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workflow.domain.usecase.RegisterUseCase
+import com.example.workflow.domain.usecase.RegisterEmployerUseCase
+import com.example.workflow.domain.usecase.RegisterSeekerUseCase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
-    registerUseCase: RegisterUseCase,
+    registerSeekerUseCase: RegisterSeekerUseCase,
+    registerEmployerUseCase: RegisterEmployerUseCase,
     onRegisterSuccess: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    val viewModel: RegisterViewModel = viewModel(factory = RegisterViewModel.Factory(registerUseCase))
+    val viewModel: RegisterViewModel = viewModel(
+        factory = RegisterViewModel.Factory(registerSeekerUseCase, registerEmployerUseCase)
+    )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    var selectedTab by remember { mutableIntStateOf(0) }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
+
+    var companyName by remember { mutableStateOf("") }
+    var industry by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var website by remember { mutableStateOf("") }
+
     var phone by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
 
@@ -84,6 +99,19 @@ fun RegisterScreen(
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            TabRow(selectedTabIndex = selectedTab) {
+                Tab(
+                    selected = selectedTab == 0,
+                    onClick = { selectedTab = 0 },
+                    text = { Text("Соискатель") }
+                )
+                Tab(
+                    selected = selectedTab == 1,
+                    onClick = { selectedTab = 1 },
+                    text = { Text("Работодатель") }
+                )
+            }
+
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -111,22 +139,53 @@ fun RegisterScreen(
                     }
                 }
             )
-            OutlinedTextField(
-                value = firstName,
-                onValueChange = { firstName = it },
-                label = { Text("Имя") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                enabled = uiState != RegisterUiState.Loading
-            )
-            OutlinedTextField(
-                value = lastName,
-                onValueChange = { lastName = it },
-                label = { Text("Фамилия") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                enabled = uiState != RegisterUiState.Loading
-            )
+
+            if (selectedTab == 0) {
+                OutlinedTextField(
+                    value = firstName,
+                    onValueChange = { firstName = it },
+                    label = { Text("Имя") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    enabled = uiState != RegisterUiState.Loading)
+                OutlinedTextField(
+                    value = lastName,
+                    onValueChange = { lastName = it },
+                    label = { Text("Фамилия") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    enabled = uiState != RegisterUiState.Loading)
+            } else {
+                OutlinedTextField(
+                    value = companyName,
+                    onValueChange = { companyName = it },
+                    label = { Text("Название компании") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    enabled = uiState != RegisterUiState.Loading)
+                OutlinedTextField(
+                    value = industry,
+                    onValueChange = { industry = it },
+                    label = { Text("Отрасль") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    enabled = uiState != RegisterUiState.Loading)
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Описание") },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = uiState != RegisterUiState.Loading,
+                    minLines = 2)
+                OutlinedTextField(
+                    value = website,
+                    onValueChange = { website = it },
+                    label = { Text("Сайт") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    enabled = uiState != RegisterUiState.Loading)
+            }
+
             OutlinedTextField(
                 value = phone,
                 onValueChange = { phone = it },
@@ -134,16 +193,15 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = uiState != RegisterUiState.Loading,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
-            )
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone))
+
             OutlinedTextField(
                 value = city,
                 onValueChange = { city = it },
                 label = { Text("Город") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                enabled = uiState != RegisterUiState.Loading
-            )
+                enabled = uiState != RegisterUiState.Loading)
 
             if (uiState is RegisterUiState.Error) {
                 Text(
@@ -157,7 +215,12 @@ fun RegisterScreen(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             } else {
                 Button(
-                    onClick = { viewModel.register(email, password, firstName, lastName, phone, city) },
+                    onClick = {
+                        if (selectedTab == 0)
+                            viewModel.registerSeeker(email, password, firstName, lastName, phone, city)
+                        else
+                            viewModel.registerEmployer(email, password, companyName, description, website, city, industry, phone)
+                    },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Зарегистрироваться")
