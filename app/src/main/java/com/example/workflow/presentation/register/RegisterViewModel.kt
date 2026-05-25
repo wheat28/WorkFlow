@@ -15,13 +15,6 @@ class RegisterViewModel(
     private val registerEmployerUseCase: RegisterEmployerUseCase
 ) : ViewModel() {
 
-    sealed class RegisterUiState {
-        object Idle : RegisterUiState()
-        object Loading : RegisterUiState()
-        object Success : RegisterUiState()
-        data class Error(val message: String) : RegisterUiState()
-    }
-
     private val _uiState = MutableStateFlow<RegisterUiState>(RegisterUiState.Idle)
     val uiState: StateFlow<RegisterUiState> = _uiState.asStateFlow()
 
@@ -63,4 +56,11 @@ class RegisterViewModel(
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             RegisterViewModel(registerSeekerUseCase, registerEmployerUseCase) as T
     }
+}
+
+sealed class RegisterUiState {
+    object Idle : RegisterUiState()
+    object Loading : RegisterUiState()
+    object Success : RegisterUiState()
+    data class Error(val message: String) : RegisterUiState()
 }

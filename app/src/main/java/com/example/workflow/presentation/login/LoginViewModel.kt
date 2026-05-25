@@ -3,7 +3,6 @@ package com.example.workflow.presentation.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.workflow.domain.model.UserRole
 import com.example.workflow.domain.usecase.LoginUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,17 +11,10 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(private val loginUseCase: LoginUseCase) : ViewModel() {
 
-    sealed class LoginUiState {
-        object Idle : LoginUiState()
-        object Loading : LoginUiState()
-        object Success : LoginUiState()
-        data class Error(val message: String) : LoginUiState()
-    }
-
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    fun login(email: String, password: String, role: UserRole) {
+    fun login(email: String, password: String) {
         if (email.isBlank() || password.isBlank()) {
             _uiState.value = LoginUiState.Error("Заполните все поля")
             return
@@ -30,7 +22,7 @@ class LoginViewModel(private val loginUseCase: LoginUseCase) : ViewModel() {
 
         viewModelScope.launch {
             _uiState.value = LoginUiState.Loading
-            runCatching { loginUseCase(email, password, role) }
+            runCatching { loginUseCase(email, password) }
                 .onSuccess { _uiState.value = LoginUiState.Success }
                 .onFailure { _uiState.value = LoginUiState.Error(it.message ?: "Ошибка входа") }
         }
@@ -43,4 +35,11 @@ class LoginViewModel(private val loginUseCase: LoginUseCase) : ViewModel() {
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             LoginViewModel(loginUseCase) as T
     }
+}
+
+sealed class LoginUiState {
+    object Idle : LoginUiState()
+    object Loading : LoginUiState()
+    object Success : LoginUiState()
+    data class Error(val message: String) : LoginUiState()
 }
