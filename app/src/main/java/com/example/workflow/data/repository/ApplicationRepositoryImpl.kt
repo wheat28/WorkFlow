@@ -35,4 +35,9 @@ class ApplicationRepositoryImpl(
         val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
         api.updateApplicationStatus(token, applicationId, status)
     }
+
+    override suspend fun cancel(applicationId: String) {
+        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
+        api.cancelApplication(token, applicationId)
+    }
 }

@@ -6,6 +6,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
+import io.ktor.client.request.delete
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -39,6 +40,14 @@ class ApplicationApi(private val client: HttpClient) {
             headers { append(HttpHeaders.Authorization, "Bearer $token") }
         }.body<Map<String, Boolean>>()
         return response["applied"] ?: false
+    }
+
+    suspend fun cancelApplication(token: String, applicationId: String) {
+        val response = client.delete("$base/applications/$applicationId") {
+            headers { append(HttpHeaders.Authorization, "Bearer $token") }
+        }
+        response.bodyAsText()
+        if (!response.status.isSuccess()) error("Ошибка отмены отклика: ${response.status.value}")
     }
 
     suspend fun getApplicationsByVacancy(token: String, vacancyId: String): List<ApplicationResponseDto> {

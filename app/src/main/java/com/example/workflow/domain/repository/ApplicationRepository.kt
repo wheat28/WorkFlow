@@ -9,4 +9,5 @@ interface ApplicationRepository {
     suspend fun isApplied(vacancyId: String): Boolean
     suspend fun getByVacancyId(vacancyId: String): List<ApplicationResponseDto>
     suspend fun updateStatus(applicationId: String, status: String)
+    suspend fun cancel(applicationId: String)
 }
