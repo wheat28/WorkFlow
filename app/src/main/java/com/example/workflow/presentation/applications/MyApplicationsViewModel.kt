@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.ApplicationResponseDto
-import com.example.workflow.domain.usecase.CancelApplicationUseCase
-import com.example.workflow.domain.usecase.GetMyApplicationsUseCase
+import com.example.workflow.domain.usecase.application.CancelApplicationUseCase
+import com.example.workflow.domain.usecase.application.GetMyApplicationsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -25,7 +25,19 @@ class MyApplicationsViewModel(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
     init { load() }
+
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            runCatching { getMyApplicationsUseCase(seekerId) }
+                .onSuccess { _uiState.value = UiState.Success(it) }
+            _isRefreshing.value = false
+        }
+    }
 
     fun load() {
         viewModelScope.launch {

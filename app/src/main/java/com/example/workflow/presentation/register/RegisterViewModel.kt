@@ -3,8 +3,8 @@ package com.example.workflow.presentation.register
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.workflow.domain.usecase.RegisterEmployerUseCase
-import com.example.workflow.domain.usecase.RegisterSeekerUseCase
+import com.example.workflow.domain.usecase.auth.RegisterEmployerUseCase
+import com.example.workflow.domain.usecase.auth.RegisterSeekerUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

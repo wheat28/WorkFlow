@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.VacancyRequestDto
-import com.example.workflow.domain.usecase.CreateVacancyUseCase
+import com.example.workflow.domain.usecase.vacancy.CreateVacancyUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

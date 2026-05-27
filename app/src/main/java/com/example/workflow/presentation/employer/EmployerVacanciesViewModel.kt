@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.domain.usecase.GetEmployerVacanciesUseCase
+import com.example.workflow.domain.usecase.vacancy.GetEmployerVacanciesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,7 +24,19 @@ class EmployerVacanciesViewModel(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     init { loadVacancies() }
+
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            runCatching { getEmployerVacanciesUseCase(employerId) }
+                .onSuccess { _uiState.value = UiState.Success(it) }
+            _isRefreshing.value = false
+        }
+    }
 
     fun loadVacancies() {
         viewModelScope.launch {

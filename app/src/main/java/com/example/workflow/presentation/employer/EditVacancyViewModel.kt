@@ -5,9 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.VacancyRequestDto
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.domain.usecase.DeleteVacancyUseCase
-import com.example.workflow.domain.usecase.GetVacancyByIdUseCase
-import com.example.workflow.domain.usecase.UpdateVacancyUseCase
+import com.example.workflow.domain.usecase.vacancy.DeleteVacancyUseCase
+import com.example.workflow.domain.usecase.vacancy.GetVacancyByIdUseCase
+import com.example.workflow.domain.usecase.vacancy.SetVacancyActiveUseCase
+import com.example.workflow.domain.usecase.vacancy.UpdateVacancyUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +18,7 @@ class EditVacancyViewModel(
     private val getVacancyByIdUseCase: GetVacancyByIdUseCase,
     private val updateVacancyUseCase: UpdateVacancyUseCase,
     private val deleteVacancyUseCase: DeleteVacancyUseCase,
+    private val setVacancyActiveUseCase: SetVacancyActiveUseCase,
     private val vacancyId: String
 ) : ViewModel() {
 
@@ -32,14 +34,39 @@ class EditVacancyViewModel(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    private val _isActive = MutableStateFlow(true)
+    val isActive: StateFlow<Boolean> = _isActive
+
+    private val _toggleError = MutableStateFlow<String?>(null)
+    val toggleError: StateFlow<String?> = _toggleError
+
     init { load() }
 
     private fun load() {
         viewModelScope.launch {
             runCatching { getVacancyByIdUseCase(vacancyId) }
-                .onSuccess { _uiState.value = UiState.Ready(it) }
+                .onSuccess {
+                    _isActive.value = it.isActive
+                    _uiState.value = UiState.Ready(it)
+                }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка загрузки") }
         }
+    }
+
+    fun setActive(active: Boolean) {
+        val previous = _isActive.value
+        _isActive.value = active
+        viewModelScope.launch {
+            runCatching { setVacancyActiveUseCase(vacancyId, active) }
+                .onFailure {
+                    _isActive.value = previous
+                    _toggleError.value = it.message ?: "Ошибка обновления статуса"
+                }
+        }
+    }
+
+    fun clearToggleError() {
+        _toggleError.value = null
     }
 
     fun save(
@@ -92,12 +119,13 @@ class EditVacancyViewModel(
         private val getVacancyByIdUseCase: GetVacancyByIdUseCase,
         private val updateVacancyUseCase: UpdateVacancyUseCase,
         private val deleteVacancyUseCase: DeleteVacancyUseCase,
+        private val setVacancyActiveUseCase: SetVacancyActiveUseCase,
         private val vacancyId: String
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             EditVacancyViewModel(
-                getVacancyByIdUseCase, updateVacancyUseCase, deleteVacancyUseCase, vacancyId
+                getVacancyByIdUseCase, updateVacancyUseCase, deleteVacancyUseCase, setVacancyActiveUseCase, vacancyId
             ) as T
     }
 }

@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.workflow.data.remote.dto.ResumeResponseDto
-import com.example.workflow.domain.usecase.ApplyForVacancyUseCase
-import com.example.workflow.domain.usecase.GetMyResumesUseCase
+import com.example.workflow.domain.usecase.application.ApplyForVacancyUseCase
+import com.example.workflow.domain.usecase.resume.GetMyResumesUseCase
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Indigo60
 import com.example.workflow.ui.theme.Indigo90
@@ -144,9 +144,10 @@ fun ApplyScreen(
 
                         Spacer(modifier = Modifier.height(4.dp))
 
+                        val coverLetterLimit = 500
                         OutlinedTextField(
                             value = coverLetter,
-                            onValueChange = { coverLetter = it },
+                            onValueChange = { if (it.length <= coverLetterLimit) coverLetter = it },
                             label = { Text("Сопроводительное письмо (необязательно)") },
                             modifier = Modifier.fillMaxWidth(),
                             minLines = 3,
@@ -154,7 +155,18 @@ fun ApplyScreen(
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = Indigo60,
                                 focusedLabelColor = Indigo60
-                            )
+                            ),
+                            supportingText = {
+                                Text(
+                                    "${coverLetter.length}/$coverLetterLimit",
+                                    modifier = Modifier.fillMaxWidth(),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = if (coverLetter.length >= coverLetterLimit)
+                                        MaterialTheme.colorScheme.error
+                                    else
+                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))
@@ -201,7 +213,7 @@ private fun ResumeSelectCard(
         colors = CardDefaults.cardColors(
             containerColor = if (isSelected) Indigo90 else MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(resume.title, style = MaterialTheme.typography.titleSmall,

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.ResumeResponseDto
-import com.example.workflow.domain.usecase.GetMyResumesUseCase
+import com.example.workflow.domain.usecase.resume.GetMyResumesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

@@ -50,8 +50,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workflow.domain.usecase.RegisterEmployerUseCase
-import com.example.workflow.domain.usecase.RegisterSeekerUseCase
+import com.example.workflow.domain.usecase.auth.RegisterEmployerUseCase
+import com.example.workflow.domain.usecase.auth.RegisterSeekerUseCase
 import com.example.workflow.ui.theme.Indigo60
 import com.example.workflow.ui.theme.Indigo90
 
@@ -80,6 +80,36 @@ fun RegisterScreen(
     var website by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
+
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    var firstNameError by remember { mutableStateOf<String?>(null) }
+    var lastNameError by remember { mutableStateOf<String?>(null) }
+    var companyNameError by remember { mutableStateOf<String?>(null) }
+
+    fun validate(): Boolean {
+        emailError = when {
+            email.isBlank() -> "Введите email"
+            !email.contains("@") || !email.contains(".") -> "Некорректный email"
+            else -> null
+        }
+        passwordError = when {
+            password.isBlank() -> "Введите пароль"
+            password.length < 6 -> "Минимум 6 символов"
+            else -> null
+        }
+        if (selectedTab == 0) {
+            firstNameError = if (firstName.isBlank()) "Введите имя" else null
+            lastNameError = if (lastName.isBlank()) "Введите фамилию" else null
+            companyNameError = null
+        } else {
+            companyNameError = if (companyName.isBlank()) "Введите название компании" else null
+            firstNameError = null
+            lastNameError = null
+        }
+        return emailError == null && passwordError == null && firstNameError == null
+                && lastNameError == null && companyNameError == null
+    }
 
     LaunchedEffect(uiState) {
         if (uiState is RegisterUiState.Success) {
@@ -155,14 +185,18 @@ fun RegisterScreen(
             val fieldShape = RoundedCornerShape(14.dp)
 
             OutlinedTextField(
-                value = email, onValueChange = { email = it },
+                value = email,
+                onValueChange = { email = it; emailError = null },
                 label = { Text("Email") }, modifier = Modifier.fillMaxWidth(),
                 singleLine = true, enabled = uiState != RegisterUiState.Loading,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                isError = emailError != null,
+                supportingText = emailError?.let { { Text(it) } },
                 shape = fieldShape, colors = fieldColors
             )
             OutlinedTextField(
-                value = password, onValueChange = { password = it },
+                value = password,
+                onValueChange = { password = it; passwordError = null },
                 label = { Text("Пароль") }, modifier = Modifier.fillMaxWidth(),
                 singleLine = true, enabled = uiState != RegisterUiState.Loading,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -175,27 +209,38 @@ fun RegisterScreen(
                         )
                     }
                 },
+                isError = passwordError != null,
+                supportingText = passwordError?.let { { Text(it) } },
                 shape = fieldShape, colors = fieldColors
             )
 
             if (selectedTab == 0) {
                 OutlinedTextField(
-                    value = firstName, onValueChange = { firstName = it },
-                    label = { Text("Имя") }, modifier = Modifier.fillMaxWidth(),
+                    value = firstName,
+                    onValueChange = { firstName = it; firstNameError = null },
+                    label = { Text("Имя *") }, modifier = Modifier.fillMaxWidth(),
                     singleLine = true, enabled = uiState != RegisterUiState.Loading,
+                    isError = firstNameError != null,
+                    supportingText = firstNameError?.let { { Text(it) } },
                     shape = fieldShape, colors = fieldColors
                 )
                 OutlinedTextField(
-                    value = lastName, onValueChange = { lastName = it },
-                    label = { Text("Фамилия") }, modifier = Modifier.fillMaxWidth(),
+                    value = lastName,
+                    onValueChange = { lastName = it; lastNameError = null },
+                    label = { Text("Фамилия *") }, modifier = Modifier.fillMaxWidth(),
                     singleLine = true, enabled = uiState != RegisterUiState.Loading,
+                    isError = lastNameError != null,
+                    supportingText = lastNameError?.let { { Text(it) } },
                     shape = fieldShape, colors = fieldColors
                 )
             } else {
                 OutlinedTextField(
-                    value = companyName, onValueChange = { companyName = it },
-                    label = { Text("Название компании") }, modifier = Modifier.fillMaxWidth(),
+                    value = companyName,
+                    onValueChange = { companyName = it; companyNameError = null },
+                    label = { Text("Название компании *") }, modifier = Modifier.fillMaxWidth(),
                     singleLine = true, enabled = uiState != RegisterUiState.Loading,
+                    isError = companyNameError != null,
+                    supportingText = companyNameError?.let { { Text(it) } },
                     shape = fieldShape, colors = fieldColors
                 )
                 OutlinedTextField(
@@ -249,6 +294,7 @@ fun RegisterScreen(
             } else {
                 Button(
                     onClick = {
+                        if (!validate()) return@Button
                         if (selectedTab == 0)
                             viewModel.registerSeeker(email, password, firstName, lastName, phone, city)
                         else

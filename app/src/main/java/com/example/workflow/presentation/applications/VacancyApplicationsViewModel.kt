@@ -4,11 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.ApplicationResponseDto
-import com.example.workflow.domain.usecase.GetVacancyApplicationsUseCase
-import com.example.workflow.domain.usecase.UpdateApplicationStatusUseCase
+import com.example.workflow.domain.usecase.application.GetVacancyApplicationsUseCase
+import com.example.workflow.domain.usecase.application.UpdateApplicationStatusUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class VacancyApplicationsViewModel(
@@ -23,28 +24,53 @@ class VacancyApplicationsViewModel(
         data class Error(val message: String) : UiState()
     }
 
+    private val _allApplications = MutableStateFlow<List<ApplicationResponseDto>>(emptyList())
+    private val _loadState = MutableStateFlow<UiState>(UiState.Loading)
+    val filterStatus = MutableStateFlow<String?>(null)
+
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-    init { load() }
+    init {
+        viewModelScope.launch {
+            combine(_allApplications, filterStatus, _loadState) { apps, filter, loadState ->
+                when (loadState) {
+                    is UiState.Loading -> UiState.Loading
+                    is UiState.Error -> loadState
+                    is UiState.Success -> UiState.Success(
+                        if (filter == null) apps else apps.filter { it.status == filter }
+                    )
+                }
+            }.collect { _uiState.value = it }
+        }
+        load()
+    }
 
     fun load() {
         viewModelScope.launch {
-            _uiState.value = UiState.Loading
+            _loadState.value = UiState.Loading
             runCatching { getVacancyApplicationsUseCase(vacancyId) }
-                .onSuccess { _uiState.value = UiState.Success(it) }
-                .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка загрузки") }
+                .onSuccess {
+                    _allApplications.value = it
+                    _loadState.value = UiState.Success(it)
+                }
+                .onFailure { _loadState.value = UiState.Error(it.message ?: "Ошибка загрузки") }
         }
     }
 
+    fun setFilter(status: String?) {
+        filterStatus.value = status
+    }
+
     fun updateStatus(applicationId: String, status: String) {
-        val current = _uiState.value as? UiState.Success ?: return
-        _uiState.value = UiState.Success(current.applications.map {
+        val updated = _allApplications.value.map {
             if (it.id == applicationId) it.copy(status = status) else it
-        })
+        }
+        val previous = _allApplications.value
+        _allApplications.value = updated
         viewModelScope.launch {
             runCatching { updateApplicationStatusUseCase(applicationId, status) }
-                .onFailure { _uiState.value = current }
+                .onFailure { _allApplications.value = previous }
         }
     }
 

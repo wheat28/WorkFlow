@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
@@ -26,7 +25,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,12 +49,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.domain.usecase.AddFavoriteUseCase
-import com.example.workflow.domain.usecase.CheckAppliedUseCase
-import com.example.workflow.domain.usecase.CheckFavoriteUseCase
-import com.example.workflow.domain.usecase.DeleteVacancyUseCase
-import com.example.workflow.domain.usecase.GetVacancyByIdUseCase
-import com.example.workflow.domain.usecase.RemoveFavoriteUseCase
+import com.example.workflow.domain.usecase.favorite.AddFavoriteUseCase
+import com.example.workflow.domain.usecase.application.CheckAppliedUseCase
+import com.example.workflow.domain.usecase.favorite.CheckFavoriteUseCase
+import com.example.workflow.domain.usecase.vacancy.DeleteVacancyUseCase
+import com.example.workflow.domain.usecase.vacancy.GetVacancyByIdUseCase
+import com.example.workflow.domain.usecase.favorite.RemoveFavoriteUseCase
+import com.example.workflow.presentation.common.VacancyDetailSkeleton
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -170,12 +169,7 @@ fun VacancyDetailScreen(
 
         when (val state = uiState) {
             is VacancyDetailViewModel.UiState.Loading -> {
-                Box(
-                    Modifier.fillMaxSize().padding(innerPadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = Indigo60)
-                }
+                VacancyDetailSkeleton(modifier = Modifier.padding(innerPadding))
             }
             is VacancyDetailViewModel.UiState.Error -> {
                 Box(
@@ -223,7 +217,7 @@ private fun VacancyDetailContent(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
@@ -284,7 +278,7 @@ private fun VacancyDetailContent(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
@@ -305,7 +299,7 @@ private fun VacancyDetailContent(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
@@ -354,11 +348,6 @@ private fun VacancyDetailContent(
                         disabledContentColor = androidx.compose.ui.graphics.Color.White
                     )
                 ) {
-                    Icon(
-                        Icons.Default.CheckCircle,
-                        contentDescription = null,
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
                     Text("Вы откликнулись", style = MaterialTheme.typography.labelLarge)
                 }
             } else {

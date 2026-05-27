@@ -4,15 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.domain.usecase.AddFavoriteUseCase
-import com.example.workflow.domain.usecase.GetFavoritesUseCase
-import com.example.workflow.domain.usecase.GetVacanciesUseCase
-import com.example.workflow.domain.usecase.RemoveFavoriteUseCase
+import com.example.workflow.domain.usecase.favorite.AddFavoriteUseCase
+import com.example.workflow.domain.usecase.favorite.GetFavoritesUseCase
+import com.example.workflow.domain.usecase.vacancy.GetVacanciesUseCase
+import com.example.workflow.domain.usecase.favorite.RemoveFavoriteUseCase
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 class VacancyListViewModel(
     private val getVacanciesUseCase: GetVacanciesUseCase,
     private val getFavoritesUseCase: GetFavoritesUseCase?,
@@ -23,12 +26,15 @@ class VacancyListViewModel(
 
     sealed class UiState {
         object Loading : UiState()
-        data class Success(val vacancies: List<VacancyResponseDto>) : UiState()
+        data class Success(val vacancies: List<VacancyResponseDto>, val favoriteIds: Set<String>) : UiState()
         data class Error(val message: String) : UiState()
     }
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     val searchQuery = MutableStateFlow("")
     val selectedCity = MutableStateFlow("")
@@ -39,7 +45,12 @@ class VacancyListViewModel(
     private var allVacancies: List<VacancyResponseDto> = emptyList()
     private var allFavoriteIds: Set<String> = emptySet()
 
-    init { loadVacancies() }
+    init {
+        loadVacancies()
+        viewModelScope.launch {
+            searchQuery.debounce(300).collect { applyFilters() }
+        }
+    }
 
     fun loadVacancies() {
         viewModelScope.launch {
@@ -53,7 +64,22 @@ class VacancyListViewModel(
         }
     }
 
-    // Вызывается при старте и когда что-то изменилось в избранных (например, удалено из FavoritesScreen)
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            runCatching { getVacanciesUseCase() }
+                .onSuccess { vacancies ->
+                    allVacancies = vacancies
+                    if (getFavoritesUseCase != null && seekerId != null) {
+                        runCatching { getFavoritesUseCase.invoke(seekerId) }
+                            .onSuccess { favs -> allFavoriteIds = favs.map { it.id }.toSet() }
+                    }
+                    applyFilters()
+                }
+            _isRefreshing.value = false
+        }
+    }
+
     fun loadFavorites() {
         if (getFavoritesUseCase == null || seekerId == null) {
             applyFilters()
@@ -70,22 +96,32 @@ class VacancyListViewModel(
     }
 
     fun toggleFavorite(vacancyId: String) {
-        // Оптимистичное обновление — карточка уходит из списка сразу
-        allFavoriteIds = allFavoriteIds + vacancyId
+        val wasFavorite = vacancyId in allFavoriteIds
+        allFavoriteIds = if (wasFavorite) allFavoriteIds - vacancyId else allFavoriteIds + vacancyId
         applyFilters()
 
         viewModelScope.launch {
-            runCatching { addFavoriteUseCase?.invoke(vacancyId) }
-                .onFailure {
-                    // Откат: возвращаем карточку в список
-                    allFavoriteIds = allFavoriteIds - vacancyId
-                    applyFilters()
-                }
+            val result = if (wasFavorite) {
+                runCatching { removeFavoriteUseCase?.invoke(vacancyId) }
+            } else {
+                runCatching { addFavoriteUseCase?.invoke(vacancyId) }
+            }
+            result.onFailure {
+                allFavoriteIds = if (wasFavorite) allFavoriteIds + vacancyId else allFavoriteIds - vacancyId
+                applyFilters()
+            }
         }
     }
 
     fun onSearchQueryChanged(query: String) {
         searchQuery.value = query
+    }
+
+    fun clearFilters() {
+        selectedCity.value = ""
+        selectedEmploymentType.value = ""
+        salaryFrom.value = ""
+        salaryTo.value = ""
         applyFilters()
     }
 
@@ -113,7 +149,6 @@ class VacancyListViewModel(
         val filterFrom = salaryFrom.value.toIntOrNull()
         val filterTo = salaryTo.value.toIntOrNull()
         val filtered = allVacancies.filter { vacancy ->
-            vacancy.id !in allFavoriteIds &&
             (searchQuery.value.isBlank() ||
                 vacancy.title.contains(searchQuery.value, ignoreCase = true) ||
                 vacancy.companyName.contains(searchQuery.value, ignoreCase = true)) &&
@@ -126,7 +161,7 @@ class VacancyListViewModel(
             (filterTo == null || (vacancy.salaryTo != null && vacancy.salaryTo <= filterTo) ||
                 (vacancy.salaryTo == null && vacancy.salaryFrom != null && vacancy.salaryFrom <= filterTo))
         }
-        _uiState.value = UiState.Success(filtered)
+        _uiState.value = UiState.Success(filtered, allFavoriteIds)
     }
 
     class Factory(
