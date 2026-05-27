@@ -1,4 +1,4 @@
-package com.example.workflow.domain.usecase
+package com.example.workflow.domain.usecase.resume
 
 import com.example.workflow.domain.repository.ResumeRepository
 

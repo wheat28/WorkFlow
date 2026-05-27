@@ -1,4 +1,4 @@
-package com.example.workflow.domain.usecase
+package com.example.workflow.domain.usecase.favorite
 
 import com.example.workflow.domain.repository.FavoriteRepository
 
