@@ -28,7 +28,7 @@ private val LightColorScheme = lightColorScheme(
     errorContainer = Coral90,
     onErrorContainer = Color(0xFF5A0010),
 
-    background = Gray5,
+    background = IndigoBg,
     onBackground = Gray90,
 
     surface = Color.White,
