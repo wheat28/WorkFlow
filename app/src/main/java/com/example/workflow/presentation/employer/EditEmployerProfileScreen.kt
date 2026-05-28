@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.domain.usecase.employer.GetEmployerByIdUseCase
 import com.example.workflow.domain.usecase.employer.UpdateEmployerUseCase
 import com.example.workflow.ui.theme.Indigo60
@@ -49,11 +50,12 @@ fun EditEmployerProfileScreen(
     employerId: String,
     getEmployerByIdUseCase: GetEmployerByIdUseCase,
     updateEmployerUseCase: UpdateEmployerUseCase,
+    tokenDataStore: TokenDataStore,
     onBack: () -> Unit,
     onSaved: () -> Unit
 ) {
     val viewModel: EditEmployerProfileViewModel = viewModel(
-        factory = EditEmployerProfileViewModel.Factory(getEmployerByIdUseCase, updateEmployerUseCase, employerId)
+        factory = EditEmployerProfileViewModel.Factory(getEmployerByIdUseCase, updateEmployerUseCase, tokenDataStore, employerId)
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

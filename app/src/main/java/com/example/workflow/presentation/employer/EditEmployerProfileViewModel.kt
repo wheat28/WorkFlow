@@ -3,6 +3,7 @@ package com.example.workflow.presentation.employer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.dto.EmployerResponseDto
 import com.example.workflow.data.remote.dto.EmployerUpdateRequestDto
 import com.example.workflow.domain.usecase.employer.GetEmployerByIdUseCase
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 class EditEmployerProfileViewModel(
     private val getEmployerByIdUseCase: GetEmployerByIdUseCase,
     private val updateEmployerUseCase: UpdateEmployerUseCase,
+    private val tokenDataStore: TokenDataStore,
     private val employerId: String
 ) : ViewModel() {
 
@@ -64,6 +66,7 @@ class EditEmployerProfileViewModel(
                         phone = phone.trim().ifBlank { null }
                     )
                 )
+                tokenDataStore.updateDisplayName(companyName.trim())
             }.onSuccess { _uiState.value = UiState.Success }
              .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка сохранения") }
         }
@@ -72,10 +75,11 @@ class EditEmployerProfileViewModel(
     class Factory(
         private val getEmployerByIdUseCase: GetEmployerByIdUseCase,
         private val updateEmployerUseCase: UpdateEmployerUseCase,
+        private val tokenDataStore: TokenDataStore,
         private val employerId: String
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>) =
-            EditEmployerProfileViewModel(getEmployerByIdUseCase, updateEmployerUseCase, employerId) as T
+            EditEmployerProfileViewModel(getEmployerByIdUseCase, updateEmployerUseCase, tokenDataStore, employerId) as T
     }
 }
