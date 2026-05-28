@@ -164,6 +164,7 @@ private fun EditVacancyForm(
 
     val fieldColors = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = Indigo60,
+        unfocusedBorderColor = Indigo60.copy(alpha = 0.4f),
         focusedLabelColor = Indigo60
     )
     val fieldShape = RoundedCornerShape(14.dp)

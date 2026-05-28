@@ -8,19 +8,20 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.WorkOutline
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import com.example.workflow.presentation.common.EmployerVacanciesListSkeleton
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
@@ -63,7 +64,7 @@ fun EmployerVacanciesScreen(
         if (refreshKey > 0) viewModel.loadVacancies()
     }
 
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
@@ -71,7 +72,7 @@ fun EmployerVacanciesScreen(
         PullToRefreshBox(
             isRefreshing = isRefreshing,
             onRefresh = { viewModel.refresh() },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.weight(1f)
         ) {
             when (val state = uiState) {
                 is EmployerVacanciesViewModel.UiState.Loading -> EmployerVacanciesListSkeleton()
@@ -105,7 +106,7 @@ fun EmployerVacanciesScreen(
                         }
                     } else {
                         LazyColumn(
-                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 88.dp),
+                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(state.vacancies) { vacancy ->
@@ -117,14 +118,16 @@ fun EmployerVacanciesScreen(
             }
         }
 
-        FloatingActionButton(
+        Button(
             onClick = onCreateVacancy,
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            containerColor = Indigo60
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .height(54.dp),
+            shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Создать вакансию", tint = androidx.compose.ui.graphics.Color.White)
+            Text("Создать вакансию", style = MaterialTheme.typography.labelLarge)
         }
     }
 }
