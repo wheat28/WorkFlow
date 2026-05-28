@@ -7,6 +7,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
@@ -60,5 +61,15 @@ class VacancyApi(private val client: HttpClient) {
         }
         response.bodyAsText()
         if (!response.status.isSuccess()) error("Ошибка удаления: ${response.status.value}")
+    }
+
+    suspend fun setVacancyActive(token: String, id: String, isActive: Boolean) {
+        val response = client.patch("$base/vacancies/$id/status") {
+            headers { append(HttpHeaders.Authorization, "Bearer $token") }
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("isActive" to isActive))
+        }
+        response.bodyAsText()
+        if (!response.status.isSuccess()) error("Ошибка обновления статуса")
     }
 }

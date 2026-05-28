@@ -30,4 +30,9 @@ class ResumeRepositoryImpl(
         val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
         api.updateResume(token, id, request)
     }
+
+    override suspend fun setResumeActive(id: String, isActive: Boolean) {
+        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
+        api.setResumeActive(token, id, isActive)
+    }
 }

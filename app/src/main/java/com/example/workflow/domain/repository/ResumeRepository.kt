@@ -8,4 +8,5 @@ interface ResumeRepository {
     suspend fun getResumeById(id: String): ResumeResponseDto
     suspend fun createResume(request: ResumeRequestDto): String
     suspend fun updateResume(id: String, request: ResumeRequestDto)
+    suspend fun setResumeActive(id: String, isActive: Boolean)
 }

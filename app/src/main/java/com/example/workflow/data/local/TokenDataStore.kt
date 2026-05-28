@@ -18,18 +18,25 @@ class TokenDataStore(private val context: Context) {
         private val TOKEN_KEY = stringPreferencesKey("token")
         private val USER_TYPE_KEY = stringPreferencesKey("user_type")
         private val USER_ID_KEY = stringPreferencesKey("user_id")
+        private val DISPLAY_NAME_KEY = stringPreferencesKey("display_name")
     }
 
     val tokenFlow: Flow<String?> = context.dataStore.data.map { it[TOKEN_KEY] }
     val userTypeFlow: Flow<String?> = context.dataStore.data.map { it[USER_TYPE_KEY] }
     val userIdFlow: Flow<String?> = context.dataStore.data.map { it[USER_ID_KEY] }
+    val displayNameFlow: Flow<String?> = context.dataStore.data.map { it[DISPLAY_NAME_KEY] }
 
-    suspend fun saveToken(token: String, userType: String, userId: String) {
+    suspend fun saveToken(token: String, userType: String, userId: String, displayName: String) {
         context.dataStore.edit {
             it[TOKEN_KEY] = token
             it[USER_TYPE_KEY] = userType
             it[USER_ID_KEY] = userId
+            it[DISPLAY_NAME_KEY] = displayName
         }
+    }
+
+    suspend fun updateDisplayName(name: String) {
+        context.dataStore.edit { it[DISPLAY_NAME_KEY] = name }
     }
 
     suspend fun clearToken() {

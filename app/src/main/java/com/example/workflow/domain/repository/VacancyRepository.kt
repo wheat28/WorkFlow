@@ -9,5 +9,6 @@ interface VacancyRepository {
     suspend fun getEmployerVacancies(employerId: String): List<VacancyResponseDto>
     suspend fun createVacancy(request: VacancyRequestDto): String
     suspend fun updateVacancy(id: String, request: VacancyRequestDto)
+    suspend fun setVacancyActive(id: String, isActive: Boolean)
     suspend fun deleteVacancy(id: String)
 }

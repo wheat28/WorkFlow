@@ -36,6 +36,11 @@ class VacancyRepositoryImpl(
         api.updateVacancy(token, id, request)
     }
 
+    override suspend fun setVacancyActive(id: String, isActive: Boolean) {
+        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
+        api.setVacancyActive(token, id, isActive)
+    }
+
     override suspend fun deleteVacancy(id: String) {
         val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
         api.deleteVacancy(token, id)

@@ -17,5 +17,6 @@ data class VacancyResponseDto(
     val employmentType: String,
     val experience: String,
     val isActive: Boolean,
-    val skills: List<String>
+    val skills: List<String>,
+    val applicationCount: Int = 0
 )
