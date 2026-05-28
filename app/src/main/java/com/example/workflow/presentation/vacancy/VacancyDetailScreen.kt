@@ -1,5 +1,6 @@
 package com.example.workflow.presentation.vacancy
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -77,7 +78,8 @@ fun VacancyDetailScreen(
     onApply: (String) -> Unit = {},
     onViewApplications: ((String) -> Unit)? = null,
     onEditVacancy: ((String) -> Unit)? = null,
-    onDeleted: (() -> Unit)? = null
+    onDeleted: (() -> Unit)? = null,
+    onViewEmployerProfile: ((String) -> Unit)? = null
 ) {
     val viewModel: VacancyDetailViewModel = viewModel(
         factory = VacancyDetailViewModel.Factory(
@@ -188,6 +190,9 @@ fun VacancyDetailScreen(
                     onViewApplications = if (onViewApplications != null) {
                         { onViewApplications(state.vacancy.id) }
                     } else null,
+                    onViewEmployerProfile = if (userType == "SEEKER" && onViewEmployerProfile != null) {
+                        { onViewEmployerProfile(state.vacancy.employerId) }
+                    } else null,
                     modifier = Modifier.padding(innerPadding)
                 )
             }
@@ -204,6 +209,7 @@ private fun VacancyDetailContent(
     isApplied: Boolean,
     onApply: () -> Unit,
     onViewApplications: (() -> Unit)? = null,
+    onViewEmployerProfile: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -228,7 +234,10 @@ private fun VacancyDetailContent(
                 Text(
                     text = vacancy.companyName,
                     style = MaterialTheme.typography.titleSmall,
-                    color = Indigo60
+                    color = Indigo60,
+                    modifier = if (onViewEmployerProfile != null) {
+                        Modifier.clickable { onViewEmployerProfile() }
+                    } else Modifier
                 )
                 Text(
                     text = vacancy.city.orEmpty(),
