@@ -276,8 +276,17 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
                 getResumeByIdUseCase = app.getResumeByIdUseCase,
                 updateResumeUseCase = app.updateResumeUseCase,
                 setResumeActiveUseCase = app.setResumeActiveUseCase,
+                deleteResumeUseCase = app.deleteResumeUseCase,
                 onBack = { navController.popBackStack() },
                 onSaved = {
+                    runCatching {
+                        val entry = navController.getBackStackEntry("main")
+                        val current = entry.savedStateHandle.get<Int>("resume_refresh_key") ?: 0
+                        entry.savedStateHandle["resume_refresh_key"] = current + 1
+                    }
+                    navController.popBackStack()
+                },
+                onDeleted = {
                     runCatching {
                         val entry = navController.getBackStackEntry("main")
                         val current = entry.savedStateHandle.get<Int>("resume_refresh_key") ?: 0

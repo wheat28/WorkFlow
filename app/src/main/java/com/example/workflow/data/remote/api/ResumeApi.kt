@@ -4,6 +4,7 @@ import com.example.workflow.data.remote.dto.ResumeRequestDto
 import com.example.workflow.data.remote.dto.ResumeResponseDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.patch
@@ -46,6 +47,14 @@ class ResumeApi(private val client: HttpClient) {
         }
         response.bodyAsText()
         if (!response.status.isSuccess()) error("Ошибка обновления статуса")
+    }
+
+    suspend fun deleteResume(token: String, id: String) {
+        val response = client.delete("$base/resumes/$id") {
+            headers { append(HttpHeaders.Authorization, "Bearer $token") }
+        }
+        response.bodyAsText()
+        if (!response.status.isSuccess()) error("Ошибка удаления резюме")
     }
 
     suspend fun createResume(token: String, request: ResumeRequestDto): String {

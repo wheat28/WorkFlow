@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.ResumeRequestDto
 import com.example.workflow.data.remote.dto.ResumeResponseDto
+import com.example.workflow.domain.usecase.resume.DeleteResumeUseCase
 import com.example.workflow.domain.usecase.resume.GetResumeByIdUseCase
 import com.example.workflow.domain.usecase.resume.SetResumeActiveUseCase
 import com.example.workflow.domain.usecase.resume.UpdateResumeUseCase
@@ -16,6 +17,7 @@ class EditResumeViewModel(
     private val getResumeByIdUseCase: GetResumeByIdUseCase,
     private val updateResumeUseCase: UpdateResumeUseCase,
     private val setResumeActiveUseCase: SetResumeActiveUseCase,
+    private val deleteResumeUseCase: DeleteResumeUseCase,
     private val resumeId: String
 ) : ViewModel() {
 
@@ -24,6 +26,7 @@ class EditResumeViewModel(
         data class Ready(val resume: ResumeResponseDto) : UiState()
         object Saving : UiState()
         object Success : UiState()
+        object Deleted : UiState()
         data class Error(val message: String) : UiState()
     }
 
@@ -65,6 +68,15 @@ class EditResumeViewModel(
         _toggleError.value = null
     }
 
+    fun delete() {
+        viewModelScope.launch {
+            _uiState.value = UiState.Saving
+            runCatching { deleteResumeUseCase(resumeId) }
+                .onSuccess { _uiState.value = UiState.Deleted }
+                .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка удаления") }
+        }
+    }
+
     fun save(
         title: String,
         position: String,
@@ -100,10 +112,11 @@ class EditResumeViewModel(
         private val getResumeByIdUseCase: GetResumeByIdUseCase,
         private val updateResumeUseCase: UpdateResumeUseCase,
         private val setResumeActiveUseCase: SetResumeActiveUseCase,
+        private val deleteResumeUseCase: DeleteResumeUseCase,
         private val resumeId: String
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>) =
-            EditResumeViewModel(getResumeByIdUseCase, updateResumeUseCase, setResumeActiveUseCase, resumeId) as T
+            EditResumeViewModel(getResumeByIdUseCase, updateResumeUseCase, setResumeActiveUseCase, deleteResumeUseCase, resumeId) as T
     }
 }
