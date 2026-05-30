@@ -95,6 +95,7 @@ fun CreateVacancyScreen(
 
     val fieldColors = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = Indigo60,
+        unfocusedBorderColor = Indigo60.copy(alpha = 0.4f),
         focusedLabelColor = Indigo60
     )
     val fieldShape = RoundedCornerShape(14.dp)
@@ -266,6 +267,7 @@ fun EnumDropdown(
             shape = RoundedCornerShape(14.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Indigo60,
+                unfocusedBorderColor = Indigo60.copy(alpha = 0.4f),
                 focusedLabelColor = Indigo60
             )
         )

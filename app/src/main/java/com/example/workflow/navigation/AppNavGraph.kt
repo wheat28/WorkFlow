@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.workflow.WorkFlowApp
 import com.example.workflow.presentation.applications.VacancyApplicationsScreen
+import com.example.workflow.presentation.employer.EmployerPublicProfileScreen
 import com.example.workflow.presentation.resume.ResumeDetailScreen
 import com.example.workflow.presentation.apply.ApplyScreen
 import com.example.workflow.presentation.employer.CreateVacancyScreen
@@ -175,7 +176,21 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
                         }
                         navController.popBackStack()
                     }
+                } else null,
+                onViewEmployerProfile = if ((userType ?: "") == "SEEKER") {
+                    { employerId -> navController.navigate("employer_profile/$employerId") }
                 } else null
+            )
+        }
+
+        composable("employer_profile/{employerId}") { backStackEntry ->
+            val employerId = backStackEntry.arguments?.getString("employerId") ?: return@composable
+            EmployerPublicProfileScreen(
+                employerId = employerId,
+                getEmployerByIdUseCase = app.getEmployerByIdUseCase,
+                getEmployerVacanciesUseCase = app.getEmployerVacanciesUseCase,
+                onBack = { navController.popBackStack() },
+                onVacancyClick = { vacancyId -> navController.navigate("vacancy/$vacancyId") }
             )
         }
 
@@ -261,8 +276,17 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
                 getResumeByIdUseCase = app.getResumeByIdUseCase,
                 updateResumeUseCase = app.updateResumeUseCase,
                 setResumeActiveUseCase = app.setResumeActiveUseCase,
+                deleteResumeUseCase = app.deleteResumeUseCase,
                 onBack = { navController.popBackStack() },
                 onSaved = {
+                    runCatching {
+                        val entry = navController.getBackStackEntry("main")
+                        val current = entry.savedStateHandle.get<Int>("resume_refresh_key") ?: 0
+                        entry.savedStateHandle["resume_refresh_key"] = current + 1
+                    }
+                    navController.popBackStack()
+                },
+                onDeleted = {
                     runCatching {
                         val entry = navController.getBackStackEntry("main")
                         val current = entry.savedStateHandle.get<Int>("resume_refresh_key") ?: 0
@@ -280,6 +304,7 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
                     employerId = id,
                     getEmployerByIdUseCase = app.getEmployerByIdUseCase,
                     updateEmployerUseCase = app.updateEmployerUseCase,
+                    tokenDataStore = app.tokenDataStore,
                     onBack = { navController.popBackStack() },
                     onSaved = {
                         runCatching {

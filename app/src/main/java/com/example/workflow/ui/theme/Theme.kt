@@ -31,7 +31,7 @@ private val LightColorScheme = lightColorScheme(
     background = IndigoBg,
     onBackground = Gray90,
 
-    surface = Color.White,
+    surface = Color(0xFFFEFEFF),
     onSurface = Gray90,
     surfaceVariant = Gray10,
     onSurfaceVariant = Gray60,

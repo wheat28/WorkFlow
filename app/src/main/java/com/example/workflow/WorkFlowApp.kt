@@ -29,6 +29,7 @@ import com.example.workflow.domain.usecase.application.ApplyForVacancyUseCase
 import com.example.workflow.domain.usecase.application.CheckAppliedUseCase
 import com.example.workflow.domain.usecase.favorite.CheckFavoriteUseCase
 import com.example.workflow.domain.usecase.resume.CreateResumeUseCase
+import com.example.workflow.domain.usecase.resume.DeleteResumeUseCase
 import com.example.workflow.domain.usecase.vacancy.CreateVacancyUseCase
 import com.example.workflow.domain.usecase.vacancy.DeleteVacancyUseCase
 import com.example.workflow.domain.usecase.vacancy.UpdateVacancyUseCase
@@ -99,6 +100,7 @@ class WorkFlowApp : Application() {
     val createResumeUseCase: CreateResumeUseCase by lazy { CreateResumeUseCase(resumeRepository) }
     val updateResumeUseCase: UpdateResumeUseCase by lazy { UpdateResumeUseCase(resumeRepository) }
     val setResumeActiveUseCase: SetResumeActiveUseCase by lazy { SetResumeActiveUseCase(resumeRepository) }
+    val deleteResumeUseCase: DeleteResumeUseCase by lazy { DeleteResumeUseCase(resumeRepository) }
     val applyForVacancyUseCase: ApplyForVacancyUseCase by lazy { ApplyForVacancyUseCase(applicationRepository) }
     val getMyApplicationsUseCase: GetMyApplicationsUseCase by lazy { GetMyApplicationsUseCase(applicationRepository) }
     val cancelApplicationUseCase: CancelApplicationUseCase by lazy { CancelApplicationUseCase(applicationRepository) }

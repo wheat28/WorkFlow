@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,12 +26,14 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -46,6 +49,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.workflow.domain.usecase.resume.DeleteResumeUseCase
 import com.example.workflow.domain.usecase.resume.GetResumeByIdUseCase
 import com.example.workflow.domain.usecase.resume.SetResumeActiveUseCase
 import com.example.workflow.domain.usecase.resume.UpdateResumeUseCase
@@ -69,11 +73,13 @@ fun EditResumeScreen(
     getResumeByIdUseCase: GetResumeByIdUseCase,
     updateResumeUseCase: UpdateResumeUseCase,
     setResumeActiveUseCase: SetResumeActiveUseCase,
+    deleteResumeUseCase: DeleteResumeUseCase,
     onBack: () -> Unit,
-    onSaved: () -> Unit
+    onSaved: () -> Unit,
+    onDeleted: () -> Unit
 ) {
     val viewModel: EditResumeViewModel = viewModel(
-        factory = EditResumeViewModel.Factory(getResumeByIdUseCase, updateResumeUseCase, setResumeActiveUseCase, resumeId)
+        factory = EditResumeViewModel.Factory(getResumeByIdUseCase, updateResumeUseCase, setResumeActiveUseCase, deleteResumeUseCase, resumeId)
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isActive by viewModel.isActive.collectAsStateWithLifecycle()
@@ -86,6 +92,7 @@ fun EditResumeScreen(
     var city by rememberSaveable { mutableStateOf("") }
     var about by rememberSaveable { mutableStateOf("") }
     var fieldsInitialized by rememberSaveable { mutableStateOf(false) }
+    var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(uiState) {
         if (uiState is EditResumeViewModel.UiState.Ready && !fieldsInitialized) {
@@ -99,6 +106,25 @@ fun EditResumeScreen(
             fieldsInitialized = true
         }
         if (uiState is EditResumeViewModel.UiState.Success) onSaved()
+        if (uiState is EditResumeViewModel.UiState.Deleted) onDeleted()
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Удалить резюме?") },
+            text = { Text("Это действие нельзя отменить. Резюме будет удалено безвозвратно.") },
+            confirmButton = {
+                TextButton(onClick = { showDeleteDialog = false; viewModel.delete() }) {
+                    Text("Удалить", color = Coral40)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Отмена")
+                }
+            }
+        )
     }
 
     val fieldColors = OutlinedTextFieldDefaults.colors(
@@ -256,6 +282,15 @@ fun EditResumeScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
                 ) {
                     Text("Сохранить", style = MaterialTheme.typography.labelLarge)
+                }
+                OutlinedButton(
+                    onClick = { showDeleteDialog = true },
+                    modifier = Modifier.fillMaxWidth().height(54.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Coral40),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Coral40)
+                ) {
+                    Text("Удалить резюме", style = MaterialTheme.typography.labelLarge)
                 }
             }
         }

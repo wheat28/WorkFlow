@@ -2,15 +2,15 @@ package com.example.workflow.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Indigo10 = Color(0xFF0D0A2E)
-val Indigo20 = Color(0xFF1A1452)
-val Indigo40 = Color(0xFF3D35A8)
-val Indigo50 = Color(0xFF4834B8)
-val Indigo60 = Color(0xFF6C5CE7)
-val Indigo80 = Color(0xFFADA7F0)
-val Indigo90 = Color(0xFFD8D5F8)
-val Indigo95 = Color(0xFFECEBFB)
-val IndigoBg = Color(0xFFF5F3FF)
+val Indigo10 = Color(0xFF0E1545)
+val Indigo20 = Color(0xFF1A2570)
+val Indigo40 = Color(0xFF2D3FA8)
+val Indigo50 = Color(0xFF3D52C4)
+val Indigo60 = Color(0xFF4F63D2)
+val Indigo80 = Color(0xFF94A3E8)
+val Indigo90 = Color(0xFFD6DCF7)
+val Indigo95 = Color(0xFFEEF0FB)
+val IndigoBg = Color(0xFFF4F5FB)
 
 val Coral40 = Color(0xFFE84545)
 val Coral60 = Color(0xFFFF6B6B)
