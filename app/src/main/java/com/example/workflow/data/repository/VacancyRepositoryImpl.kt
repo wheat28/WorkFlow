@@ -5,8 +5,9 @@ import com.example.workflow.data.remote.api.VacancyApi
 import com.example.workflow.data.remote.dto.VacancyRequestDto
 import com.example.workflow.data.remote.dto.VacancyResponseDto
 import com.example.workflow.domain.repository.VacancyRepository
+import javax.inject.Inject
 
-class VacancyRepositoryImpl(
+class VacancyRepositoryImpl @Inject constructor(
     private val api: VacancyApi,
     private val tokenDataStore: TokenDataStore
 ) : VacancyRepository {

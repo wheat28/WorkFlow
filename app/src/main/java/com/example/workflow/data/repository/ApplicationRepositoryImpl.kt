@@ -5,8 +5,9 @@ import com.example.workflow.data.remote.api.ApplicationApi
 import com.example.workflow.data.remote.dto.ApplicationRequestDto
 import com.example.workflow.data.remote.dto.ApplicationResponseDto
 import com.example.workflow.domain.repository.ApplicationRepository
+import javax.inject.Inject
 
-class ApplicationRepositoryImpl(
+class ApplicationRepositoryImpl @Inject constructor(
     private val api: ApplicationApi,
     private val tokenDataStore: TokenDataStore
 ) : ApplicationRepository {

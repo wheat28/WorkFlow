@@ -6,8 +6,9 @@ import com.example.workflow.data.remote.dto.EmployerResponseDto
 import com.example.workflow.data.remote.dto.EmployerStatsDto
 import com.example.workflow.data.remote.dto.EmployerUpdateRequestDto
 import com.example.workflow.domain.repository.EmployerRepository
+import javax.inject.Inject
 
-class EmployerRepositoryImpl(
+class EmployerRepositoryImpl @Inject constructor(
     private val api: EmployerApi,
     private val tokenDataStore: TokenDataStore
 ) : EmployerRepository {

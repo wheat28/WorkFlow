@@ -4,8 +4,9 @@ import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.api.FavoriteApi
 import com.example.workflow.data.remote.dto.VacancyResponseDto
 import com.example.workflow.domain.repository.FavoriteRepository
+import javax.inject.Inject
 
-class FavoriteRepositoryImpl(
+class FavoriteRepositoryImpl @Inject constructor(
     private val api: FavoriteApi,
     private val tokenDataStore: TokenDataStore
 ) : FavoriteRepository {

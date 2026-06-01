@@ -5,8 +5,9 @@ import com.example.workflow.data.remote.api.ResumeApi
 import com.example.workflow.data.remote.dto.ResumeRequestDto
 import com.example.workflow.data.remote.dto.ResumeResponseDto
 import com.example.workflow.domain.repository.ResumeRepository
+import javax.inject.Inject
 
-class ResumeRepositoryImpl(
+class ResumeRepositoryImpl @Inject constructor(
     private val api: ResumeApi,
     private val tokenDataStore: TokenDataStore
 ) : ResumeRepository {

@@ -5,8 +5,9 @@ import com.example.workflow.data.remote.api.SeekerApi
 import com.example.workflow.data.remote.dto.SeekerResponseDto
 import com.example.workflow.data.remote.dto.SeekerUpdateRequestDto
 import com.example.workflow.domain.repository.SeekerRepository
+import javax.inject.Inject
 
-class SeekerRepositoryImpl(
+class SeekerRepositoryImpl @Inject constructor(
     private val api: SeekerApi,
     private val tokenDataStore: TokenDataStore
 ) : SeekerRepository {

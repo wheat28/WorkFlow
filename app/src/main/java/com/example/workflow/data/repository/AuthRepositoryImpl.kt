@@ -1,13 +1,15 @@
-package com.example.workflow.domain.repository
+package com.example.workflow.data.repository
 
 import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.api.AuthApi
 import com.example.workflow.data.remote.dto.EmployerRegisterRequestDto
 import com.example.workflow.data.remote.dto.LoginRequestDto
 import com.example.workflow.data.remote.dto.SeekerRegisterRequestDto
+import com.example.workflow.domain.repository.AuthRepository
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
-class AuthRepositoryImpl(
+class AuthRepositoryImpl @Inject constructor(
     private val api: AuthApi,
     private val tokenDataStore: TokenDataStore
 ) : AuthRepository {
