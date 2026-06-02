@@ -1,15 +1,17 @@
 package com.example.workflow.presentation.resume
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.ResumeRequestDto
 import com.example.workflow.domain.usecase.resume.CreateResumeUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CreateResumeViewModel(private val createResumeUseCase: CreateResumeUseCase) : ViewModel() {
+@HiltViewModel
+class CreateResumeViewModel @Inject constructor(private val createResumeUseCase: CreateResumeUseCase) : ViewModel() {
 
     sealed class UiState {
         object Idle : UiState()
@@ -55,10 +57,4 @@ class CreateResumeViewModel(private val createResumeUseCase: CreateResumeUseCase
     }
 
     fun resetState() { _uiState.value = UiState.Idle }
-
-    class Factory(private val useCase: CreateResumeUseCase) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>) =
-            CreateResumeViewModel(useCase) as T
-    }
 }

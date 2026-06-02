@@ -45,10 +45,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.data.remote.dto.ApplicationResponseDto
-import com.example.workflow.domain.usecase.application.GetVacancyApplicationsUseCase
-import com.example.workflow.domain.usecase.application.UpdateApplicationStatusUseCase
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Coral90
 import com.example.workflow.ui.theme.Green40
@@ -66,17 +64,10 @@ private val filters = listOf(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VacancyApplicationsScreen(
-    vacancyId: String,
-    getVacancyApplicationsUseCase: GetVacancyApplicationsUseCase,
-    updateApplicationStatusUseCase: UpdateApplicationStatusUseCase,
     onBack: () -> Unit,
     onViewResume: (resumeId: String) -> Unit = {}
 ) {
-    val viewModel: VacancyApplicationsViewModel = viewModel(
-        factory = VacancyApplicationsViewModel.Factory(
-            getVacancyApplicationsUseCase, updateApplicationStatusUseCase, vacancyId
-        )
-    )
+    val viewModel: VacancyApplicationsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val activeFilter by viewModel.filterStatus.collectAsStateWithLifecycle()
 

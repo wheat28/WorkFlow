@@ -38,20 +38,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workflow.domain.usecase.auth.LoginUseCase
 import com.example.workflow.ui.theme.Indigo20
 import com.example.workflow.ui.theme.Indigo40
 import com.example.workflow.ui.theme.Indigo60
 
 @Composable
 fun LoginScreen(
-    loginUseCase: LoginUseCase,
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
-    val viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory(loginUseCase))
+    val viewModel: LoginViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var email by remember { mutableStateOf("") }

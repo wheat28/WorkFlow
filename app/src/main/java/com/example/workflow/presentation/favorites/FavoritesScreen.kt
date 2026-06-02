@@ -34,10 +34,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.domain.usecase.favorite.GetFavoritesUseCase
-import com.example.workflow.domain.usecase.favorite.RemoveFavoriteUseCase
+import com.example.workflow.presentation.common.employmentLabel
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -46,16 +45,11 @@ import com.example.workflow.ui.theme.Indigo90
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
-    getFavoritesUseCase: GetFavoritesUseCase,
-    removeFavoriteUseCase: RemoveFavoriteUseCase,
-    seekerId: String,
     onVacancyClick: (String) -> Unit,
     onFavoriteRemoved: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    val viewModel: FavoritesViewModel = viewModel(
-        factory = FavoritesViewModel.Factory(getFavoritesUseCase, removeFavoriteUseCase, seekerId)
-    )
+    val viewModel: FavoritesViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 
@@ -183,7 +177,7 @@ private fun FavoriteVacancyCard(
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 SuggestionChip(
                     onClick = {},
-                    label = { Text(vacancy.employmentType, style = MaterialTheme.typography.labelSmall) },
+                    label = { Text(employmentLabel(vacancy.employmentType), style = MaterialTheme.typography.labelSmall) },
                     colors = SuggestionChipDefaults.suggestionChipColors(containerColor = Indigo90, labelColor = Indigo60),
                     border = null
                 )

@@ -1,32 +1,39 @@
 package com.example.workflow.presentation.vacancies
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.dto.VacancyResponseDto
 import com.example.workflow.domain.usecase.favorite.AddFavoriteUseCase
 import com.example.workflow.domain.usecase.favorite.GetFavoritesUseCase
 import com.example.workflow.domain.usecase.vacancy.GetVacanciesUseCase
 import com.example.workflow.domain.usecase.favorite.RemoveFavoriteUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @OptIn(FlowPreview::class)
-class VacancyListViewModel(
+@HiltViewModel
+class VacancyListViewModel @Inject constructor(
     private val getVacanciesUseCase: GetVacanciesUseCase,
-    private val getFavoritesUseCase: GetFavoritesUseCase?,
-    private val addFavoriteUseCase: AddFavoriteUseCase?,
-    private val removeFavoriteUseCase: RemoveFavoriteUseCase?,
-    private val seekerId: String?
+    private val getFavoritesUseCase: GetFavoritesUseCase,
+    private val addFavoriteUseCase: AddFavoriteUseCase,
+    private val removeFavoriteUseCase: RemoveFavoriteUseCase,
+    private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
     sealed class UiState {
         object Loading : UiState()
-        data class Success(val vacancies: List<VacancyResponseDto>, val favoriteIds: Set<String>) : UiState()
+        data class Success(
+            val vacancies: List<VacancyResponseDto>,
+            val favoriteIds: Set<String>,
+            val canToggleFavorite: Boolean
+        ) : UiState()
         data class Error(val message: String) : UiState()
     }
 
@@ -44,9 +51,14 @@ class VacancyListViewModel(
 
     private var allVacancies: List<VacancyResponseDto> = emptyList()
     private var allFavoriteIds: Set<String> = emptySet()
+    private var seekerId: String? = null
 
     init {
-        loadVacancies()
+        viewModelScope.launch {
+            val userType = tokenDataStore.getUserType()
+            seekerId = if (userType == "SEEKER") tokenDataStore.getUserId() else null
+            loadVacancies()
+        }
         viewModelScope.launch {
             searchQuery.debounce(300).collect { applyFilters() }
         }
@@ -70,8 +82,9 @@ class VacancyListViewModel(
             runCatching { getVacanciesUseCase() }
                 .onSuccess { vacancies ->
                     allVacancies = vacancies
-                    if (getFavoritesUseCase != null && seekerId != null) {
-                        runCatching { getFavoritesUseCase.invoke(seekerId) }
+                    val id = seekerId
+                    if (id != null) {
+                        runCatching { getFavoritesUseCase(id) }
                             .onSuccess { favs -> allFavoriteIds = favs.map { it.id }.toSet() }
                     }
                     applyFilters()
@@ -81,12 +94,13 @@ class VacancyListViewModel(
     }
 
     fun loadFavorites() {
-        if (getFavoritesUseCase == null || seekerId == null) {
+        val id = seekerId
+        if (id == null) {
             applyFilters()
             return
         }
         viewModelScope.launch {
-            runCatching { getFavoritesUseCase.invoke(seekerId) }
+            runCatching { getFavoritesUseCase(id) }
                 .onSuccess { favorites ->
                     allFavoriteIds = favorites.map { it.id }.toSet()
                     applyFilters()
@@ -102,9 +116,9 @@ class VacancyListViewModel(
 
         viewModelScope.launch {
             val result = if (wasFavorite) {
-                runCatching { removeFavoriteUseCase?.invoke(vacancyId) }
+                runCatching { removeFavoriteUseCase(vacancyId) }
             } else {
-                runCatching { addFavoriteUseCase?.invoke(vacancyId) }
+                runCatching { addFavoriteUseCase(vacancyId) }
             }
             result.onFailure {
                 allFavoriteIds = if (wasFavorite) allFavoriteIds + vacancyId else allFavoriteIds - vacancyId
@@ -113,9 +127,7 @@ class VacancyListViewModel(
         }
     }
 
-    fun onSearchQueryChanged(query: String) {
-        searchQuery.value = query
-    }
+    fun onSearchQueryChanged(query: String) { searchQuery.value = query }
 
     fun clearFilters() {
         selectedCity.value = ""
@@ -125,25 +137,10 @@ class VacancyListViewModel(
         applyFilters()
     }
 
-    fun onCitySelected(city: String) {
-        selectedCity.value = city
-        applyFilters()
-    }
-
-    fun onEmploymentTypeSelected(type: String) {
-        selectedEmploymentType.value = type
-        applyFilters()
-    }
-
-    fun onSalaryFromChanged(value: String) {
-        salaryFrom.value = value
-        applyFilters()
-    }
-
-    fun onSalaryToChanged(value: String) {
-        salaryTo.value = value
-        applyFilters()
-    }
+    fun onCitySelected(city: String) { selectedCity.value = city; applyFilters() }
+    fun onEmploymentTypeSelected(type: String) { selectedEmploymentType.value = type; applyFilters() }
+    fun onSalaryFromChanged(value: String) { salaryFrom.value = value; applyFilters() }
+    fun onSalaryToChanged(value: String) { salaryTo.value = value; applyFilters() }
 
     private fun applyFilters() {
         val filterFrom = salaryFrom.value.toIntOrNull()
@@ -161,21 +158,6 @@ class VacancyListViewModel(
             (filterTo == null || (vacancy.salaryTo != null && vacancy.salaryTo <= filterTo) ||
                 (vacancy.salaryTo == null && vacancy.salaryFrom != null && vacancy.salaryFrom <= filterTo))
         }
-        _uiState.value = UiState.Success(filtered, allFavoriteIds)
-    }
-
-    class Factory(
-        private val getVacanciesUseCase: GetVacanciesUseCase,
-        private val getFavoritesUseCase: GetFavoritesUseCase? = null,
-        private val addFavoriteUseCase: AddFavoriteUseCase? = null,
-        private val removeFavoriteUseCase: RemoveFavoriteUseCase? = null,
-        private val seekerId: String? = null
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            VacancyListViewModel(
-                getVacanciesUseCase, getFavoritesUseCase,
-                addFavoriteUseCase, removeFavoriteUseCase, seekerId
-            ) as T
+        _uiState.value = UiState.Success(filtered, allFavoriteIds, seekerId != null)
     }
 }

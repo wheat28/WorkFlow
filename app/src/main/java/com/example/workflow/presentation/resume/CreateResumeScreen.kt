@@ -41,8 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workflow.domain.usecase.resume.CreateResumeUseCase
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.ui.theme.Indigo60
 
 private val employmentTypes = listOf("FULL_TIME", "PART_TIME", "REMOTE", "INTERNSHIP")
@@ -58,13 +57,10 @@ private fun employmentLabel(type: String) = when (type) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateResumeScreen(
-    createResumeUseCase: CreateResumeUseCase,
     onBack: () -> Unit,
     onCreated: () -> Unit
 ) {
-    val viewModel: CreateResumeViewModel = viewModel(
-        factory = CreateResumeViewModel.Factory(createResumeUseCase)
-    )
+    val viewModel: CreateResumeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var title by remember { mutableStateOf("") }

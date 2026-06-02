@@ -1,7 +1,7 @@
 package com.example.workflow.presentation.employer
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.VacancyRequestDto
 import com.example.workflow.data.remote.dto.VacancyResponseDto
@@ -9,18 +9,23 @@ import com.example.workflow.domain.usecase.vacancy.DeleteVacancyUseCase
 import com.example.workflow.domain.usecase.vacancy.GetVacancyByIdUseCase
 import com.example.workflow.domain.usecase.vacancy.SetVacancyActiveUseCase
 import com.example.workflow.domain.usecase.vacancy.UpdateVacancyUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EditVacancyViewModel(
+@HiltViewModel
+class EditVacancyViewModel @Inject constructor(
     private val getVacancyByIdUseCase: GetVacancyByIdUseCase,
     private val updateVacancyUseCase: UpdateVacancyUseCase,
     private val deleteVacancyUseCase: DeleteVacancyUseCase,
     private val setVacancyActiveUseCase: SetVacancyActiveUseCase,
-    private val vacancyId: String
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val vacancyId: String = checkNotNull(savedStateHandle["vacancyId"])
 
     sealed class UiState {
         object Loading : UiState()
@@ -65,9 +70,7 @@ class EditVacancyViewModel(
         }
     }
 
-    fun clearToggleError() {
-        _toggleError.value = null
-    }
+    fun clearToggleError() { _toggleError.value = null }
 
     fun save(
         title: String,
@@ -113,19 +116,5 @@ class EditVacancyViewModel(
                 .onSuccess { _uiState.value = UiState.Deleted }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка удаления") }
         }
-    }
-
-    class Factory(
-        private val getVacancyByIdUseCase: GetVacancyByIdUseCase,
-        private val updateVacancyUseCase: UpdateVacancyUseCase,
-        private val deleteVacancyUseCase: DeleteVacancyUseCase,
-        private val setVacancyActiveUseCase: SetVacancyActiveUseCase,
-        private val vacancyId: String
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            EditVacancyViewModel(
-                getVacancyByIdUseCase, updateVacancyUseCase, deleteVacancyUseCase, setVacancyActiveUseCase, vacancyId
-            ) as T
     }
 }

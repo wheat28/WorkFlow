@@ -3,8 +3,8 @@ package com.example.workflow.presentation.employer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.data.remote.dto.EmployerStatsDto
-import com.example.workflow.domain.usecase.employer.GetEmployerStatsUseCase
+import com.example.workflow.data.remote.dto.EmployerResponseDto
+import com.example.workflow.domain.usecase.employer.GetEmployerByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,31 +12,33 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EmployerDashboardViewModel @Inject constructor(
-    private val getEmployerStatsUseCase: GetEmployerStatsUseCase,
+class EmployerProfileViewModel @Inject constructor(
+    private val getEmployerByIdUseCase: GetEmployerByIdUseCase,
     private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
     sealed class UiState {
         object Loading : UiState()
-        data class Success(val stats: EmployerStatsDto) : UiState()
+        data class Success(val employer: EmployerResponseDto) : UiState()
         data class Error(val message: String) : UiState()
     }
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
+    private var employerId: String = ""
+
     init {
         viewModelScope.launch {
-            val employerId = tokenDataStore.getUserId() ?: ""
-            load(employerId)
+            employerId = tokenDataStore.getUserId() ?: ""
+            load()
         }
     }
 
-    fun load(employerId: String) {
+    fun load() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            runCatching { getEmployerStatsUseCase(employerId) }
+            runCatching { getEmployerByIdUseCase(employerId) }
                 .onSuccess { _uiState.value = UiState.Success(it) }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка загрузки") }
         }

@@ -1,22 +1,23 @@
 package com.example.workflow.presentation.profile
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.dto.SeekerUpdateRequestDto
 import com.example.workflow.domain.usecase.seeker.GetSeekerByIdUseCase
 import com.example.workflow.domain.usecase.seeker.UpdateSeekerUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EditSeekerProfileViewModel(
+@HiltViewModel
+class EditSeekerProfileViewModel @Inject constructor(
     private val getSeekerByIdUseCase: GetSeekerByIdUseCase,
     private val updateSeekerUseCase: UpdateSeekerUseCase,
-    private val tokenDataStore: TokenDataStore,
-    private val seekerId: String
+    private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
     sealed class UiState {
@@ -37,7 +38,14 @@ class EditSeekerProfileViewModel(
     val about = MutableStateFlow("")
     val email = MutableStateFlow("")
 
-    init { load() }
+    private var seekerId: String = ""
+
+    init {
+        viewModelScope.launch {
+            seekerId = tokenDataStore.getUserId() ?: ""
+            load()
+        }
+    }
 
     private fun load() {
         viewModelScope.launch {
@@ -78,16 +86,5 @@ class EditSeekerProfileViewModel(
                 .onSuccess { _uiState.value = UiState.Success }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка сохранения") }
         }
-    }
-
-    class Factory(
-        private val getSeekerByIdUseCase: GetSeekerByIdUseCase,
-        private val updateSeekerUseCase: UpdateSeekerUseCase,
-        private val tokenDataStore: TokenDataStore,
-        private val seekerId: String
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            EditSeekerProfileViewModel(getSeekerByIdUseCase, updateSeekerUseCase, tokenDataStore, seekerId) as T
     }
 }

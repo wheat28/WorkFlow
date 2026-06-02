@@ -1,21 +1,27 @@
 package com.example.workflow.presentation.apply
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.dto.ResumeResponseDto
 import com.example.workflow.domain.usecase.application.ApplyForVacancyUseCase
 import com.example.workflow.domain.usecase.resume.GetMyResumesUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ApplyViewModel(
+@HiltViewModel
+class ApplyViewModel @Inject constructor(
     private val getMyResumesUseCase: GetMyResumesUseCase,
     private val applyForVacancyUseCase: ApplyForVacancyUseCase,
-    private val seekerId: String,
-    private val vacancyId: String
+    private val tokenDataStore: TokenDataStore,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val vacancyId: String = checkNotNull(savedStateHandle["vacancyId"])
 
     sealed class UiState {
         object Loading : UiState()
@@ -28,9 +34,14 @@ class ApplyViewModel(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
-    init { loadResumes() }
+    init {
+        viewModelScope.launch {
+            val seekerId = tokenDataStore.getUserId() ?: ""
+            loadResumes(seekerId)
+        }
+    }
 
-    private fun loadResumes() {
+    private fun loadResumes(seekerId: String) {
         viewModelScope.launch {
             runCatching { getMyResumesUseCase(seekerId) }
                 .onSuccess { _uiState.value = UiState.Ready(it) }
@@ -45,16 +56,5 @@ class ApplyViewModel(
                 .onSuccess { _uiState.value = UiState.Success }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка отклика") }
         }
-    }
-
-    class Factory(
-        private val getMyResumesUseCase: GetMyResumesUseCase,
-        private val applyForVacancyUseCase: ApplyForVacancyUseCase,
-        private val seekerId: String,
-        private val vacancyId: String
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>) =
-            ApplyViewModel(getMyResumesUseCase, applyForVacancyUseCase, seekerId, vacancyId) as T
     }
 }

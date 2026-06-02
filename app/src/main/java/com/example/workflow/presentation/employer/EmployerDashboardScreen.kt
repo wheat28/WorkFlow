@@ -25,9 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.data.remote.dto.EmployerStatsDto
-import com.example.workflow.domain.usecase.employer.GetEmployerStatsUseCase
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -35,13 +34,9 @@ import com.example.workflow.ui.theme.Indigo90
 
 @Composable
 fun EmployerDashboardScreen(
-    getEmployerStatsUseCase: GetEmployerStatsUseCase,
-    employerId: String,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: EmployerDashboardViewModel = viewModel(
-        factory = EmployerDashboardViewModel.Factory(getEmployerStatsUseCase, employerId)
-    )
+    val viewModel: EmployerDashboardViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Box(

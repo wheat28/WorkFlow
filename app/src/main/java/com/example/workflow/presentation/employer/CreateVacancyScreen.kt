@@ -42,39 +42,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workflow.domain.usecase.vacancy.CreateVacancyUseCase
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.workflow.presentation.common.employmentLabel
+import com.example.workflow.presentation.common.experienceLabel
 import com.example.workflow.ui.theme.Indigo60
 
 private val employmentTypes = listOf("FULL_TIME", "PART_TIME", "REMOTE", "INTERNSHIP")
 private val experienceOptions = listOf("NO_EXPERIENCE", "1_3", "3_6", "6_PLUS")
 
-fun employmentLabel(type: String) = when (type) {
-    "FULL_TIME" -> "Полная занятость"
-    "PART_TIME" -> "Частичная занятость"
-    "REMOTE" -> "Удалённо"
-    "INTERNSHIP" -> "Стажировка"
-    else -> type
-}
-
-fun experienceLabel(value: String) = when (value) {
-    "NO_EXPERIENCE" -> "Без опыта"
-    "1_3" -> "1–3 года"
-    "3_6" -> "3–6 лет"
-    "6_PLUS" -> "Более 6 лет"
-    else -> value
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateVacancyScreen(
-    createVacancyUseCase: CreateVacancyUseCase,
     onBack: () -> Unit,
     onCreated: () -> Unit
 ) {
-    val viewModel: CreateVacancyViewModel = viewModel(
-        factory = CreateVacancyViewModel.Factory(createVacancyUseCase)
-    )
+    val viewModel: CreateVacancyViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var title by remember { mutableStateOf("") }

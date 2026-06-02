@@ -48,24 +48,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workflow.domain.usecase.auth.RegisterEmployerUseCase
-import com.example.workflow.domain.usecase.auth.RegisterSeekerUseCase
 import com.example.workflow.ui.theme.Indigo60
 import com.example.workflow.ui.theme.Indigo90
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
-    registerSeekerUseCase: RegisterSeekerUseCase,
-    registerEmployerUseCase: RegisterEmployerUseCase,
     onRegisterSuccess: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    val viewModel: RegisterViewModel = viewModel(
-        factory = RegisterViewModel.Factory(registerSeekerUseCase, registerEmployerUseCase)
-    )
+    val viewModel: RegisterViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var selectedTab by remember { mutableIntStateOf(0) }

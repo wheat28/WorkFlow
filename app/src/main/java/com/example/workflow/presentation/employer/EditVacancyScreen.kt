@@ -45,12 +45,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.domain.usecase.vacancy.DeleteVacancyUseCase
-import com.example.workflow.domain.usecase.vacancy.GetVacancyByIdUseCase
-import com.example.workflow.domain.usecase.vacancy.SetVacancyActiveUseCase
-import com.example.workflow.domain.usecase.vacancy.UpdateVacancyUseCase
+import com.example.workflow.presentation.common.employmentLabel
+import com.example.workflow.presentation.common.experienceLabel
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -58,20 +56,11 @@ import com.example.workflow.ui.theme.Indigo60
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditVacancyScreen(
-    vacancyId: String,
-    getVacancyByIdUseCase: GetVacancyByIdUseCase,
-    updateVacancyUseCase: UpdateVacancyUseCase,
-    deleteVacancyUseCase: DeleteVacancyUseCase,
-    setVacancyActiveUseCase: SetVacancyActiveUseCase,
     onBack: () -> Unit,
     onSaved: () -> Unit,
     onDeleted: () -> Unit
 ) {
-    val viewModel: EditVacancyViewModel = viewModel(
-        factory = EditVacancyViewModel.Factory(
-            getVacancyByIdUseCase, updateVacancyUseCase, deleteVacancyUseCase, setVacancyActiveUseCase, vacancyId
-        )
-    )
+    val viewModel: EditVacancyViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isActive by viewModel.isActive.collectAsStateWithLifecycle()
     val toggleError by viewModel.toggleError.collectAsStateWithLifecycle()

@@ -39,12 +39,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.data.remote.dto.EmployerResponseDto
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.domain.usecase.employer.GetEmployerByIdUseCase
-import com.example.workflow.domain.usecase.vacancy.GetEmployerVacanciesUseCase
 import androidx.compose.foundation.background
+import com.example.workflow.presentation.common.employmentLabel
 import com.example.workflow.presentation.common.shimmerBrush
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -53,17 +52,10 @@ import com.example.workflow.ui.theme.Indigo90
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmployerPublicProfileScreen(
-    employerId: String,
-    getEmployerByIdUseCase: GetEmployerByIdUseCase,
-    getEmployerVacanciesUseCase: GetEmployerVacanciesUseCase,
     onBack: () -> Unit,
     onVacancyClick: (String) -> Unit
 ) {
-    val viewModel: EmployerPublicProfileViewModel = viewModel(
-        factory = EmployerPublicProfileViewModel.Factory(
-            getEmployerByIdUseCase, getEmployerVacanciesUseCase, employerId
-        )
-    )
+    val viewModel: EmployerPublicProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -259,7 +251,7 @@ private fun PublicVacancyCard(vacancy: VacancyResponseDto, onClick: () -> Unit) 
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 SuggestionChip(
                     onClick = {},
-                    label = { Text(vacancy.employmentType, style = MaterialTheme.typography.labelSmall) },
+                    label = { Text(employmentLabel(vacancy.employmentType), style = MaterialTheme.typography.labelSmall) },
                     colors = SuggestionChipDefaults.suggestionChipColors(containerColor = Indigo90, labelColor = Indigo60),
                     border = null
                 )

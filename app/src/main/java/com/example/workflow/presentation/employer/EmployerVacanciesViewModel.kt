@@ -1,18 +1,21 @@
 package com.example.workflow.presentation.employer
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.dto.VacancyResponseDto
 import com.example.workflow.domain.usecase.vacancy.GetEmployerVacanciesUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EmployerVacanciesViewModel(
+@HiltViewModel
+class EmployerVacanciesViewModel @Inject constructor(
     private val getEmployerVacanciesUseCase: GetEmployerVacanciesUseCase,
-    private val employerId: String
+    private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
     sealed class UiState {
@@ -27,13 +30,20 @@ class EmployerVacanciesViewModel(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
-    init { loadVacancies() }
+    private var employerId: String = ""
+
+    init {
+        viewModelScope.launch {
+            employerId = tokenDataStore.getUserId() ?: ""
+            loadVacancies()
+        }
+    }
 
     fun refresh() {
         viewModelScope.launch {
             _isRefreshing.value = true
             runCatching { getEmployerVacanciesUseCase(employerId) }
-                .onSuccess { _uiState.value = UiState.Success(it) }
+                .onSuccess { _uiState.value = UiState.Success(it.reversed()) }
             _isRefreshing.value = false
         }
     }
@@ -42,17 +52,8 @@ class EmployerVacanciesViewModel(
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             runCatching { getEmployerVacanciesUseCase(employerId) }
-                .onSuccess { _uiState.value = UiState.Success(it) }
+                .onSuccess { _uiState.value = UiState.Success(it.reversed()) }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка загрузки") }
         }
-    }
-
-    class Factory(
-        private val getEmployerVacanciesUseCase: GetEmployerVacanciesUseCase,
-        private val employerId: String
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            EmployerVacanciesViewModel(getEmployerVacanciesUseCase, employerId) as T
     }
 }

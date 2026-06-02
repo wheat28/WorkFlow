@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.workflow.WorkFlowApp
+import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.presentation.applications.VacancyApplicationsScreen
 import com.example.workflow.presentation.employer.EmployerPublicProfileScreen
 import com.example.workflow.presentation.resume.ResumeDetailScreen
@@ -35,7 +35,7 @@ import com.example.workflow.presentation.vacancy.VacancyDetailScreen
 import kotlinx.coroutines.launch
 
 @Composable
-fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
+fun AppNavGraph(tokenDataStore: TokenDataStore, onLogout: suspend () -> Unit, startRoute: String) {
     val navController = rememberNavController()
 
     NavHost(
@@ -49,7 +49,6 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
 
         composable("login") {
             LoginScreen(
-                loginUseCase = app.loginUseCase,
                 onLoginSuccess = {
                     navController.navigate("main") {
                         popUpTo("login") { inclusive = true }
@@ -61,8 +60,6 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
 
         composable("register") {
             RegisterScreen(
-                registerSeekerUseCase = app.registerSeekerUseCase,
-                registerEmployerUseCase = app.registerEmployerUseCase,
                 onRegisterSuccess = {
                     navController.navigate("main") {
                         popUpTo("login") { inclusive = true }
@@ -74,8 +71,8 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
 
         composable("main") {
             val scope = rememberCoroutineScope()
-            val userType by app.tokenDataStore.userTypeFlow.collectAsState(initial = null)
-            val userId by app.tokenDataStore.userIdFlow.collectAsState(initial = null)
+            val userType by tokenDataStore.userTypeFlow.collectAsState(initial = null)
+            val userId by tokenDataStore.userIdFlow.collectAsState(initial = null)
             val vacanciesRefreshKey by it.savedStateHandle
                 .getStateFlow("vacancies_refresh_key", 0)
                 .collectAsState()
@@ -92,9 +89,9 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
                 .getStateFlow("seeker_profile_refresh_key", 0)
                 .collectAsState()
 
-            val onLogout: () -> Unit = {
+            val onLogoutAction: () -> Unit = {
                 scope.launch {
-                    app.logoutUseCase()
+                    onLogout()
                     navController.navigate("login") {
                         popUpTo("main") { inclusive = true }
                     }
@@ -103,10 +100,9 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
 
             if (userType != null && userId != null) {
                 MainScreen(
-                    app = app,
+                    tokenDataStore = tokenDataStore,
                     userType = userType!!,
-                    userId = userId!!,
-                    onLogout = onLogout,
+                    onLogout = onLogoutAction,
                     onVacancyClick = { vacancyId ->
                         navController.navigate("vacancy/$vacancyId")
                     },
@@ -130,7 +126,6 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
 
         composable("create_vacancy") {
             CreateVacancyScreen(
-                createVacancyUseCase = app.createVacancyUseCase,
                 onBack = { navController.popBackStack() },
                 onCreated = {
                     val current = navController.getBackStackEntry("main")
@@ -143,21 +138,13 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
         }
 
         composable("vacancy/{id}") { backStackEntry ->
-            val vacancyId = backStackEntry.arguments?.getString("id") ?: return@composable
-            val userType by app.tokenDataStore.userTypeFlow.collectAsState(initial = "SEEKER")
+            val userType by tokenDataStore.userTypeFlow.collectAsState(initial = "SEEKER")
             val appliedSignal by backStackEntry.savedStateHandle
                 .getStateFlow("is_applied", false)
                 .collectAsState()
 
             VacancyDetailScreen(
-                vacancyId = vacancyId,
-                getVacancyByIdUseCase = app.getVacancyByIdUseCase,
                 userType = userType ?: "SEEKER",
-                checkFavoriteUseCase = app.checkFavoriteUseCase,
-                addFavoriteUseCase = app.addFavoriteUseCase,
-                removeFavoriteUseCase = app.removeFavoriteUseCase,
-                checkAppliedUseCase = app.checkAppliedUseCase,
-                deleteVacancyUseCase = app.deleteVacancyUseCase,
                 appliedSignal = appliedSignal,
                 onBack = { navController.popBackStack() },
                 onApply = { id -> navController.navigate("apply/$id") },
@@ -183,25 +170,15 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
             )
         }
 
-        composable("employer_profile/{employerId}") { backStackEntry ->
-            val employerId = backStackEntry.arguments?.getString("employerId") ?: return@composable
+        composable("employer_profile/{employerId}") {
             EmployerPublicProfileScreen(
-                employerId = employerId,
-                getEmployerByIdUseCase = app.getEmployerByIdUseCase,
-                getEmployerVacanciesUseCase = app.getEmployerVacanciesUseCase,
                 onBack = { navController.popBackStack() },
                 onVacancyClick = { vacancyId -> navController.navigate("vacancy/$vacancyId") }
             )
         }
 
-        composable("edit_vacancy/{vacancyId}") { backStackEntry ->
-            val vacancyId = backStackEntry.arguments?.getString("vacancyId") ?: return@composable
+        composable("edit_vacancy/{vacancyId}") {
             EditVacancyScreen(
-                vacancyId = vacancyId,
-                getVacancyByIdUseCase = app.getVacancyByIdUseCase,
-                updateVacancyUseCase = app.updateVacancyUseCase,
-                deleteVacancyUseCase = app.deleteVacancyUseCase,
-                setVacancyActiveUseCase = app.setVacancyActiveUseCase,
                 onBack = { navController.popBackStack() },
                 onSaved = {
                     runCatching {
@@ -223,60 +200,38 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
             )
         }
 
-        composable("vacancy_applications/{vacancyId}") { backStackEntry ->
-            val vacancyId = backStackEntry.arguments?.getString("vacancyId") ?: return@composable
+        composable("vacancy_applications/{vacancyId}") {
             VacancyApplicationsScreen(
-                vacancyId = vacancyId,
-                getVacancyApplicationsUseCase = app.getVacancyApplicationsUseCase,
-                updateApplicationStatusUseCase = app.updateApplicationStatusUseCase,
                 onBack = { navController.popBackStack() },
                 onViewResume = { resumeId -> navController.navigate("resume_detail/$resumeId") }
             )
         }
 
-        composable("resume_detail/{resumeId}") { backStackEntry ->
-            val resumeId = backStackEntry.arguments?.getString("resumeId") ?: return@composable
+        composable("resume_detail/{resumeId}") {
             ResumeDetailScreen(
-                resumeId = resumeId,
-                getResumeByIdUseCase = app.getResumeByIdUseCase,
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable("apply/{vacancyId}") { backStackEntry ->
-            val vacancyId = backStackEntry.arguments?.getString("vacancyId") ?: return@composable
-            val seekerId by app.tokenDataStore.userIdFlow.collectAsState(initial = null)
-
-            seekerId?.let { id ->
-                ApplyScreen(
-                    vacancyId = vacancyId,
-                    seekerId = id,
-                    getMyResumesUseCase = app.getMyResumesUseCase,
-                    applyForVacancyUseCase = app.applyForVacancyUseCase,
-                    onBack = { navController.popBackStack() },
-                    onApplied = {
-                        navController.previousBackStackEntry
-                            ?.savedStateHandle?.set("is_applied", true)
-                        runCatching {
-                            val entry = navController.getBackStackEntry("main")
-                            val current = entry.savedStateHandle.get<Int>("applications_refresh_key") ?: 0
-                            entry.savedStateHandle["applications_refresh_key"] = current + 1
-                        }
-                        navController.popBackStack()
-                    },
-                    onCreateResume = { navController.navigate("create_resume") }
-                )
-            }
+        composable("apply/{vacancyId}") {
+            ApplyScreen(
+                onBack = { navController.popBackStack() },
+                onApplied = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle?.set("is_applied", true)
+                    runCatching {
+                        val entry = navController.getBackStackEntry("main")
+                        val current = entry.savedStateHandle.get<Int>("applications_refresh_key") ?: 0
+                        entry.savedStateHandle["applications_refresh_key"] = current + 1
+                    }
+                    navController.popBackStack()
+                },
+                onCreateResume = { navController.navigate("create_resume") }
+            )
         }
 
-        composable("edit_resume/{resumeId}") { backStackEntry ->
-            val resumeId = backStackEntry.arguments?.getString("resumeId") ?: return@composable
+        composable("edit_resume/{resumeId}") {
             EditResumeScreen(
-                resumeId = resumeId,
-                getResumeByIdUseCase = app.getResumeByIdUseCase,
-                updateResumeUseCase = app.updateResumeUseCase,
-                setResumeActiveUseCase = app.setResumeActiveUseCase,
-                deleteResumeUseCase = app.deleteResumeUseCase,
                 onBack = { navController.popBackStack() },
                 onSaved = {
                     runCatching {
@@ -298,50 +253,35 @@ fun AppNavGraph(app: WorkFlowApp, startRoute: String) {
         }
 
         composable("edit_employer_profile") {
-            val userId by app.tokenDataStore.userIdFlow.collectAsState(initial = null)
-            userId?.let { id ->
-                EditEmployerProfileScreen(
-                    employerId = id,
-                    getEmployerByIdUseCase = app.getEmployerByIdUseCase,
-                    updateEmployerUseCase = app.updateEmployerUseCase,
-                    tokenDataStore = app.tokenDataStore,
-                    onBack = { navController.popBackStack() },
-                    onSaved = {
-                        runCatching {
-                            val entry = navController.getBackStackEntry("main")
-                            val current = entry.savedStateHandle.get<Int>("employer_profile_refresh_key") ?: 0
-                            entry.savedStateHandle["employer_profile_refresh_key"] = current + 1
-                        }
-                        navController.popBackStack()
+            EditEmployerProfileScreen(
+                onBack = { navController.popBackStack() },
+                onSaved = {
+                    runCatching {
+                        val entry = navController.getBackStackEntry("main")
+                        val current = entry.savedStateHandle.get<Int>("employer_profile_refresh_key") ?: 0
+                        entry.savedStateHandle["employer_profile_refresh_key"] = current + 1
                     }
-                )
-            }
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable("edit_seeker_profile") {
-            val userId by app.tokenDataStore.userIdFlow.collectAsState(initial = null)
-            userId?.let { id ->
-                EditSeekerProfileScreen(
-                    seekerId = id,
-                    getSeekerByIdUseCase = app.getSeekerByIdUseCase,
-                    updateSeekerUseCase = app.updateSeekerUseCase,
-                    tokenDataStore = app.tokenDataStore,
-                    onBack = { navController.popBackStack() },
-                    onSaved = {
-                        runCatching {
-                            val entry = navController.getBackStackEntry("main")
-                            val current = entry.savedStateHandle.get<Int>("seeker_profile_refresh_key") ?: 0
-                            entry.savedStateHandle["seeker_profile_refresh_key"] = current + 1
-                        }
-                        navController.popBackStack()
+            EditSeekerProfileScreen(
+                onBack = { navController.popBackStack() },
+                onSaved = {
+                    runCatching {
+                        val entry = navController.getBackStackEntry("main")
+                        val current = entry.savedStateHandle.get<Int>("seeker_profile_refresh_key") ?: 0
+                        entry.savedStateHandle["seeker_profile_refresh_key"] = current + 1
                     }
-                )
-            }
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable("create_resume") {
             CreateResumeScreen(
-                createResumeUseCase = app.createResumeUseCase,
                 onBack = { navController.popBackStack() },
                 onCreated = {
                     runCatching {

@@ -1,16 +1,18 @@
 package com.example.workflow.presentation.register
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.domain.usecase.auth.RegisterEmployerUseCase
 import com.example.workflow.domain.usecase.auth.RegisterSeekerUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RegisterViewModel(
+@HiltViewModel
+class RegisterViewModel @Inject constructor(
     private val registerSeekerUseCase: RegisterSeekerUseCase,
     private val registerEmployerUseCase: RegisterEmployerUseCase
 ) : ViewModel() {
@@ -47,15 +49,6 @@ class RegisterViewModel(
     }
 
     fun resetState() { _uiState.value = RegisterUiState.Idle }
-
-    class Factory(
-        private val registerSeekerUseCase: RegisterSeekerUseCase,
-        private val registerEmployerUseCase: RegisterEmployerUseCase
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            RegisterViewModel(registerSeekerUseCase, registerEmployerUseCase) as T
-    }
 }
 
 sealed class RegisterUiState {

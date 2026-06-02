@@ -37,19 +37,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.data.remote.dto.EmployerResponseDto
 import com.example.workflow.data.remote.dto.ResumeResponseDto
-import com.example.workflow.domain.usecase.employer.GetEmployerByIdUseCase
-import com.example.workflow.domain.usecase.resume.GetMyResumesUseCase
+import com.example.workflow.presentation.employer.EmployerProfileViewModel
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Indigo60
 import com.example.workflow.ui.theme.Indigo90
@@ -57,8 +52,6 @@ import com.example.workflow.ui.theme.Indigo90
 @Composable
 fun ProfileScreen(
     tokenDataStore: TokenDataStore,
-    getMyResumesUseCase: GetMyResumesUseCase,
-    getEmployerByIdUseCase: GetEmployerByIdUseCase? = null,
     onLogout: () -> Unit,
     onCreateResume: () -> Unit,
     onEditResume: (String) -> Unit,
@@ -129,8 +122,6 @@ fun ProfileScreen(
 
         if (userType == "SEEKER" && userId != null) {
             SeekerProfileContent(
-                userId = userId!!,
-                getMyResumesUseCase = getMyResumesUseCase,
                 resumeRefreshKey = resumeRefreshKey,
                 onCreateResume = onCreateResume,
                 onEditResume = onEditResume,
@@ -138,10 +129,8 @@ fun ProfileScreen(
                 onLogout = onLogout,
                 modifier = Modifier.weight(1f)
             )
-        } else if (userType == "EMPLOYER" && userId != null && getEmployerByIdUseCase != null) {
+        } else if (userType == "EMPLOYER" && userId != null) {
             EmployerProfileContent(
-                userId = userId!!,
-                getEmployerByIdUseCase = getEmployerByIdUseCase,
                 refreshKey = employerProfileRefreshKey,
                 onEditProfile = onEditEmployerProfile,
                 onLogout = onLogout,
@@ -156,8 +145,6 @@ fun ProfileScreen(
 
 @Composable
 private fun SeekerProfileContent(
-    userId: String,
-    getMyResumesUseCase: GetMyResumesUseCase,
     resumeRefreshKey: Int,
     onCreateResume: () -> Unit,
     onEditResume: (String) -> Unit,
@@ -165,9 +152,7 @@ private fun SeekerProfileContent(
     onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val profileViewModel: ProfileViewModel = viewModel(
-        factory = ProfileViewModel.Factory(getMyResumesUseCase, userId)
-    )
+    val profileViewModel: ProfileViewModel = hiltViewModel()
     val resumeState by profileViewModel.resumeState.collectAsStateWithLifecycle()
 
     LaunchedEffect(resumeRefreshKey) {
@@ -248,22 +233,16 @@ private fun SeekerProfileContent(
 
 @Composable
 private fun EmployerProfileContent(
-    userId: String,
-    getEmployerByIdUseCase: GetEmployerByIdUseCase,
     refreshKey: Int,
     onEditProfile: (() -> Unit)?,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var employer by remember { mutableStateOf<EmployerResponseDto?>(null) }
-    var loading by remember { mutableStateOf(true) }
+    val viewModel: EmployerProfileViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(refreshKey) {
-        loading = true
-        runCatching { getEmployerByIdUseCase(userId) }
-            .onSuccess { employer = it }
-            .onFailure { }
-        loading = false
+        if (refreshKey > 0) viewModel.load()
     }
 
     Column(modifier = modifier) {
@@ -274,12 +253,17 @@ private fun EmployerProfileContent(
                 .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            if (loading) {
-                Box(Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Indigo60)
+            when (val state = uiState) {
+                is EmployerProfileViewModel.UiState.Loading -> {
+                    Box(Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = Indigo60)
+                    }
                 }
-            } else {
-                employer?.let { e ->
+                is EmployerProfileViewModel.UiState.Error -> {
+                    Text(state.message, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                }
+                is EmployerProfileViewModel.UiState.Success -> {
+                    val e = state.employer
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(20.dp),

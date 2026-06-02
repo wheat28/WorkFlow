@@ -30,11 +30,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.workflow.data.remote.dto.ResumeResponseDto
 import com.example.workflow.data.remote.dto.WorkExperienceResponseDto
-import com.example.workflow.domain.usecase.resume.GetResumeByIdUseCase
 import com.example.workflow.presentation.common.ResumeDetailSkeleton
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -43,13 +42,9 @@ import com.example.workflow.ui.theme.Indigo90
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResumeDetailScreen(
-    resumeId: String,
-    getResumeByIdUseCase: GetResumeByIdUseCase,
     onBack: () -> Unit
 ) {
-    val viewModel: ResumeDetailViewModel = viewModel(
-        factory = ResumeDetailViewModel.Factory(getResumeByIdUseCase, resumeId)
-    )
+    val viewModel: ResumeDetailViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(

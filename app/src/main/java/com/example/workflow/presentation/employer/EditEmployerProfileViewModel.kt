@@ -1,22 +1,23 @@
 package com.example.workflow.presentation.employer
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.dto.EmployerResponseDto
 import com.example.workflow.data.remote.dto.EmployerUpdateRequestDto
 import com.example.workflow.domain.usecase.employer.GetEmployerByIdUseCase
 import com.example.workflow.domain.usecase.employer.UpdateEmployerUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EditEmployerProfileViewModel(
+@HiltViewModel
+class EditEmployerProfileViewModel @Inject constructor(
     private val getEmployerByIdUseCase: GetEmployerByIdUseCase,
     private val updateEmployerUseCase: UpdateEmployerUseCase,
-    private val tokenDataStore: TokenDataStore,
-    private val employerId: String
+    private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
     sealed class UiState {
@@ -30,7 +31,14 @@ class EditEmployerProfileViewModel(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
-    init { load() }
+    private var employerId: String = ""
+
+    init {
+        viewModelScope.launch {
+            employerId = tokenDataStore.getUserId() ?: ""
+            load()
+        }
+    }
 
     private fun load() {
         viewModelScope.launch {
@@ -70,16 +78,5 @@ class EditEmployerProfileViewModel(
             }.onSuccess { _uiState.value = UiState.Success }
              .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка сохранения") }
         }
-    }
-
-    class Factory(
-        private val getEmployerByIdUseCase: GetEmployerByIdUseCase,
-        private val updateEmployerUseCase: UpdateEmployerUseCase,
-        private val tokenDataStore: TokenDataStore,
-        private val employerId: String
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>) =
-            EditEmployerProfileViewModel(getEmployerByIdUseCase, updateEmployerUseCase, tokenDataStore, employerId) as T
     }
 }

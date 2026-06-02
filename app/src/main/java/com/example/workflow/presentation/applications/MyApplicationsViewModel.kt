@@ -1,19 +1,22 @@
 package com.example.workflow.presentation.applications
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.dto.ApplicationResponseDto
 import com.example.workflow.domain.usecase.application.CancelApplicationUseCase
 import com.example.workflow.domain.usecase.application.GetMyApplicationsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MyApplicationsViewModel(
+@HiltViewModel
+class MyApplicationsViewModel @Inject constructor(
     private val getMyApplicationsUseCase: GetMyApplicationsUseCase,
     private val cancelApplicationUseCase: CancelApplicationUseCase,
-    private val seekerId: String
+    private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
     sealed class UiState {
@@ -28,7 +31,14 @@ class MyApplicationsViewModel(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
-    init { load() }
+    private var seekerId: String = ""
+
+    init {
+        viewModelScope.launch {
+            seekerId = tokenDataStore.getUserId() ?: ""
+            load()
+        }
+    }
 
     fun refresh() {
         viewModelScope.launch {
@@ -55,15 +65,5 @@ class MyApplicationsViewModel(
             runCatching { cancelApplicationUseCase(applicationId) }
                 .onFailure { _uiState.value = current }
         }
-    }
-
-    class Factory(
-        private val getMyApplicationsUseCase: GetMyApplicationsUseCase,
-        private val cancelApplicationUseCase: CancelApplicationUseCase,
-        private val seekerId: String
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>) =
-            MyApplicationsViewModel(getMyApplicationsUseCase, cancelApplicationUseCase, seekerId) as T
     }
 }

@@ -35,9 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.domain.usecase.vacancy.GetEmployerVacanciesUseCase
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Coral90
 import com.example.workflow.ui.theme.Green40
@@ -47,16 +46,12 @@ import com.example.workflow.ui.theme.Indigo60
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmployerVacanciesScreen(
-    getEmployerVacanciesUseCase: GetEmployerVacanciesUseCase,
-    employerId: String,
     onVacancyClick: (String) -> Unit,
     onCreateVacancy: () -> Unit,
     refreshKey: Int = 0,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: EmployerVacanciesViewModel = viewModel(
-        factory = EmployerVacanciesViewModel.Factory(getEmployerVacanciesUseCase, employerId)
-    )
+    val viewModel: EmployerVacanciesViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 

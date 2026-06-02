@@ -47,12 +47,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workflow.domain.usecase.resume.DeleteResumeUseCase
-import com.example.workflow.domain.usecase.resume.GetResumeByIdUseCase
-import com.example.workflow.domain.usecase.resume.SetResumeActiveUseCase
-import com.example.workflow.domain.usecase.resume.UpdateResumeUseCase
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Indigo60
 
@@ -69,18 +65,11 @@ private fun employmentLabel(type: String) = when (type) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditResumeScreen(
-    resumeId: String,
-    getResumeByIdUseCase: GetResumeByIdUseCase,
-    updateResumeUseCase: UpdateResumeUseCase,
-    setResumeActiveUseCase: SetResumeActiveUseCase,
-    deleteResumeUseCase: DeleteResumeUseCase,
     onBack: () -> Unit,
     onSaved: () -> Unit,
     onDeleted: () -> Unit
 ) {
-    val viewModel: EditResumeViewModel = viewModel(
-        factory = EditResumeViewModel.Factory(getResumeByIdUseCase, updateResumeUseCase, setResumeActiveUseCase, deleteResumeUseCase, resumeId)
-    )
+    val viewModel: EditResumeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isActive by viewModel.isActive.collectAsStateWithLifecycle()
     val toggleError by viewModel.toggleError.collectAsStateWithLifecycle()

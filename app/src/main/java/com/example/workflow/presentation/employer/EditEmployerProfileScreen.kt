@@ -38,25 +38,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.domain.usecase.employer.GetEmployerByIdUseCase
-import com.example.workflow.domain.usecase.employer.UpdateEmployerUseCase
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.ui.theme.Indigo60
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditEmployerProfileScreen(
-    employerId: String,
-    getEmployerByIdUseCase: GetEmployerByIdUseCase,
-    updateEmployerUseCase: UpdateEmployerUseCase,
-    tokenDataStore: TokenDataStore,
     onBack: () -> Unit,
     onSaved: () -> Unit
 ) {
-    val viewModel: EditEmployerProfileViewModel = viewModel(
-        factory = EditEmployerProfileViewModel.Factory(getEmployerByIdUseCase, updateEmployerUseCase, tokenDataStore, employerId)
-    )
+    val viewModel: EditEmployerProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var companyName by rememberSaveable { mutableStateOf("") }

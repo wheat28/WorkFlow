@@ -1,15 +1,17 @@
 package com.example.workflow.presentation.employer
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.VacancyRequestDto
 import com.example.workflow.domain.usecase.vacancy.CreateVacancyUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CreateVacancyViewModel(
+@HiltViewModel
+class CreateVacancyViewModel @Inject constructor(
     private val createVacancyUseCase: CreateVacancyUseCase
 ) : ViewModel() {
 
@@ -61,10 +63,4 @@ class CreateVacancyViewModel(
     }
 
     fun resetState() { _uiState.value = UiState.Idle }
-
-    class Factory(private val useCase: CreateVacancyUseCase) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>) =
-            CreateVacancyViewModel(useCase) as T
-    }
 }

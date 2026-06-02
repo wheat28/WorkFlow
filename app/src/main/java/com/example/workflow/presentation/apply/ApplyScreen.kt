@@ -41,10 +41,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.data.remote.dto.ResumeResponseDto
-import com.example.workflow.domain.usecase.application.ApplyForVacancyUseCase
-import com.example.workflow.domain.usecase.resume.GetMyResumesUseCase
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Indigo60
 import com.example.workflow.ui.theme.Indigo90
@@ -52,17 +50,11 @@ import com.example.workflow.ui.theme.Indigo90
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplyScreen(
-    vacancyId: String,
-    seekerId: String,
-    getMyResumesUseCase: GetMyResumesUseCase,
-    applyForVacancyUseCase: ApplyForVacancyUseCase,
     onBack: () -> Unit,
     onApplied: () -> Unit,
     onCreateResume: () -> Unit
 ) {
-    val viewModel: ApplyViewModel = viewModel(
-        factory = ApplyViewModel.Factory(getMyResumesUseCase, applyForVacancyUseCase, seekerId, vacancyId)
-    )
+    val viewModel: ApplyViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var selectedResumeId by remember { mutableStateOf<String?>(null) }

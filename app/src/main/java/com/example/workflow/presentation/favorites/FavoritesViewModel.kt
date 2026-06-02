@@ -1,19 +1,22 @@
 package com.example.workflow.presentation.favorites
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.dto.VacancyResponseDto
 import com.example.workflow.domain.usecase.favorite.GetFavoritesUseCase
 import com.example.workflow.domain.usecase.favorite.RemoveFavoriteUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FavoritesViewModel(
+@HiltViewModel
+class FavoritesViewModel @Inject constructor(
     private val getFavoritesUseCase: GetFavoritesUseCase,
     private val removeFavoriteUseCase: RemoveFavoriteUseCase,
-    private val seekerId: String
+    private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
     sealed class UiState {
@@ -28,7 +31,14 @@ class FavoritesViewModel(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
-    init { load() }
+    private var seekerId: String = ""
+
+    init {
+        viewModelScope.launch {
+            seekerId = tokenDataStore.getUserId() ?: ""
+            load()
+        }
+    }
 
     fun refresh() {
         viewModelScope.launch {
@@ -63,15 +73,5 @@ class FavoritesViewModel(
             runCatching { removeFavoriteUseCase(vacancyId) }
                 .onFailure { _uiState.value = UiState.Success(current.vacancies) }
         }
-    }
-
-    class Factory(
-        private val getFavoritesUseCase: GetFavoritesUseCase,
-        private val removeFavoriteUseCase: RemoveFavoriteUseCase,
-        private val seekerId: String
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>) =
-            FavoritesViewModel(getFavoritesUseCase, removeFavoriteUseCase, seekerId) as T
     }
 }

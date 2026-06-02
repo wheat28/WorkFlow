@@ -21,7 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.workflow.WorkFlowApp
+import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.ui.theme.Indigo60
 import com.example.workflow.ui.theme.Indigo90
 import com.example.workflow.ui.theme.Indigo95
@@ -36,9 +36,8 @@ import com.example.workflow.presentation.vacancies.VacancyListScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    app: WorkFlowApp,
+    tokenDataStore: TokenDataStore,
     userType: String,
-    userId: String,
     onLogout: () -> Unit,
     onVacancyClick: (String) -> Unit,
     onCreateVacancy: () -> Unit,
@@ -123,22 +122,16 @@ fun MainScreen(
         if (userType == "EMPLOYER") {
             when (selectedTab) {
                 0 -> EmployerVacanciesScreen(
-                    getEmployerVacanciesUseCase = app.getEmployerVacanciesUseCase,
-                    employerId = userId,
                     onVacancyClick = onVacancyClick,
                     onCreateVacancy = onCreateVacancy,
                     refreshKey = vacanciesRefreshKey,
                     modifier = Modifier.padding(innerPadding)
                 )
                 1 -> EmployerDashboardScreen(
-                    getEmployerStatsUseCase = app.getEmployerStatsUseCase,
-                    employerId = userId,
                     modifier = Modifier.padding(innerPadding)
                 )
                 2 -> ProfileScreen(
-                    tokenDataStore = app.tokenDataStore,
-                    getMyResumesUseCase = app.getMyResumesUseCase,
-                    getEmployerByIdUseCase = app.getEmployerByIdUseCase,
+                    tokenDataStore = tokenDataStore,
                     onLogout = onLogout,
                     onCreateResume = onCreateResume,
                     onEditResume = onEditResume,
@@ -150,33 +143,21 @@ fun MainScreen(
         } else {
             when (selectedTab) {
                 0 -> VacancyListScreen(
-                    getVacanciesUseCase = app.getVacanciesUseCase,
                     onVacancyClick = onVacancyClick,
-                    getFavoritesUseCase = app.getFavoritesUseCase,
-                    addFavoriteUseCase = app.addFavoriteUseCase,
-                    removeFavoriteUseCase = app.removeFavoriteUseCase,
-                    seekerId = userId,
                     favoritesRemovedKey = favoritesRemovedKey,
                     modifier = Modifier.padding(innerPadding)
                 )
                 1 -> FavoritesScreen(
-                    getFavoritesUseCase = app.getFavoritesUseCase,
-                    removeFavoriteUseCase = app.removeFavoriteUseCase,
-                    seekerId = userId,
                     onVacancyClick = onVacancyClick,
                     onFavoriteRemoved = { favoritesRemovedKey++ },
                     modifier = Modifier.padding(innerPadding)
                 )
                 2 -> MyApplicationsScreen(
-                    getMyApplicationsUseCase = app.getMyApplicationsUseCase,
-                    cancelApplicationUseCase = app.cancelApplicationUseCase,
-                    seekerId = userId,
                     refreshKey = applicationsRefreshKey,
                     modifier = Modifier.padding(innerPadding)
                 )
                 3 -> ProfileScreen(
-                    tokenDataStore = app.tokenDataStore,
-                    getMyResumesUseCase = app.getMyResumesUseCase,
+                    tokenDataStore = tokenDataStore,
                     onLogout = onLogout,
                     onCreateResume = onCreateResume,
                     onEditResume = onEditResume,

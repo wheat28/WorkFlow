@@ -47,16 +47,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.domain.usecase.favorite.AddFavoriteUseCase
-import com.example.workflow.domain.usecase.application.CheckAppliedUseCase
-import com.example.workflow.domain.usecase.favorite.CheckFavoriteUseCase
-import com.example.workflow.domain.usecase.vacancy.DeleteVacancyUseCase
-import com.example.workflow.domain.usecase.vacancy.GetVacancyByIdUseCase
-import com.example.workflow.domain.usecase.favorite.RemoveFavoriteUseCase
 import com.example.workflow.presentation.common.VacancyDetailSkeleton
+import com.example.workflow.presentation.common.employmentLabel
+import com.example.workflow.presentation.common.experienceLabel
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -65,14 +61,7 @@ import com.example.workflow.ui.theme.Indigo90
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VacancyDetailScreen(
-    vacancyId: String,
-    getVacancyByIdUseCase: GetVacancyByIdUseCase,
     userType: String,
-    checkFavoriteUseCase: CheckFavoriteUseCase? = null,
-    addFavoriteUseCase: AddFavoriteUseCase? = null,
-    removeFavoriteUseCase: RemoveFavoriteUseCase? = null,
-    checkAppliedUseCase: CheckAppliedUseCase? = null,
-    deleteVacancyUseCase: DeleteVacancyUseCase? = null,
     appliedSignal: Boolean = false,
     onBack: () -> Unit,
     onApply: (String) -> Unit = {},
@@ -81,13 +70,7 @@ fun VacancyDetailScreen(
     onDeleted: (() -> Unit)? = null,
     onViewEmployerProfile: ((String) -> Unit)? = null
 ) {
-    val viewModel: VacancyDetailViewModel = viewModel(
-        factory = VacancyDetailViewModel.Factory(
-            getVacancyByIdUseCase, vacancyId,
-            checkFavoriteUseCase, addFavoriteUseCase, removeFavoriteUseCase,
-            checkAppliedUseCase, deleteVacancyUseCase
-        )
-    )
+    val viewModel: VacancyDetailViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -129,7 +112,7 @@ fun VacancyDetailScreen(
                             )
                         }
                     }
-                    if (userType == "EMPLOYER" && deleteVacancyUseCase != null) {
+                    if (userType == "EMPLOYER") {
                         IconButton(onClick = { showDeleteDialog = true }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
@@ -264,7 +247,7 @@ private fun VacancyDetailContent(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     SuggestionChip(
                         onClick = {},
-                        label = { Text(vacancy.employmentType, style = MaterialTheme.typography.labelSmall) },
+                        label = { Text(employmentLabel(vacancy.employmentType), style = MaterialTheme.typography.labelSmall) },
                         colors = SuggestionChipDefaults.suggestionChipColors(
                             containerColor = Indigo90,
                             labelColor = Indigo60
@@ -273,7 +256,7 @@ private fun VacancyDetailContent(
                     )
                     SuggestionChip(
                         onClick = {},
-                        label = { Text(vacancy.experience, style = MaterialTheme.typography.labelSmall) },
+                        label = { Text(experienceLabel(vacancy.experience), style = MaterialTheme.typography.labelSmall) },
                         colors = SuggestionChipDefaults.suggestionChipColors(
                             containerColor = MaterialTheme.colorScheme.surfaceVariant
                         ),

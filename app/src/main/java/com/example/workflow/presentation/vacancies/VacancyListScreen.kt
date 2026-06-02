@@ -61,13 +61,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.domain.usecase.favorite.AddFavoriteUseCase
-import com.example.workflow.domain.usecase.favorite.GetFavoritesUseCase
-import com.example.workflow.domain.usecase.vacancy.GetVacanciesUseCase
-import com.example.workflow.domain.usecase.favorite.RemoveFavoriteUseCase
+import com.example.workflow.presentation.common.employmentLabel
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -76,31 +73,17 @@ import kotlinx.coroutines.launch
 
 private val employmentTypes = listOf("", "FULL_TIME", "PART_TIME", "REMOTE", "INTERNSHIP")
 
-private fun employmentLabel(type: String) = when (type) {
-    "FULL_TIME" -> "Полная"
-    "PART_TIME" -> "Частичная"
-    "REMOTE" -> "Удалённо"
-    "INTERNSHIP" -> "Стажировка"
-    else -> "Все типы"
-}
+private fun employmentFilterLabel(type: String) =
+    if (type.isEmpty()) "Все типы" else employmentLabel(type)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VacancyListScreen(
-    getVacanciesUseCase: GetVacanciesUseCase,
     onVacancyClick: (String) -> Unit,
-    getFavoritesUseCase: GetFavoritesUseCase? = null,
-    addFavoriteUseCase: AddFavoriteUseCase? = null,
-    removeFavoriteUseCase: RemoveFavoriteUseCase? = null,
-    seekerId: String? = null,
     favoritesRemovedKey: Int = 0,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: VacancyListViewModel = viewModel(
-        factory = VacancyListViewModel.Factory(
-            getVacanciesUseCase, getFavoritesUseCase, addFavoriteUseCase, removeFavoriteUseCase, seekerId
-        )
-    )
+    val viewModel: VacancyListViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
@@ -238,7 +221,7 @@ fun VacancyListScreen(
                                 VacancyCard(
                                     vacancy = vacancy,
                                     isFavorite = vacancy.id in state.favoriteIds,
-                                    onToggleFavorite = if (seekerId != null) {
+                                    onToggleFavorite = if (state.canToggleFavorite) {
                                         { viewModel.toggleFavorite(vacancy.id) }
                                     } else null,
                                     onClick = { onVacancyClick(vacancy.id) }
@@ -355,7 +338,7 @@ private fun EmploymentTypeDropdown(
 
     ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }, modifier = modifier) {
         OutlinedTextField(
-            value = employmentLabel(selected),
+            value = employmentFilterLabel(selected),
             onValueChange = {},
             readOnly = true,
             label = { Text("Тип занятости") },
@@ -370,7 +353,7 @@ private fun EmploymentTypeDropdown(
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             employmentTypes.forEach { type ->
                 DropdownMenuItem(
-                    text = { Text(employmentLabel(type)) },
+                    text = { Text(employmentFilterLabel(type)) },
                     onClick = { onSelected(type); expanded = false }
                 )
             }

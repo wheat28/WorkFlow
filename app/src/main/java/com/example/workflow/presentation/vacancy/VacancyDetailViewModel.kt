@@ -1,8 +1,9 @@
 package com.example.workflow.presentation.vacancy
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.dto.VacancyResponseDto
 import com.example.workflow.domain.usecase.favorite.AddFavoriteUseCase
 import com.example.workflow.domain.usecase.application.CheckAppliedUseCase
@@ -10,21 +11,27 @@ import com.example.workflow.domain.usecase.favorite.CheckFavoriteUseCase
 import com.example.workflow.domain.usecase.vacancy.DeleteVacancyUseCase
 import com.example.workflow.domain.usecase.vacancy.GetVacancyByIdUseCase
 import com.example.workflow.domain.usecase.favorite.RemoveFavoriteUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class VacancyDetailViewModel(
+@HiltViewModel
+class VacancyDetailViewModel @Inject constructor(
     private val getVacancyByIdUseCase: GetVacancyByIdUseCase,
-    private val checkFavoriteUseCase: CheckFavoriteUseCase?,
-    private val addFavoriteUseCase: AddFavoriteUseCase?,
-    private val removeFavoriteUseCase: RemoveFavoriteUseCase?,
-    private val checkAppliedUseCase: CheckAppliedUseCase?,
-    private val deleteVacancyUseCase: DeleteVacancyUseCase?,
-    private val vacancyId: String
+    private val checkFavoriteUseCase: CheckFavoriteUseCase,
+    private val addFavoriteUseCase: AddFavoriteUseCase,
+    private val removeFavoriteUseCase: RemoveFavoriteUseCase,
+    private val checkAppliedUseCase: CheckAppliedUseCase,
+    private val deleteVacancyUseCase: DeleteVacancyUseCase,
+    private val tokenDataStore: TokenDataStore,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val vacancyId: String = checkNotNull(savedStateHandle["id"])
 
     sealed class UiState {
         object Loading : UiState()
@@ -47,8 +54,15 @@ class VacancyDetailViewModel(
             _uiState.value = UiState.Loading
             runCatching { getVacancyByIdUseCase(vacancyId) }
                 .onSuccess { vacancy ->
-                    val favDeferred = async { checkFavoriteUseCase?.runCatching { invoke(vacancyId) }?.getOrDefault(false) ?: false }
-                    val appliedDeferred = async { checkAppliedUseCase?.runCatching { invoke(vacancyId) }?.getOrDefault(false) ?: false }
+                    val isSeeker = tokenDataStore.getUserType() == "SEEKER"
+                    val favDeferred = async {
+                        if (isSeeker) checkFavoriteUseCase.runCatching { invoke(vacancyId) }.getOrDefault(false)
+                        else false
+                    }
+                    val appliedDeferred = async {
+                        if (isSeeker) checkAppliedUseCase.runCatching { invoke(vacancyId) }.getOrDefault(false)
+                        else false
+                    }
                     _uiState.value = UiState.Success(
                         vacancy = vacancy,
                         isFavorite = favDeferred.await(),
@@ -63,10 +77,10 @@ class VacancyDetailViewModel(
         val current = _uiState.value as? UiState.Success ?: return
         viewModelScope.launch {
             if (current.isFavorite) {
-                removeFavoriteUseCase?.runCatching { invoke(vacancyId) }
+                removeFavoriteUseCase.runCatching { invoke(vacancyId) }
                 _uiState.value = current.copy(isFavorite = false)
             } else {
-                addFavoriteUseCase?.runCatching { invoke(vacancyId) }
+                addFavoriteUseCase.runCatching { invoke(vacancyId) }
                 _uiState.value = current.copy(isFavorite = true)
             }
         }
@@ -78,29 +92,10 @@ class VacancyDetailViewModel(
     }
 
     fun deleteVacancy() {
-        val useCase = deleteVacancyUseCase ?: return
         viewModelScope.launch {
-            runCatching { useCase(vacancyId) }
+            runCatching { deleteVacancyUseCase(vacancyId) }
                 .onSuccess { _uiState.value = UiState.Deleted }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка удаления") }
         }
-    }
-
-    class Factory(
-        private val getVacancyByIdUseCase: GetVacancyByIdUseCase,
-        private val vacancyId: String,
-        private val checkFavoriteUseCase: CheckFavoriteUseCase? = null,
-        private val addFavoriteUseCase: AddFavoriteUseCase? = null,
-        private val removeFavoriteUseCase: RemoveFavoriteUseCase? = null,
-        private val checkAppliedUseCase: CheckAppliedUseCase? = null,
-        private val deleteVacancyUseCase: DeleteVacancyUseCase? = null
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            VacancyDetailViewModel(
-                getVacancyByIdUseCase,
-                checkFavoriteUseCase, addFavoriteUseCase, removeFavoriteUseCase,
-                checkAppliedUseCase, deleteVacancyUseCase, vacancyId
-            ) as T
     }
 }

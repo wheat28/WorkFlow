@@ -37,28 +37,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.domain.usecase.seeker.GetSeekerByIdUseCase
-import com.example.workflow.domain.usecase.seeker.UpdateSeekerUseCase
 import com.example.workflow.ui.theme.Indigo60
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditSeekerProfileScreen(
-    seekerId: String,
-    getSeekerByIdUseCase: GetSeekerByIdUseCase,
-    updateSeekerUseCase: UpdateSeekerUseCase,
-    tokenDataStore: TokenDataStore,
     onBack: () -> Unit,
     onSaved: () -> Unit
 ) {
-    val viewModel: EditSeekerProfileViewModel = viewModel(
-        factory = EditSeekerProfileViewModel.Factory(
-            getSeekerByIdUseCase, updateSeekerUseCase, tokenDataStore, seekerId
-        )
-    )
+    val viewModel: EditSeekerProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var firstName by rememberSaveable { mutableStateOf("") }

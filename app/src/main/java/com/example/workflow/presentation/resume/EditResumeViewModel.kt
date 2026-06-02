@@ -1,7 +1,7 @@
 package com.example.workflow.presentation.resume
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.remote.dto.ResumeRequestDto
 import com.example.workflow.data.remote.dto.ResumeResponseDto
@@ -9,17 +9,22 @@ import com.example.workflow.domain.usecase.resume.DeleteResumeUseCase
 import com.example.workflow.domain.usecase.resume.GetResumeByIdUseCase
 import com.example.workflow.domain.usecase.resume.SetResumeActiveUseCase
 import com.example.workflow.domain.usecase.resume.UpdateResumeUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EditResumeViewModel(
+@HiltViewModel
+class EditResumeViewModel @Inject constructor(
     private val getResumeByIdUseCase: GetResumeByIdUseCase,
     private val updateResumeUseCase: UpdateResumeUseCase,
     private val setResumeActiveUseCase: SetResumeActiveUseCase,
     private val deleteResumeUseCase: DeleteResumeUseCase,
-    private val resumeId: String
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val resumeId: String = checkNotNull(savedStateHandle["resumeId"])
 
     sealed class UiState {
         object Loading : UiState()
@@ -64,9 +69,7 @@ class EditResumeViewModel(
         }
     }
 
-    fun clearToggleError() {
-        _toggleError.value = null
-    }
+    fun clearToggleError() { _toggleError.value = null }
 
     fun delete() {
         viewModelScope.launch {
@@ -106,17 +109,5 @@ class EditResumeViewModel(
             }.onSuccess { _uiState.value = UiState.Success }
              .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка сохранения") }
         }
-    }
-
-    class Factory(
-        private val getResumeByIdUseCase: GetResumeByIdUseCase,
-        private val updateResumeUseCase: UpdateResumeUseCase,
-        private val setResumeActiveUseCase: SetResumeActiveUseCase,
-        private val deleteResumeUseCase: DeleteResumeUseCase,
-        private val resumeId: String
-    ) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>) =
-            EditResumeViewModel(getResumeByIdUseCase, updateResumeUseCase, setResumeActiveUseCase, deleteResumeUseCase, resumeId) as T
     }
 }
