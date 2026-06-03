@@ -5,6 +5,10 @@ import com.example.workflow.domain.repository.SeekerRepository
 
 import javax.inject.Inject
 
-class GetSeekerByIdUseCase @Inject constructor(private val repository: SeekerRepository) {
-    suspend operator fun invoke(seekerId: String): SeekerResponseDto = repository.getById(seekerId)
+class GetSeekerByIdUseCase @Inject constructor(
+    private val repository: SeekerRepository
+) {
+    suspend operator fun invoke(seekerId: String): SeekerResponseDto {
+        return repository.getById(seekerId)
+    }
 }

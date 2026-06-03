@@ -5,7 +5,10 @@ import com.example.workflow.domain.repository.ResumeRepository
 
 import javax.inject.Inject
 
-class UpdateResumeUseCase @Inject constructor(private val repository: ResumeRepository) {
-    suspend operator fun invoke(id: String, request: ResumeRequestDto) =
-        repository.updateResume(id, request)
+class UpdateResumeUseCase @Inject constructor(
+    private val repository: ResumeRepository
+) {
+    suspend operator fun invoke(id: String, request: ResumeRequestDto) {
+        return repository.updateResume(id, request)
+    }
 }
