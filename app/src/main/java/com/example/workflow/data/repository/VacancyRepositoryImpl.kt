@@ -1,6 +1,5 @@
 package com.example.workflow.data.repository
 
-import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.api.VacancyApi
 import com.example.workflow.data.remote.dto.VacancyRequestDto
 import com.example.workflow.data.remote.dto.VacancyResponseDto
@@ -8,42 +7,34 @@ import com.example.workflow.domain.repository.VacancyRepository
 import javax.inject.Inject
 
 class VacancyRepositoryImpl @Inject constructor(
-    private val api: VacancyApi,
-    private val tokenDataStore: TokenDataStore
+    private val api: VacancyApi
 ) : VacancyRepository {
 
     override suspend fun getAllVacancies(): List<VacancyResponseDto> {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        return api.getAllVacancies(token)
+        return api.getAllVacancies()
     }
 
     override suspend fun getVacancyById(id: String): VacancyResponseDto {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        return api.getVacancyById(token, id)
+        return api.getVacancyById(id)
     }
 
     override suspend fun getEmployerVacancies(employerId: String): List<VacancyResponseDto> {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        return api.getEmployerVacancies(token, employerId)
+        return api.getEmployerVacancies(employerId)
     }
 
     override suspend fun createVacancy(request: VacancyRequestDto): String {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        return api.createVacancy(token, request)
+        return api.createVacancy(request)
     }
 
     override suspend fun updateVacancy(id: String, request: VacancyRequestDto) {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        api.updateVacancy(token, id, request)
+        return api.updateVacancy(id, request)
     }
 
     override suspend fun setVacancyActive(id: String, isActive: Boolean) {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        api.setVacancyActive(token, id, isActive)
+        return api.setVacancyActive(id, isActive)
     }
 
     override suspend fun deleteVacancy(id: String) {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        api.deleteVacancy(token, id)
+        return api.deleteVacancy(id)
     }
 }

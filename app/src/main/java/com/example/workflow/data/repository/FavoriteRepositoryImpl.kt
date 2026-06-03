@@ -1,33 +1,27 @@
 package com.example.workflow.data.repository
 
-import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.api.FavoriteApi
 import com.example.workflow.data.remote.dto.VacancyResponseDto
 import com.example.workflow.domain.repository.FavoriteRepository
 import javax.inject.Inject
 
 class FavoriteRepositoryImpl @Inject constructor(
-    private val api: FavoriteApi,
-    private val tokenDataStore: TokenDataStore
+    private val api: FavoriteApi
 ) : FavoriteRepository {
 
     override suspend fun addFavorite(vacancyId: String) {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        api.addFavorite(token, vacancyId)
+        return api.addFavorite(vacancyId)
     }
 
     override suspend fun removeFavorite(vacancyId: String) {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        api.removeFavorite(token, vacancyId)
+        return api.removeFavorite(vacancyId)
     }
 
     override suspend fun getFavorites(seekerId: String): List<VacancyResponseDto> {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        return api.getFavorites(token, seekerId)
+        return api.getFavorites(seekerId)
     }
 
     override suspend fun isFavorite(vacancyId: String): Boolean {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        return api.isFavorite(token, vacancyId)
+        return api.isFavorite(vacancyId)
     }
 }

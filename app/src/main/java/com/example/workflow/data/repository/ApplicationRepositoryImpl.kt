@@ -1,6 +1,5 @@
 package com.example.workflow.data.repository
 
-import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.api.ApplicationApi
 import com.example.workflow.data.remote.dto.ApplicationRequestDto
 import com.example.workflow.data.remote.dto.ApplicationResponseDto
@@ -8,37 +7,30 @@ import com.example.workflow.domain.repository.ApplicationRepository
 import javax.inject.Inject
 
 class ApplicationRepositoryImpl @Inject constructor(
-    private val api: ApplicationApi,
-    private val tokenDataStore: TokenDataStore
+    private val api: ApplicationApi
 ) : ApplicationRepository {
 
     override suspend fun apply(request: ApplicationRequestDto): String {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        return api.apply(token, request)
+        return api.apply(request)
     }
 
     override suspend fun getMyApplications(seekerId: String): List<ApplicationResponseDto> {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        return api.getMyApplications(token, seekerId)
+        return api.getMyApplications(seekerId)
     }
 
     override suspend fun isApplied(vacancyId: String): Boolean {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        return api.checkApplied(token, vacancyId)
+        return api.checkApplied(vacancyId)
     }
 
     override suspend fun getByVacancyId(vacancyId: String): List<ApplicationResponseDto> {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        return api.getApplicationsByVacancy(token, vacancyId)
+        return api.getApplicationsByVacancy(vacancyId)
     }
 
     override suspend fun updateStatus(applicationId: String, status: String) {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        api.updateApplicationStatus(token, applicationId, status)
+        return api.updateApplicationStatus(applicationId, status)
     }
 
     override suspend fun cancel(applicationId: String) {
-        val token = tokenDataStore.getToken() ?: throw Exception("Не авторизован")
-        api.cancelApplication(token, applicationId)
+        return api.cancelApplication(applicationId)
     }
 }
