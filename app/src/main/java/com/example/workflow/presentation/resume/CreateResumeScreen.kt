@@ -44,15 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.ui.theme.Indigo60
 
-private val employmentTypes = listOf("FULL_TIME", "PART_TIME", "REMOTE", "INTERNSHIP")
-
-private fun employmentLabel(type: String) = when (type) {
-    "FULL_TIME" -> "Полная занятость"
-    "PART_TIME" -> "Частичная занятость"
-    "REMOTE" -> "Удалённо"
-    "INTERNSHIP" -> "Стажировка"
-    else -> type
-}
+private val employmentTypes = listOf("Полная занятость", "Частичная занятость", "Удалённо", "Стажировка")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -137,7 +129,7 @@ fun CreateResumeScreen(
                 onExpandedChange = { if (!isLoading) expanded = it }
             ) {
                 OutlinedTextField(
-                    value = employmentLabel(employmentType),
+                    value = employmentType,
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Тип занятости") },
@@ -150,7 +142,7 @@ fun CreateResumeScreen(
                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     employmentTypes.forEach { type ->
                         DropdownMenuItem(
-                            text = { Text(employmentLabel(type)) },
+                            text = { Text(type) },
                             onClick = { employmentType = type; expanded = false }
                         )
                     }

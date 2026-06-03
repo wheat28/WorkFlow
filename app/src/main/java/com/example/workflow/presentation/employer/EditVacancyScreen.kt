@@ -47,8 +47,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.presentation.common.employmentLabel
-import com.example.workflow.presentation.common.experienceLabel
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -256,7 +254,6 @@ private fun EditVacancyForm(
             options = listOf("FULL_TIME", "PART_TIME", "REMOTE", "INTERNSHIP"),
             selected = employmentType,
             onSelected = { employmentType = it },
-            labelOf = ::employmentLabel,
             enabled = !isSaving
         )
 
@@ -265,7 +262,6 @@ private fun EditVacancyForm(
             options = listOf("NO_EXPERIENCE", "1_3", "3_6", "6_PLUS"),
             selected = experience,
             onSelected = { experience = it },
-            labelOf = ::experienceLabel,
             enabled = !isSaving
         )
 

@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.presentation.common.employmentLabel
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -177,7 +176,7 @@ private fun FavoriteVacancyCard(
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 SuggestionChip(
                     onClick = {},
-                    label = { Text(employmentLabel(vacancy.employmentType), style = MaterialTheme.typography.labelSmall) },
+                    label = { Text(vacancy.employmentType, style = MaterialTheme.typography.labelSmall) },
                     colors = SuggestionChipDefaults.suggestionChipColors(containerColor = Indigo90, labelColor = Indigo60),
                     border = null
                 )

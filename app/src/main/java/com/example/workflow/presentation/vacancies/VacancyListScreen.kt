@@ -64,17 +64,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.data.remote.dto.VacancyResponseDto
-import com.example.workflow.presentation.common.employmentLabel
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
 import com.example.workflow.ui.theme.Indigo90
 import kotlinx.coroutines.launch
 
-private val employmentTypes = listOf("", "FULL_TIME", "PART_TIME", "REMOTE", "INTERNSHIP")
+private val employmentTypes = listOf("", "Полная занятость", "Частичная занятость", "Удалённо", "Стажировка")
 
 private fun employmentFilterLabel(type: String) =
-    if (type.isEmpty()) "Все типы" else employmentLabel(type)
+    if (type.isEmpty()) "Все типы" else type
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -433,7 +432,7 @@ private fun VacancyCard(
                 }
                 SuggestionChip(
                     onClick = {},
-                    label = { Text(employmentLabel(vacancy.employmentType), style = MaterialTheme.typography.labelSmall) },
+                    label = { Text(vacancy.employmentType, style = MaterialTheme.typography.labelSmall) },
                     colors = SuggestionChipDefaults.suggestionChipColors(
                         containerColor = Indigo90,
                         labelColor = Indigo60

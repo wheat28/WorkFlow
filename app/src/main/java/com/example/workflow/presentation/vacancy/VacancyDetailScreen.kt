@@ -51,8 +51,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.data.remote.dto.VacancyResponseDto
 import com.example.workflow.presentation.common.VacancyDetailSkeleton
-import com.example.workflow.presentation.common.employmentLabel
-import com.example.workflow.presentation.common.experienceLabel
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -247,7 +245,7 @@ private fun VacancyDetailContent(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     SuggestionChip(
                         onClick = {},
-                        label = { Text(employmentLabel(vacancy.employmentType), style = MaterialTheme.typography.labelSmall) },
+                        label = { Text(vacancy.employmentType, style = MaterialTheme.typography.labelSmall) },
                         colors = SuggestionChipDefaults.suggestionChipColors(
                             containerColor = Indigo90,
                             labelColor = Indigo60
@@ -256,7 +254,7 @@ private fun VacancyDetailContent(
                     )
                     SuggestionChip(
                         onClick = {},
-                        label = { Text(experienceLabel(vacancy.experience), style = MaterialTheme.typography.labelSmall) },
+                        label = { Text(vacancy.experience, style = MaterialTheme.typography.labelSmall) },
                         colors = SuggestionChipDefaults.suggestionChipColors(
                             containerColor = MaterialTheme.colorScheme.surfaceVariant
                         ),

@@ -43,12 +43,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.workflow.presentation.common.employmentLabel
-import com.example.workflow.presentation.common.experienceLabel
+
 import com.example.workflow.ui.theme.Indigo60
 
-private val employmentTypes = listOf("FULL_TIME", "PART_TIME", "REMOTE", "INTERNSHIP")
-private val experienceOptions = listOf("NO_EXPERIENCE", "1_3", "3_6", "6_PLUS")
+private val employmentTypes = listOf("Полная занятость", "Частичная занятость", "Удалённо")
+private val experienceOptions = listOf("Без опыта", "1-3 года", "3-6 лет", "Более 6 лет")
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -136,7 +135,6 @@ fun CreateVacancyScreen(
                 options = employmentTypes,
                 selected = employmentType,
                 onSelected = { employmentType = it },
-                labelOf = ::employmentLabel,
                 enabled = !isLoading
             )
 
@@ -145,7 +143,6 @@ fun CreateVacancyScreen(
                 options = experienceOptions,
                 selected = experience,
                 onSelected = { experience = it },
-                labelOf = ::experienceLabel,
                 enabled = !isLoading
             )
 
@@ -233,14 +230,13 @@ fun EnumDropdown(
     options: List<String>,
     selected: String,
     onSelected: (String) -> Unit,
-    labelOf: (String) -> String,
     enabled: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(expanded = expanded && enabled, onExpandedChange = { if (enabled) expanded = it }) {
         OutlinedTextField(
-            value = labelOf(selected),
+            value = selected,
             onValueChange = {},
             readOnly = true,
             label = { Text(label) },
@@ -257,7 +253,7 @@ fun EnumDropdown(
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(labelOf(option)) },
+                    text = { Text(option) },
                     onClick = { onSelected(option); expanded = false }
                 )
             }
