@@ -1,5 +1,6 @@
 package com.example.workflow.di
 
+import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.data.remote.KtorClient
 import com.example.workflow.data.remote.api.ApplicationApi
 import com.example.workflow.data.remote.api.AuthApi
@@ -21,7 +22,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(): HttpClient = KtorClient.httpClient
+    fun provideHttpClient(tokenDataStore: TokenDataStore): HttpClient = KtorClient.create(tokenDataStore)
 
     @Provides
     @Singleton
