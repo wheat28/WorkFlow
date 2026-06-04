@@ -3,8 +3,8 @@ package com.example.workflow.presentation.employer
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.workflow.data.remote.dto.EmployerResponseDto
-import com.example.workflow.data.remote.dto.VacancyResponseDto
+import com.example.workflow.domain.model.Employer
+import com.example.workflow.domain.model.Vacancy
 import com.example.workflow.domain.usecase.employer.GetEmployerByIdUseCase
 import com.example.workflow.domain.usecase.vacancy.GetEmployerVacanciesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,8 +26,8 @@ class EmployerPublicProfileViewModel @Inject constructor(
     sealed class UiState {
         object Loading : UiState()
         data class Success(
-            val employer: EmployerResponseDto,
-            val vacancies: List<VacancyResponseDto>
+            val employer: Employer,
+            val vacancies: List<Vacancy>
         ) : UiState()
         data class Error(val message: String) : UiState()
     }

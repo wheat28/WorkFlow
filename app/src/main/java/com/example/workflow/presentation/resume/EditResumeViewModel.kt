@@ -3,8 +3,8 @@ package com.example.workflow.presentation.resume
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.workflow.data.remote.dto.ResumeRequestDto
-import com.example.workflow.data.remote.dto.ResumeResponseDto
+import com.example.workflow.domain.model.Resume
+import com.example.workflow.domain.model.ResumeInput
 import com.example.workflow.domain.usecase.resume.DeleteResumeUseCase
 import com.example.workflow.domain.usecase.resume.GetResumeByIdUseCase
 import com.example.workflow.domain.usecase.resume.SetResumeActiveUseCase
@@ -28,7 +28,7 @@ class EditResumeViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading : UiState()
-        data class Ready(val resume: ResumeResponseDto) : UiState()
+        data class Ready(val resume: Resume) : UiState()
         object Saving : UiState()
         object Success : UiState()
         object Deleted : UiState()
@@ -97,7 +97,7 @@ class EditResumeViewModel @Inject constructor(
             runCatching {
                 updateResumeUseCase(
                     resumeId,
-                    ResumeRequestDto(
+                    ResumeInput(
                         title = title.trim(),
                         position = position.trim(),
                         employmentType = employmentType,

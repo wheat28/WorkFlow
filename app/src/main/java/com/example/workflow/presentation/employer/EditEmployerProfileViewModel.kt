@@ -3,8 +3,8 @@ package com.example.workflow.presentation.employer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.data.remote.dto.EmployerResponseDto
-import com.example.workflow.data.remote.dto.EmployerUpdateRequestDto
+import com.example.workflow.domain.model.Employer
+import com.example.workflow.domain.model.EmployerProfileInput
 import com.example.workflow.domain.usecase.employer.GetEmployerByIdUseCase
 import com.example.workflow.domain.usecase.employer.UpdateEmployerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ class EditEmployerProfileViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading : UiState()
-        data class Ready(val employer: EmployerResponseDto) : UiState()
+        data class Ready(val employer: Employer) : UiState()
         object Saving : UiState()
         object Success : UiState()
         data class Error(val message: String) : UiState()
@@ -65,7 +65,7 @@ class EditEmployerProfileViewModel @Inject constructor(
             runCatching {
                 updateEmployerUseCase(
                     employerId,
-                    EmployerUpdateRequestDto(
+                    EmployerProfileInput(
                         companyName = companyName.trim(),
                         description = description.trim().ifBlank { null },
                         website = website.trim().ifBlank { null },

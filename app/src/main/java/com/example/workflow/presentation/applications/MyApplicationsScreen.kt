@@ -40,7 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.workflow.data.remote.dto.ApplicationResponseDto
+import com.example.workflow.domain.model.Application
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -145,7 +145,7 @@ fun MyApplicationsScreen(
 
 @Composable
 private fun ApplicationCard(
-    application: ApplicationResponseDto,
+    application: Application,
     onCancel: (() -> Unit)?
 ) {
     Card(

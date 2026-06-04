@@ -1,7 +1,8 @@
 package com.example.workflow.data.repository
 
+import com.example.workflow.data.mapper.toDomain
 import com.example.workflow.data.remote.api.FavoriteApi
-import com.example.workflow.data.remote.dto.VacancyResponseDto
+import com.example.workflow.domain.model.Vacancy
 import com.example.workflow.domain.repository.FavoriteRepository
 import javax.inject.Inject
 
@@ -17,8 +18,8 @@ class FavoriteRepositoryImpl @Inject constructor(
         return api.removeFavorite(vacancyId)
     }
 
-    override suspend fun getFavorites(seekerId: String): List<VacancyResponseDto> {
-        return api.getFavorites(seekerId)
+    override suspend fun getFavorites(seekerId: String): List<Vacancy> {
+        return api.getFavorites(seekerId).map { it.toDomain() }
     }
 
     override suspend fun isFavorite(vacancyId: String): Boolean {

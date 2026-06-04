@@ -3,8 +3,8 @@ package com.example.workflow.presentation.employer
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.workflow.data.remote.dto.VacancyRequestDto
-import com.example.workflow.data.remote.dto.VacancyResponseDto
+import com.example.workflow.domain.model.Vacancy
+import com.example.workflow.domain.model.VacancyInput
 import com.example.workflow.domain.usecase.vacancy.DeleteVacancyUseCase
 import com.example.workflow.domain.usecase.vacancy.GetVacancyByIdUseCase
 import com.example.workflow.domain.usecase.vacancy.SetVacancyActiveUseCase
@@ -29,8 +29,8 @@ class EditVacancyViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading : UiState()
-        data class Ready(val vacancy: VacancyResponseDto) : UiState()
-        data class Saving(val vacancy: VacancyResponseDto) : UiState()
+        data class Ready(val vacancy: Vacancy) : UiState()
+        data class Saving(val vacancy: Vacancy) : UiState()
         object Saved : UiState()
         object Deleted : UiState()
         data class Error(val message: String) : UiState()
@@ -92,7 +92,7 @@ class EditVacancyViewModel @Inject constructor(
             runCatching {
                 updateVacancyUseCase(
                     vacancyId,
-                    VacancyRequestDto(
+                    VacancyInput(
                         title = title.trim(),
                         description = description.trim(),
                         employmentType = employmentType,

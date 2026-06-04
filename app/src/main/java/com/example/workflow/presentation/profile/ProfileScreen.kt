@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.data.remote.dto.ResumeResponseDto
+import com.example.workflow.domain.model.Resume
 import com.example.workflow.presentation.employer.EmployerProfileViewModel
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Indigo60
@@ -382,7 +382,7 @@ private fun LogoutButton(onLogout: () -> Unit) {
 }
 
 @Composable
-private fun ResumeCard(resume: ResumeResponseDto, onClick: () -> Unit) {
+private fun ResumeCard(resume: Resume, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().clickable { onClick() },
         shape = RoundedCornerShape(20.dp),

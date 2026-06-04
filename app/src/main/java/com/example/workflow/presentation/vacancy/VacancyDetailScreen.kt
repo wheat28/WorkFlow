@@ -49,7 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workflow.data.remote.dto.VacancyResponseDto
+import com.example.workflow.domain.model.Vacancy
 import com.example.workflow.presentation.common.VacancyDetailSkeleton
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
@@ -185,7 +185,7 @@ fun VacancyDetailScreen(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun VacancyDetailContent(
-    vacancy: VacancyResponseDto,
+    vacancy: Vacancy,
     userType: String,
     isApplied: Boolean,
     onApply: () -> Unit,

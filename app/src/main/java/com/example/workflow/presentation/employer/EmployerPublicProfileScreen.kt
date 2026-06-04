@@ -40,8 +40,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.workflow.data.remote.dto.EmployerResponseDto
-import com.example.workflow.data.remote.dto.VacancyResponseDto
+import com.example.workflow.domain.model.Employer
+import com.example.workflow.domain.model.Vacancy
 import androidx.compose.foundation.background
 import com.example.workflow.presentation.common.shimmerBrush
 import com.example.workflow.ui.theme.Green40
@@ -100,8 +100,8 @@ fun EmployerPublicProfileScreen(
 
 @Composable
 private fun EmployerPublicProfileContent(
-    employer: EmployerResponseDto,
-    vacancies: List<VacancyResponseDto>,
+    employer: Employer,
+    vacancies: List<Vacancy>,
     onVacancyClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -222,7 +222,7 @@ private fun InfoRow(icon: @Composable () -> Unit, text: String) {
 }
 
 @Composable
-private fun PublicVacancyCard(vacancy: VacancyResponseDto, onClick: () -> Unit) {
+private fun PublicVacancyCard(vacancy: Vacancy, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),

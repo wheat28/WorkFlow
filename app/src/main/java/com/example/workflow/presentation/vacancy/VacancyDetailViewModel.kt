@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.data.remote.dto.VacancyResponseDto
+import com.example.workflow.domain.model.Vacancy
 import com.example.workflow.domain.usecase.favorite.AddFavoriteUseCase
 import com.example.workflow.domain.usecase.application.CheckAppliedUseCase
 import com.example.workflow.domain.usecase.favorite.CheckFavoriteUseCase
@@ -36,7 +36,7 @@ class VacancyDetailViewModel @Inject constructor(
     sealed class UiState {
         object Loading : UiState()
         data class Success(
-            val vacancy: VacancyResponseDto,
+            val vacancy: Vacancy,
             val isFavorite: Boolean = false,
             val isApplied: Boolean = false
         ) : UiState()

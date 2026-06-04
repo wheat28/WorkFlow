@@ -1,10 +1,10 @@
 package com.example.workflow.domain.repository
 
-import com.example.workflow.data.remote.dto.VacancyResponseDto
+import com.example.workflow.domain.model.Vacancy
 
 interface FavoriteRepository {
     suspend fun addFavorite(vacancyId: String)
     suspend fun removeFavorite(vacancyId: String)
-    suspend fun getFavorites(seekerId: String): List<VacancyResponseDto>
+    suspend fun getFavorites(seekerId: String): List<Vacancy>
     suspend fun isFavorite(vacancyId: String): Boolean
 }

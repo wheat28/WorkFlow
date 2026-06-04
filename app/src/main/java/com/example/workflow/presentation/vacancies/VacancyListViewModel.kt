@@ -3,7 +3,7 @@ package com.example.workflow.presentation.vacancies
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.data.remote.dto.VacancyResponseDto
+import com.example.workflow.domain.model.Vacancy
 import com.example.workflow.domain.usecase.favorite.AddFavoriteUseCase
 import com.example.workflow.domain.usecase.favorite.GetFavoritesUseCase
 import com.example.workflow.domain.usecase.vacancy.GetVacanciesUseCase
@@ -30,7 +30,7 @@ class VacancyListViewModel @Inject constructor(
     sealed class UiState {
         object Loading : UiState()
         data class Success(
-            val vacancies: List<VacancyResponseDto>,
+            val vacancies: List<Vacancy>,
             val favoriteIds: Set<String>,
             val canToggleFavorite: Boolean
         ) : UiState()
@@ -49,7 +49,7 @@ class VacancyListViewModel @Inject constructor(
     val salaryFrom = MutableStateFlow("")
     val salaryTo = MutableStateFlow("")
 
-    private var allVacancies: List<VacancyResponseDto> = emptyList()
+    private var allVacancies: List<Vacancy> = emptyList()
     private var allFavoriteIds: Set<String> = emptySet()
     private var seekerId: String? = null
 

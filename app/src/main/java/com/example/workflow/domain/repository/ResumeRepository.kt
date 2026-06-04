@@ -1,13 +1,13 @@
 package com.example.workflow.domain.repository
 
-import com.example.workflow.data.remote.dto.ResumeRequestDto
-import com.example.workflow.data.remote.dto.ResumeResponseDto
+import com.example.workflow.domain.model.Resume
+import com.example.workflow.domain.model.ResumeInput
 
 interface ResumeRepository {
-    suspend fun getMyResumes(seekerId: String): List<ResumeResponseDto>
-    suspend fun getResumeById(id: String): ResumeResponseDto
-    suspend fun createResume(request: ResumeRequestDto): String
-    suspend fun updateResume(id: String, request: ResumeRequestDto)
+    suspend fun getMyResumes(seekerId: String): List<Resume>
+    suspend fun getResumeById(id: String): Resume
+    suspend fun createResume(input: ResumeInput): String
+    suspend fun updateResume(id: String, input: ResumeInput)
     suspend fun setResumeActive(id: String, isActive: Boolean)
     suspend fun deleteResume(id: String)
 }

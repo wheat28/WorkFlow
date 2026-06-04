@@ -36,7 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.workflow.data.remote.dto.VacancyResponseDto
+import com.example.workflow.domain.model.Vacancy
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Coral90
 import com.example.workflow.ui.theme.Green40
@@ -136,7 +136,7 @@ private fun applicationLabel(count: Int) = when {
 }
 
 @Composable
-private fun EmployerVacancyCard(vacancy: VacancyResponseDto, onClick: () -> Unit) {
+private fun EmployerVacancyCard(vacancy: Vacancy, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         onClick = onClick,

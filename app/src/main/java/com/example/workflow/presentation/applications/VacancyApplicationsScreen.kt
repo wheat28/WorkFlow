@@ -46,7 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.workflow.data.remote.dto.ApplicationResponseDto
+import com.example.workflow.domain.model.Application
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Coral90
 import com.example.workflow.ui.theme.Green40
@@ -201,7 +201,7 @@ fun VacancyApplicationsScreen(
 
 @Composable
 private fun ApplicantCard(
-    application: ApplicationResponseDto,
+    application: Application,
     onAccept: () -> Unit,
     onReject: () -> Unit,
     onViewResume: () -> Unit

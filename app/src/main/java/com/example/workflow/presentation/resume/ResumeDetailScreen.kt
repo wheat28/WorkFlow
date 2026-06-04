@@ -32,8 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workflow.data.remote.dto.ResumeResponseDto
-import com.example.workflow.data.remote.dto.WorkExperienceResponseDto
+import com.example.workflow.domain.model.Resume
+import com.example.workflow.domain.model.WorkExperience
 import com.example.workflow.presentation.common.ResumeDetailSkeleton
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -85,7 +85,7 @@ fun ResumeDetailScreen(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ResumeDetailContent(resume: ResumeResponseDto, modifier: Modifier = Modifier) {
+private fun ResumeDetailContent(resume: Resume, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -189,7 +189,7 @@ private fun ResumeDetailContent(resume: ResumeResponseDto, modifier: Modifier = 
 }
 
 @Composable
-private fun WorkExperienceItem(exp: WorkExperienceResponseDto) {
+private fun WorkExperienceItem(exp: WorkExperience) {
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(exp.position, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
         Text(exp.companyName, style = MaterialTheme.typography.bodyMedium, color = Indigo60)

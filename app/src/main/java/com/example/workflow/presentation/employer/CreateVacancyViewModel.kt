@@ -2,7 +2,7 @@ package com.example.workflow.presentation.employer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.workflow.data.remote.dto.VacancyRequestDto
+import com.example.workflow.domain.model.VacancyInput
 import com.example.workflow.domain.usecase.vacancy.CreateVacancyUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +43,7 @@ class CreateVacancyViewModel @Inject constructor(
             _uiState.value = UiState.Loading
             runCatching {
                 createVacancyUseCase(
-                    VacancyRequestDto(
+                    VacancyInput(
                         title = title.trim(),
                         description = description.trim(),
                         employmentType = employmentType,

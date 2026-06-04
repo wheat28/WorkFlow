@@ -42,7 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.workflow.data.remote.dto.ResumeResponseDto
+import com.example.workflow.domain.model.Resume
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Indigo60
 import com.example.workflow.ui.theme.Indigo90
@@ -189,7 +189,7 @@ fun ApplyScreen(
 
 @Composable
 private fun ResumeSelectCard(
-    resume: ResumeResponseDto,
+    resume: Resume,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {

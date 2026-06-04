@@ -3,7 +3,7 @@ package com.example.workflow.presentation.employer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.data.remote.dto.EmployerResponseDto
+import com.example.workflow.domain.model.Employer
 import com.example.workflow.domain.usecase.employer.GetEmployerByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ class EmployerProfileViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading : UiState()
-        data class Success(val employer: EmployerResponseDto) : UiState()
+        data class Success(val employer: Employer) : UiState()
         data class Error(val message: String) : UiState()
     }
 

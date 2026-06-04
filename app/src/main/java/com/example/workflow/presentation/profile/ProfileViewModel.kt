@@ -3,7 +3,7 @@ package com.example.workflow.presentation.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.data.remote.dto.ResumeResponseDto
+import com.example.workflow.domain.model.Resume
 import com.example.workflow.domain.usecase.resume.GetMyResumesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ class ProfileViewModel @Inject constructor(
 
     sealed class ResumeState {
         object Loading : ResumeState()
-        data class Success(val resumes: List<ResumeResponseDto>) : ResumeState()
+        data class Success(val resumes: List<Resume>) : ResumeState()
         data class Error(val message: String) : ResumeState()
     }
 

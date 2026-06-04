@@ -3,7 +3,7 @@ package com.example.workflow.presentation.resume
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.workflow.data.remote.dto.ResumeResponseDto
+import com.example.workflow.domain.model.Resume
 import com.example.workflow.domain.usecase.resume.GetResumeByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ class ResumeDetailViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading : UiState()
-        data class Success(val resume: ResumeResponseDto) : UiState()
+        data class Success(val resume: Resume) : UiState()
         data class Error(val message: String) : UiState()
     }
 

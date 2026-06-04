@@ -3,7 +3,7 @@ package com.example.workflow.presentation.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.data.remote.dto.SeekerUpdateRequestDto
+import com.example.workflow.domain.model.SeekerProfileInput
 import com.example.workflow.domain.usecase.seeker.GetSeekerByIdUseCase
 import com.example.workflow.domain.usecase.seeker.UpdateSeekerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -73,7 +73,7 @@ class EditSeekerProfileViewModel @Inject constructor(
             runCatching {
                 updateSeekerUseCase(
                     seekerId,
-                    SeekerUpdateRequestDto(
+                    SeekerProfileInput(
                         firstName = firstName.trim(),
                         lastName = lastName.trim(),
                         phone = phone.trim().takeIf { it.isNotBlank() },

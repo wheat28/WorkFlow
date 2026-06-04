@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.workflow.data.remote.dto.EmployerStatsDto
+import com.example.workflow.domain.model.EmployerStats
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -63,7 +63,7 @@ fun EmployerDashboardScreen(
 }
 
 @Composable
-private fun DashboardContent(stats: EmployerStatsDto) {
+private fun DashboardContent(stats: EmployerStats) {
     Column(
         modifier = Modifier
             .fillMaxSize()

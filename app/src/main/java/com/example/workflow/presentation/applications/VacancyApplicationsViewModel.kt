@@ -3,7 +3,7 @@ package com.example.workflow.presentation.applications
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.workflow.data.remote.dto.ApplicationResponseDto
+import com.example.workflow.domain.model.Application
 import com.example.workflow.domain.usecase.application.GetVacancyApplicationsUseCase
 import com.example.workflow.domain.usecase.application.UpdateApplicationStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,11 +25,11 @@ class VacancyApplicationsViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading : UiState()
-        data class Success(val applications: List<ApplicationResponseDto>) : UiState()
+        data class Success(val applications: List<Application>) : UiState()
         data class Error(val message: String) : UiState()
     }
 
-    private val _allApplications = MutableStateFlow<List<ApplicationResponseDto>>(emptyList())
+    private val _allApplications = MutableStateFlow<List<Application>>(emptyList())
     private val _loadState = MutableStateFlow<UiState>(UiState.Loading)
     val filterStatus = MutableStateFlow<String?>(null)
 

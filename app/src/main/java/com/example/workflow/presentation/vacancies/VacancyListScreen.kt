@@ -63,7 +63,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workflow.data.remote.dto.VacancyResponseDto
+import com.example.workflow.domain.model.Vacancy
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -362,7 +362,7 @@ private fun EmploymentTypeDropdown(
 
 @Composable
 private fun VacancyCard(
-    vacancy: VacancyResponseDto,
+    vacancy: Vacancy,
     isFavorite: Boolean,
     onToggleFavorite: (() -> Unit)?,
     onClick: () -> Unit

@@ -1,6 +1,6 @@
 package com.example.workflow.domain.usecase.vacancy
 
-import com.example.workflow.data.remote.dto.VacancyRequestDto
+import com.example.workflow.domain.model.VacancyInput
 import com.example.workflow.domain.repository.VacancyRepository
 
 import javax.inject.Inject
@@ -8,7 +8,7 @@ import javax.inject.Inject
 class UpdateVacancyUseCase @Inject constructor(
     private val repository: VacancyRepository
 ) {
-    suspend operator fun invoke(id: String, request: VacancyRequestDto) {
-        return repository.updateVacancy(id, request)
+    suspend operator fun invoke(id: String, input: VacancyInput) {
+        return repository.updateVacancy(id, input)
     }
 }

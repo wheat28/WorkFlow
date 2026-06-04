@@ -3,7 +3,7 @@ package com.example.workflow.presentation.applications
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.data.remote.dto.ApplicationResponseDto
+import com.example.workflow.domain.model.Application
 import com.example.workflow.domain.usecase.application.CancelApplicationUseCase
 import com.example.workflow.domain.usecase.application.GetMyApplicationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +21,7 @@ class MyApplicationsViewModel @Inject constructor(
 
     sealed class UiState {
         object Loading : UiState()
-        data class Success(val applications: List<ApplicationResponseDto>) : UiState()
+        data class Success(val applications: List<Application>) : UiState()
         data class Error(val message: String) : UiState()
     }
 

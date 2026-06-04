@@ -46,7 +46,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.workflow.data.remote.dto.VacancyResponseDto
+import com.example.workflow.domain.model.Vacancy
 import com.example.workflow.ui.theme.Coral40
 import com.example.workflow.ui.theme.Green40
 import com.example.workflow.ui.theme.Indigo60
@@ -129,7 +129,7 @@ fun EditVacancyScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditVacancyForm(
-    vacancy: VacancyResponseDto,
+    vacancy: Vacancy,
     isSaving: Boolean,
     isActive: Boolean,
     toggleError: String?,

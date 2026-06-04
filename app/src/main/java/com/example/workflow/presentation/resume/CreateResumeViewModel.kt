@@ -2,7 +2,7 @@ package com.example.workflow.presentation.resume
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.workflow.data.remote.dto.ResumeRequestDto
+import com.example.workflow.domain.model.ResumeInput
 import com.example.workflow.domain.usecase.resume.CreateResumeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +39,7 @@ class CreateResumeViewModel @Inject constructor(private val createResumeUseCase:
             _uiState.value = UiState.Loading
             runCatching {
                 createResumeUseCase(
-                    ResumeRequestDto(
+                    ResumeInput(
                         title = title.trim(),
                         position = position.trim(),
                         employmentType = employmentType,
