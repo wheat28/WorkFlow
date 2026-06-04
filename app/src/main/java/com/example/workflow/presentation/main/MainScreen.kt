@@ -22,10 +22,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.ui.theme.Indigo60
-import com.example.workflow.ui.theme.Indigo90
-import com.example.workflow.ui.theme.Indigo95
-import com.example.workflow.ui.theme.Gray40
+import com.example.workflow.presentation.ui.theme.Indigo60
+import com.example.workflow.presentation.ui.theme.Indigo90
+import com.example.workflow.presentation.ui.theme.Indigo95
+import com.example.workflow.presentation.ui.theme.Gray40
 import com.example.workflow.presentation.applications.MyApplicationsScreen
 import com.example.workflow.presentation.employer.EmployerDashboardScreen
 import com.example.workflow.presentation.employer.EmployerVacanciesScreen

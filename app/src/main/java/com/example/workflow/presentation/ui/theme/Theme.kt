@@ -1,4 +1,4 @@
-package com.example.workflow.ui.theme
+package com.example.workflow.presentation.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

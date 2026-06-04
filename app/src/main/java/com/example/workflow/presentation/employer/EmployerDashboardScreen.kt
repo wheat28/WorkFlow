@@ -27,10 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.EmployerStats
-import com.example.workflow.ui.theme.Coral40
-import com.example.workflow.ui.theme.Green40
-import com.example.workflow.ui.theme.Indigo60
-import com.example.workflow.ui.theme.Indigo90
+import com.example.workflow.presentation.ui.theme.Coral40
+import com.example.workflow.presentation.ui.theme.Green40
+import com.example.workflow.presentation.ui.theme.Indigo60
+import com.example.workflow.presentation.ui.theme.Indigo90
 
 @Composable
 fun EmployerDashboardScreen(

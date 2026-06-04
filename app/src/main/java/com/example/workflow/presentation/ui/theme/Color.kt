@@ -1,4 +1,4 @@
-package com.example.workflow.ui.theme
+package com.example.workflow.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

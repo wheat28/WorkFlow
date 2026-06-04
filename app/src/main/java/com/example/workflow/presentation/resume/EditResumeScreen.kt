@@ -49,8 +49,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workflow.ui.theme.Coral40
-import com.example.workflow.ui.theme.Indigo60
+import com.example.workflow.presentation.ui.theme.Coral40
+import com.example.workflow.presentation.ui.theme.Indigo60
 
 private val employmentTypes = listOf("Полная занятость", "Частичная занятость", "Удалённо", "Стажировка")
 

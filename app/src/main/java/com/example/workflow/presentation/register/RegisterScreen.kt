@@ -50,8 +50,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workflow.ui.theme.Indigo60
-import com.example.workflow.ui.theme.Indigo90
+import com.example.workflow.presentation.ui.theme.Indigo60
+import com.example.workflow.presentation.ui.theme.Indigo90
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

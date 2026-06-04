@@ -44,9 +44,9 @@ import com.example.workflow.domain.model.Employer
 import com.example.workflow.domain.model.Vacancy
 import androidx.compose.foundation.background
 import com.example.workflow.presentation.common.shimmerBrush
-import com.example.workflow.ui.theme.Green40
-import com.example.workflow.ui.theme.Indigo60
-import com.example.workflow.ui.theme.Indigo90
+import com.example.workflow.presentation.ui.theme.Green40
+import com.example.workflow.presentation.ui.theme.Indigo60
+import com.example.workflow.presentation.ui.theme.Indigo90
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

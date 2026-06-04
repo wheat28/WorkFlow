@@ -45,9 +45,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.domain.model.Resume
 import com.example.workflow.presentation.employer.EmployerProfileViewModel
-import com.example.workflow.ui.theme.Coral40
-import com.example.workflow.ui.theme.Indigo60
-import com.example.workflow.ui.theme.Indigo90
+import com.example.workflow.presentation.ui.theme.Coral40
+import com.example.workflow.presentation.ui.theme.Indigo60
+import com.example.workflow.presentation.ui.theme.Indigo90
 
 @Composable
 fun ProfileScreen(

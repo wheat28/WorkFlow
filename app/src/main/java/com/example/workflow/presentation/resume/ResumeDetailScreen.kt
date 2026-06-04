@@ -35,9 +35,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.domain.model.Resume
 import com.example.workflow.domain.model.WorkExperience
 import com.example.workflow.presentation.common.ResumeDetailSkeleton
-import com.example.workflow.ui.theme.Green40
-import com.example.workflow.ui.theme.Indigo60
-import com.example.workflow.ui.theme.Indigo90
+import com.example.workflow.presentation.ui.theme.Green40
+import com.example.workflow.presentation.ui.theme.Indigo60
+import com.example.workflow.presentation.ui.theme.Indigo90
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

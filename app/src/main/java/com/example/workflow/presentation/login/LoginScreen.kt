@@ -40,9 +40,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workflow.ui.theme.Indigo20
-import com.example.workflow.ui.theme.Indigo40
-import com.example.workflow.ui.theme.Indigo60
+import com.example.workflow.presentation.ui.theme.Indigo20
+import com.example.workflow.presentation.ui.theme.Indigo40
+import com.example.workflow.presentation.ui.theme.Indigo60
 
 @Composable
 fun LoginScreen(
