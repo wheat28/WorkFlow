@@ -44,7 +44,7 @@ class FavoritesViewModel @Inject constructor(
         viewModelScope.launch {
             _isRefreshing.value = true
             runCatching { getFavoritesUseCase(seekerId) }
-                .onSuccess { _uiState.value = UiState.Success(it) }
+                .onSuccess { _uiState.value = UiState.Success(it.reversed()) }
             _isRefreshing.value = false
         }
     }
@@ -53,7 +53,7 @@ class FavoritesViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             runCatching { getFavoritesUseCase(seekerId) }
-                .onSuccess { _uiState.value = UiState.Success(it) }
+                .onSuccess { _uiState.value = UiState.Success(it.reversed()) }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка загрузки") }
         }
     }
@@ -61,7 +61,7 @@ class FavoritesViewModel @Inject constructor(
     fun reload() {
         viewModelScope.launch {
             runCatching { getFavoritesUseCase(seekerId) }
-                .onSuccess { _uiState.value = UiState.Success(it) }
+                .onSuccess { _uiState.value = UiState.Success(it.reversed()) }
         }
     }
 
