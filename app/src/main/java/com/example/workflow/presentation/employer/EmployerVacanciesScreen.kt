@@ -31,6 +31,9 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -48,15 +51,17 @@ import com.example.workflow.presentation.ui.theme.Indigo60
 fun EmployerVacanciesScreen(
     onVacancyClick: (String) -> Unit,
     onCreateVacancy: () -> Unit,
-    refreshKey: Int = 0,
     modifier: Modifier = Modifier
 ) {
     val viewModel: EmployerVacanciesViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 
-    LaunchedEffect(refreshKey) {
-        if (refreshKey > 0) viewModel.loadVacancies()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    LaunchedEffect(lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewModel.loadVacancies()
+        }
     }
 
     Column(

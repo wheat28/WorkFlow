@@ -54,6 +54,9 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -79,7 +82,6 @@ private fun employmentFilterLabel(type: String) =
 @Composable
 fun VacancyListScreen(
     onVacancyClick: (String) -> Unit,
-    favoritesRemovedKey: Int = 0,
     modifier: Modifier = Modifier
 ) {
     val viewModel: VacancyListViewModel = hiltViewModel()
@@ -98,8 +100,11 @@ fun VacancyListScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(favoritesRemovedKey) {
-        if (favoritesRemovedKey > 0) viewModel.loadFavorites()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    LaunchedEffect(lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewModel.loadFavorites()
+        }
     }
 
     if (showFilters) {

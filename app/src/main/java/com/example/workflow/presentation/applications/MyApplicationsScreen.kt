@@ -32,6 +32,9 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,7 +56,6 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApplicationsScreen(
-    refreshKey: Int = 0,
     modifier: Modifier = Modifier
 ) {
     val viewModel: MyApplicationsViewModel = hiltViewModel()
@@ -62,8 +64,11 @@ fun MyApplicationsScreen(
 
     var cancelTargetId by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(refreshKey) {
-        if (refreshKey > 0) viewModel.load()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    LaunchedEffect(lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewModel.load()
+        }
     }
 
     if (cancelTargetId != null) {

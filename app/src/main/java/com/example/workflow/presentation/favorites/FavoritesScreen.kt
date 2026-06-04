@@ -45,7 +45,6 @@ import com.example.workflow.presentation.ui.theme.Indigo90
 @Composable
 fun FavoritesScreen(
     onVacancyClick: (String) -> Unit,
-    onFavoriteRemoved: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val viewModel: FavoritesViewModel = hiltViewModel()
@@ -103,7 +102,6 @@ fun FavoritesScreen(
                                 onClick = { onVacancyClick(vacancy.id) },
                                 onRemove = {
                                     viewModel.remove(vacancy.id)
-                                    onFavoriteRemoved()
                                 }
                             )
                         }

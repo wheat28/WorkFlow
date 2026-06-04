@@ -31,7 +31,7 @@ class VacancyDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val vacancyId: String = checkNotNull(savedStateHandle["id"])
+    private val vacancyId: String = checkNotNull(savedStateHandle["vacancyId"])
 
     sealed class UiState {
         object Loading : UiState()

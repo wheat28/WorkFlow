@@ -20,7 +20,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.presentation.ui.theme.Indigo60
 import com.example.workflow.presentation.ui.theme.Indigo90
@@ -44,15 +43,10 @@ fun MainScreen(
     onCreateResume: () -> Unit,
     onEditResume: (String) -> Unit,
     onEditEmployerProfile: () -> Unit = {},
-    onEditSeekerProfile: () -> Unit = {},
-    vacanciesRefreshKey: Int = 0,
-    resumeRefreshKey: Int = 0,
-    applicationsRefreshKey: Int = 0,
-    employerProfileRefreshKey: Int = 0,
-    seekerProfileRefreshKey: Int = 0
+    onEditSeekerProfile: () -> Unit = {}
 ) {
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    var favoritesRemovedKey by rememberSaveable { mutableIntStateOf(0) }
+
+    var selectBottomBar by rememberSaveable { mutableIntStateOf(0) }
 
     Scaffold(
         bottomBar = {
@@ -65,52 +59,59 @@ fun MainScreen(
             )
             NavigationBar(containerColor = Indigo95) {
                 if (userType == "EMPLOYER") {
+
                     NavigationBarItem(
-                        selected = selectedTab == 0,
-                        onClick = { selectedTab = 0 },
+                        selected = selectBottomBar == 0,
+                        onClick = { selectBottomBar = 0 },
                         icon = { Icon(Icons.Default.Work, contentDescription = "Вакансии") },
                         label = { Text("Вакансии") },
                         colors = navItemColors
                     )
+
                     NavigationBarItem(
-                        selected = selectedTab == 1,
-                        onClick = { selectedTab = 1 },
+                        selected = selectBottomBar == 1,
+                        onClick = { selectBottomBar = 1 },
                         icon = { Icon(Icons.Outlined.BarChart, contentDescription = "Дашборд") },
                         label = { Text("Дашборд") },
                         colors = navItemColors
                     )
+
                     NavigationBarItem(
-                        selected = selectedTab == 2,
-                        onClick = { selectedTab = 2 },
+                        selected = selectBottomBar == 2,
+                        onClick = { selectBottomBar = 2 },
                         icon = { Icon(Icons.Default.Person, contentDescription = "Профиль") },
                         label = { Text("Профиль") },
                         colors = navItemColors
                     )
+
                 } else {
                     NavigationBarItem(
-                        selected = selectedTab == 0,
-                        onClick = { selectedTab = 0 },
+                        selected = selectBottomBar == 0,
+                        onClick = { selectBottomBar = 0 },
                         icon = { Icon(Icons.Default.Work, contentDescription = "Вакансии") },
                         label = { Text("Вакансии") },
                         colors = navItemColors
                     )
+
                     NavigationBarItem(
-                        selected = selectedTab == 1,
-                        onClick = { selectedTab = 1 },
+                        selected = selectBottomBar == 1,
+                        onClick = { selectBottomBar = 1 },
                         icon = { Icon(Icons.Default.Favorite, contentDescription = "Избранное") },
                         label = { Text("Избранное") },
                         colors = navItemColors
                     )
+
                     NavigationBarItem(
-                        selected = selectedTab == 2,
-                        onClick = { selectedTab = 2 },
+                        selected = selectBottomBar == 2,
+                        onClick = { selectBottomBar = 2 },
                         icon = { Icon(Icons.Outlined.Description, contentDescription = "Отклики") },
                         label = { Text("Отклики") },
                         colors = navItemColors
                     )
+
                     NavigationBarItem(
-                        selected = selectedTab == 3,
-                        onClick = { selectedTab = 3 },
+                        selected = selectBottomBar == 3,
+                        onClick = { selectBottomBar = 3 },
                         icon = { Icon(Icons.Default.Person, contentDescription = "Профиль") },
                         label = { Text("Профиль") },
                         colors = navItemColors
@@ -120,50 +121,50 @@ fun MainScreen(
         }
     ) { innerPadding ->
         if (userType == "EMPLOYER") {
-            when (selectedTab) {
+            when (selectBottomBar) {
+
                 0 -> EmployerVacanciesScreen(
                     onVacancyClick = onVacancyClick,
                     onCreateVacancy = onCreateVacancy,
-                    refreshKey = vacanciesRefreshKey,
                     modifier = Modifier.padding(innerPadding)
                 )
+
                 1 -> EmployerDashboardScreen(
                     modifier = Modifier.padding(innerPadding)
                 )
+
                 2 -> ProfileScreen(
                     tokenDataStore = tokenDataStore,
                     onLogout = onLogout,
                     onCreateResume = onCreateResume,
                     onEditResume = onEditResume,
                     onEditEmployerProfile = onEditEmployerProfile,
-                    employerProfileRefreshKey = employerProfileRefreshKey,
                     modifier = Modifier.padding(innerPadding)
                 )
             }
         } else {
-            when (selectedTab) {
+            when (selectBottomBar) {
+
                 0 -> VacancyListScreen(
                     onVacancyClick = onVacancyClick,
-                    favoritesRemovedKey = favoritesRemovedKey,
                     modifier = Modifier.padding(innerPadding)
                 )
+
                 1 -> FavoritesScreen(
                     onVacancyClick = onVacancyClick,
-                    onFavoriteRemoved = { favoritesRemovedKey++ },
                     modifier = Modifier.padding(innerPadding)
                 )
+
                 2 -> MyApplicationsScreen(
-                    refreshKey = applicationsRefreshKey,
                     modifier = Modifier.padding(innerPadding)
                 )
+
                 3 -> ProfileScreen(
                     tokenDataStore = tokenDataStore,
                     onLogout = onLogout,
                     onCreateResume = onCreateResume,
                     onEditResume = onEditResume,
                     onEditSeekerProfile = onEditSeekerProfile,
-                    resumeRefreshKey = resumeRefreshKey,
-                    seekerProfileRefreshKey = seekerProfileRefreshKey,
                     modifier = Modifier.padding(innerPadding)
                 )
             }
