@@ -16,8 +16,8 @@ fun VacancyResponseDto.toDomain() = Vacancy(
     salaryTo = salaryTo,
     currency = currency,
     city = city,
-    employmentType = employmentType,
-    experience = experience,
+    employmentType = mapEmploymentType(employmentType),
+    experience = mapExperience(experience),
     isActive = isActive,
     skills = skills,
     applicationCount = applicationCount
@@ -33,3 +33,19 @@ fun VacancyInput.toDto() = VacancyRequestDto(
     salaryTo = salaryTo,
     currency = currency
 )
+
+private fun mapEmploymentType(value: String) = when (value) {
+    "FULL_TIME"  -> "Полная занятость"
+    "PART_TIME"  -> "Частичная занятость"
+    "REMOTE"     -> "Удалённо"
+    "INTERNSHIP" -> "Стажировка"
+    else         -> value
+}
+
+private fun mapExperience(value: String) = when (value) {
+    "NO_EXPERIENCE" -> "Без опыта"
+    "1_3"           -> "1-3 года"
+    "3_6"           -> "3-6 лет"
+    "6_PLUS"        -> "Более 6 лет"
+    else            -> value
+}
