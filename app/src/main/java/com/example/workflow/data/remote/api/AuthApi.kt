@@ -12,32 +12,28 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 
-class AuthApi(private val client: HttpClient) {
-
-    private val base = "http://10.0.2.2:8080"
+class AuthApi(client: HttpClient) : BaseApi(client) {
 
     suspend fun login(request: LoginRequestDto): AuthResponseDto {
         val response = client.post("$base/auth/login") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }
-        if (!response.status.isSuccess()) throw Exception("Неверный email или пароль")
+        if (!response.status.isSuccess()) error("Неверный email или пароль")
         return response.body()
     }
 
     suspend fun registerSeeker(request: SeekerRegisterRequestDto) {
-        val response = client.post("$base/seekers/register") {
+        client.post("$base/seekers/register") {
             contentType(ContentType.Application.Json)
             setBody(request)
-        }
-        if (!response.status.isSuccess()) throw Exception("Email уже занят")
+        }.checkSuccess("Email уже занят")
     }
 
     suspend fun registerEmployer(request: EmployerRegisterRequestDto) {
-        val response = client.post("$base/employers/register") {
+        client.post("$base/employers/register") {
             contentType(ContentType.Application.Json)
             setBody(request)
-        }
-        if (!response.status.isSuccess()) throw Exception("Email уже занят")
+        }.checkSuccess("Email уже занят")
     }
 }

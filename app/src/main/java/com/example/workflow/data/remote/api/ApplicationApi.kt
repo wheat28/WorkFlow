@@ -9,14 +9,10 @@ import io.ktor.client.request.get
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.http.isSuccess
 
-class ApplicationApi(private val client: HttpClient) {
-
-    private val base = "http://10.0.2.2:8080"
+class ApplicationApi(client: HttpClient) : BaseApi(client) {
 
     suspend fun apply(request: ApplicationRequestDto): String {
         val response = client.post("$base/applications") {
@@ -37,9 +33,8 @@ class ApplicationApi(private val client: HttpClient) {
     }
 
     suspend fun cancelApplication(applicationId: String) {
-        val response = client.delete("$base/applications/$applicationId")
-        response.bodyAsText()
-        if (!response.status.isSuccess()) error("Ошибка отмены отклика: ${response.status.value}")
+        client.delete("$base/applications/$applicationId")
+            .checkSuccess("Ошибка отмены отклика")
     }
 
     suspend fun getApplicationsByVacancy(vacancyId: String): List<ApplicationResponseDto> {
@@ -47,11 +42,9 @@ class ApplicationApi(private val client: HttpClient) {
     }
 
     suspend fun updateApplicationStatus(applicationId: String, status: String) {
-        val response = client.patch("$base/applications/$applicationId/status") {
+        client.patch("$base/applications/$applicationId/status") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("status" to status))
-        }
-        response.bodyAsText()
-        if (!response.status.isSuccess()) error("Ошибка обновления статуса: ${response.status.value}")
+        }.checkSuccess("Ошибка обновления статуса")
     }
 }

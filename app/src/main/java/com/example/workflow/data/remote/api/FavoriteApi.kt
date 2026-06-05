@@ -7,28 +7,21 @@ import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.http.isSuccess
 
-class FavoriteApi(private val client: HttpClient) {
-
-    private val base = "http://10.0.2.2:8080"
+class FavoriteApi(client: HttpClient) : BaseApi(client) {
 
     suspend fun addFavorite(vacancyId: String) {
-        val response = client.post("$base/favorites/$vacancyId") {
+        client.post("$base/favorites/$vacancyId") {
             contentType(ContentType.Application.Json)
             setBody("{}")
-        }
-        response.bodyAsText()
-        if (!response.status.isSuccess()) error("Ошибка добавления в избранное: ${response.status.value}")
+        }.checkSuccess("Ошибка добавления в избранное")
     }
 
     suspend fun removeFavorite(vacancyId: String) {
-        val response = client.delete("$base/favorites/$vacancyId")
-        response.bodyAsText()
-        if (!response.status.isSuccess()) error("Ошибка удаления из избранного: ${response.status.value}")
+        client.delete("$base/favorites/$vacancyId")
+            .checkSuccess("Ошибка удаления из избранного")
     }
 
     suspend fun getFavorites(seekerId: String): List<VacancyResponseDto> {

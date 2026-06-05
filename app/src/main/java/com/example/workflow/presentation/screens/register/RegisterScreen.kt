@@ -1,6 +1,5 @@
 package com.example.workflow.presentation.screens.register
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,6 +49,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.workflow.presentation.screens.register.RegisterViewModel.RegisterUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -10,14 +10,10 @@ import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.http.isSuccess
 
-class VacancyApi(private val client: HttpClient) {
-
-    private val base = "http://10.0.2.2:8080"
+class VacancyApi(client: HttpClient) : BaseApi(client) {
 
     suspend fun getAllVacancies(): List<VacancyResponseDto> {
         return client.get("$base/vacancies").body()
@@ -40,26 +36,21 @@ class VacancyApi(private val client: HttpClient) {
     }
 
     suspend fun updateVacancy(id: String, request: VacancyRequestDto) {
-        val response = client.put("$base/vacancies/$id") {
+        client.put("$base/vacancies/$id") {
             contentType(ContentType.Application.Json)
             setBody(request)
-        }
-        response.bodyAsText()
-        if (!response.status.isSuccess()) error("Ошибка обновления: ${response.status.value}")
+        }.checkSuccess("Ошибка обновления")
     }
 
     suspend fun deleteVacancy(id: String) {
-        val response = client.delete("$base/vacancies/$id")
-        response.bodyAsText()
-        if (!response.status.isSuccess()) error("Ошибка удаления: ${response.status.value}")
+        client.delete("$base/vacancies/$id")
+            .checkSuccess("Ошибка удаления")
     }
 
     suspend fun setVacancyActive(id: String, isActive: Boolean) {
-        val response = client.patch("$base/vacancies/$id/status") {
+        client.patch("$base/vacancies/$id/status") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("isActive" to isActive))
-        }
-        response.bodyAsText()
-        if (!response.status.isSuccess()) error("Ошибка обновления статуса")
+        }.checkSuccess("Ошибка обновления статуса")
     }
 }

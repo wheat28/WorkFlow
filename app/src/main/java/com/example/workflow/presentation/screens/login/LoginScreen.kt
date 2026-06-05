@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.workflow.presentation.screens.login.LoginViewModel.LoginUiState
 import com.example.workflow.presentation.ui.theme.Indigo40
 
 @Composable

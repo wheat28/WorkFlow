@@ -10,14 +10,10 @@ import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.http.isSuccess
 
-class ResumeApi(private val client: HttpClient) {
-
-    private val base = "http://10.0.2.2:8080"
+class ResumeApi(client: HttpClient) : BaseApi(client) {
 
     suspend fun getMyResumes(seekerId: String): List<ResumeResponseDto> {
         return client.get("$base/seekers/$seekerId/resumes").body()
@@ -39,21 +35,18 @@ class ResumeApi(private val client: HttpClient) {
         client.put("$base/resumes/$id") {
             contentType(ContentType.Application.Json)
             setBody(request)
-        }
+        }.checkSuccess("Ошибка обновления резюме")
     }
 
     suspend fun setResumeActive(id: String, isActive: Boolean) {
-        val response = client.patch("$base/resumes/$id/status") {
+        client.patch("$base/resumes/$id/status") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("isActive" to isActive))
-        }
-        response.bodyAsText()
-        if (!response.status.isSuccess()) error("Ошибка обновления статуса")
+        }.checkSuccess("Ошибка обновления статуса")
     }
 
     suspend fun deleteResume(id: String) {
-        val response = client.delete("$base/resumes/$id")
-        response.bodyAsText()
-        if (!response.status.isSuccess()) error("Ошибка удаления резюме")
+        client.delete("$base/resumes/$id")
+            .checkSuccess("Ошибка удаления резюме")
     }
 }
