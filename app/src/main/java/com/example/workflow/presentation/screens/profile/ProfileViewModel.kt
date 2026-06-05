@@ -20,18 +20,14 @@ class ProfileViewModel @Inject constructor(
     private val _resumeState = MutableStateFlow<ResumeState>(ResumeState.Loading)
     val resumeState: StateFlow<ResumeState> = _resumeState
 
-    private var seekerId: String = ""
-
     init {
-        viewModelScope.launch {
-            seekerId = tokenDataStore.getUserId() ?: ""
-            loadResumes()
-        }
+        loadResumes()
     }
 
     fun loadResumes() {
         viewModelScope.launch {
             _resumeState.value = ResumeState.Loading
+            val seekerId = tokenDataStore.getUserId() ?: ""
             runCatching { getMyResumesUseCase(seekerId) }
                 .onSuccess { _resumeState.value = ResumeState.Success(it) }
                 .onFailure { _resumeState.value = ResumeState.Error(it.message ?: "Ошибка") }
