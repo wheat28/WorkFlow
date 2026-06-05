@@ -13,20 +13,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.presentation.applications.VacancyApplicationsScreen
-import com.example.workflow.presentation.employer.EmployerPublicProfileScreen
-import com.example.workflow.presentation.resume.ResumeDetailScreen
-import com.example.workflow.presentation.apply.ApplyScreen
-import com.example.workflow.presentation.employer.CreateVacancyScreen
-import com.example.workflow.presentation.employer.EditEmployerProfileScreen
-import com.example.workflow.presentation.employer.EditVacancyScreen
-import com.example.workflow.presentation.profile.EditSeekerProfileScreen
-import com.example.workflow.presentation.resume.EditResumeScreen
-import com.example.workflow.presentation.login.LoginScreen
-import com.example.workflow.presentation.main.MainScreen
-import com.example.workflow.presentation.register.RegisterScreen
-import com.example.workflow.presentation.resume.CreateResumeScreen
-import com.example.workflow.presentation.vacancy.VacancyDetailScreen
+import com.example.workflow.presentation.screens.applications.VacancyApplicationsScreen
+import com.example.workflow.presentation.screens.employer.EmployerPublicProfileScreen
+import com.example.workflow.presentation.screens.resume.ResumeDetailScreen
+import com.example.workflow.presentation.screens.apply.ApplyScreen
+import com.example.workflow.presentation.screens.employer.CreateVacancyScreen
+import com.example.workflow.presentation.screens.employer.EditEmployerProfileScreen
+import com.example.workflow.presentation.screens.employer.EditVacancyScreen
+import com.example.workflow.presentation.screens.profile.EditSeekerProfileScreen
+import com.example.workflow.presentation.screens.resume.EditResumeScreen
+import com.example.workflow.presentation.screens.login.LoginScreen
+import com.example.workflow.presentation.screens.main.MainScreen
+import com.example.workflow.presentation.screens.register.RegisterScreen
+import com.example.workflow.presentation.screens.resume.CreateResumeScreen
+import com.example.workflow.presentation.screens.vacancy.VacancyDetailScreen
 import kotlinx.coroutines.launch
 
 @Composable
