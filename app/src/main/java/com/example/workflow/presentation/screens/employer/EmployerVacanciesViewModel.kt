@@ -18,12 +18,6 @@ class EmployerVacanciesViewModel @Inject constructor(
     private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
-    sealed class UiState {
-        object Loading : UiState()
-        data class Success(val vacancies: List<Vacancy>) : UiState()
-        data class Error(val message: String) : UiState()
-    }
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
@@ -55,5 +49,11 @@ class EmployerVacanciesViewModel @Inject constructor(
                 .onSuccess { _uiState.value = UiState.Success(it.reversed()) }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка загрузки") }
         }
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        data class Success(val vacancies: List<Vacancy>) : UiState()
+        data class Error(val message: String) : UiState()
     }
 }

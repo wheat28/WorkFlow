@@ -15,13 +15,6 @@ class CreateVacancyViewModel @Inject constructor(
     private val createVacancyUseCase: CreateVacancyUseCase
 ) : ViewModel() {
 
-    sealed class UiState {
-        object Idle : UiState()
-        object Loading : UiState()
-        object Success : UiState()
-        data class Error(val message: String) : UiState()
-    }
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState: StateFlow<UiState> = _uiState
 
@@ -63,4 +56,11 @@ class CreateVacancyViewModel @Inject constructor(
     }
 
     fun resetState() { _uiState.value = UiState.Idle }
+
+    sealed class UiState {
+        object Idle : UiState()
+        object Loading : UiState()
+        object Success : UiState()
+        data class Error(val message: String) : UiState()
+    }
 }

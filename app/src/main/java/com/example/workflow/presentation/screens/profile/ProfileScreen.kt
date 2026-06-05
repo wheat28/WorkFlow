@@ -48,9 +48,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.domain.model.Resume
 import com.example.workflow.presentation.screens.employer.EmployerProfileViewModel
-import com.example.workflow.presentation.ui.theme.Coral40
-import com.example.workflow.presentation.ui.theme.Indigo60
-import com.example.workflow.presentation.ui.theme.Indigo90
 
 @Composable
 fun ProfileScreen(
@@ -81,7 +78,7 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
-                .border(1.5.dp, Indigo60.copy(alpha = 0.4f), RoundedCornerShape(20.dp)),
+                .border(1.5.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f), RoundedCornerShape(20.dp)),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -96,13 +93,13 @@ fun ProfileScreen(
                 Box(
                     modifier = Modifier
                         .size(56.dp)
-                        .background(Indigo90, CircleShape),
+                        .background(MaterialTheme.colorScheme.primaryContainer, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = displayName?.firstOrNull()?.uppercaseChar()?.toString() ?: if (userType == "SEEKER") "С" else "Р",
                         style = MaterialTheme.typography.titleLarge,
-                        color = Indigo60
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -159,7 +156,9 @@ private fun SeekerProfileContent(
         }
     }
 
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier
+    ) {
         LazyColumn(
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp),
@@ -172,7 +171,7 @@ private fun SeekerProfileContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "Мои резюме",
+                        text = "Мои резюме",
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -180,50 +179,69 @@ private fun SeekerProfileContent(
                         onClick = onCreateResume,
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp), tint = Indigo60)
+                        Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.primary)
                         Spacer(modifier = Modifier.size(4.dp))
-                        Text("Создать", color = Indigo60, style = MaterialTheme.typography.labelMedium)
+                        Text(
+                            text = "Создать",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.labelMedium
+                        )
                     }
                 }
             }
 
             when (val state = resumeState) {
                 is ProfileViewModel.ResumeState.Loading -> item {
-                    Box(Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = Indigo60)
+                    Box(
+                        Modifier.fillMaxWidth().padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
+
                 is ProfileViewModel.ResumeState.Error -> item {
                     Text(state.message, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
                 }
+
                 is ProfileViewModel.ResumeState.Success -> {
                     if (state.resumes.isEmpty()) {
                         item {
                             Text(
-                                "Резюме ещё нет. Создайте первое!",
+                                text = "Резюме ещё нет. Создайте первое!",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     } else {
-                        items(state.resumes) { resume -> ResumeCard(resume, onClick = { onEditResume(resume.id) }) }
+                        items(state.resumes) { resume ->
+                            ResumeCard(resume, onClick = { onEditResume(resume.id) }) }
                     }
                 }
             }
         }
 
-        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             if (onEditProfile != null) {
                 OutlinedButton(
                     onClick = onEditProfile,
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Indigo60),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Indigo60)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
                 ) {
-                    Icon(Icons.Outlined.Edit, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Icon(
+                        Icons.Outlined.Edit,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.size(8.dp))
-                    Text("Редактировать профиль", style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        text = "Редактировать профиль",
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
             }
             LogoutButton(onLogout)
@@ -257,13 +275,18 @@ private fun EmployerProfileContent(
         ) {
             when (val state = uiState) {
                 is EmployerProfileViewModel.UiState.Loading -> {
-                    Box(Modifier.fillMaxWidth().padding(24.dp), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = Indigo60)
+                    Box(
+                        Modifier.fillMaxWidth().padding(24.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
+
                 is EmployerProfileViewModel.UiState.Error -> {
                     Text(state.message, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
                 }
+
                 is EmployerProfileViewModel.UiState.Success -> {
                     val e = state.employer
                     Card(
@@ -318,18 +341,28 @@ private fun EmployerProfileContent(
             }
         }
 
-        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             if (onEditProfile != null) {
                 OutlinedButton(
                     onClick = onEditProfile,
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Indigo60),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Indigo60)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
                 ) {
-                    Icon(Icons.Outlined.Edit, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Icon(
+                        Icons.Outlined.Edit,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
                     Spacer(modifier = Modifier.size(8.dp))
-                    Text("Редактировать профиль", style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        text = "Редактировать профиль",
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
             }
             LogoutButton(onLogout)
@@ -341,12 +374,12 @@ private fun EmployerProfileContent(
 private fun InfoChip(text: String) {
     Surface(
         shape = RoundedCornerShape(8.dp),
-        color = Indigo60.copy(alpha = 0.1f)
+        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.labelSmall,
-            color = Indigo60,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
         )
     }
@@ -377,7 +410,7 @@ private fun LogoutButton(onLogout: () -> Unit) {
         onClick = onLogout,
         modifier = Modifier.fillMaxWidth().height(54.dp),
         shape = RoundedCornerShape(14.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Coral40)
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
     ) {
         Text("Выйти из аккаунта", style = MaterialTheme.typography.labelLarge)
     }
@@ -391,7 +424,10 @@ private fun ResumeCard(resume: Resume, onClick: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp))
+        {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -405,17 +441,17 @@ private fun ResumeCard(resume: Resume, onClick: () -> Unit) {
                 )
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    color = if (resume.isActive) Indigo60.copy(alpha = 0.15f) else Coral40.copy(alpha = 0.15f)
+                    color = if (resume.isActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
                 ) {
                     Text(
                         text = if (resume.isActive) "Активно" else "Скрыто",
                         style = MaterialTheme.typography.labelSmall,
-                        color = if (resume.isActive) Indigo60 else Coral40,
+                        color = if (resume.isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
             }
-            Text(resume.position, style = MaterialTheme.typography.bodyMedium, color = Indigo60)
+            Text(resume.position, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary)
             if (resume.salaryExpected != null) {
                 Text(
                     "от ${resume.salaryExpected} ${resume.currency}",

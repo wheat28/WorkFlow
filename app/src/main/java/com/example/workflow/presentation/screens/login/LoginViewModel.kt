@@ -33,13 +33,14 @@ class LoginViewModel @Inject constructor(
     }
 
     fun resetState() { _uiState.value = LoginUiState.Idle }
-}
 
-sealed class LoginUiState {
-    object Idle : LoginUiState()
-    object Loading : LoginUiState()
-    object Success : LoginUiState()
-    data class Error(
-        val message: String
-    ) : LoginUiState()
+    sealed class LoginUiState {
+        object Idle : LoginUiState()
+        object Loading : LoginUiState()
+        object Success : LoginUiState()
+        data class Error(
+            val message: String
+        ) : LoginUiState()
+    }
+
 }

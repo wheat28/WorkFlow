@@ -39,15 +39,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workflow.presentation.ui.theme.Indigo60
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditSeekerProfileScreen(
+    viewModel: EditSeekerProfileViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onSaved: () -> Unit
 ) {
-    val viewModel: EditSeekerProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var firstName by rememberSaveable { mutableStateOf("") }
@@ -70,8 +69,8 @@ fun EditSeekerProfileScreen(
     }
 
     val fieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = Indigo60,
-        focusedLabelColor = Indigo60
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        focusedLabelColor = MaterialTheme.colorScheme.primary
     )
     val fieldShape = RoundedCornerShape(14.dp)
     val isLoading = uiState is EditSeekerProfileViewModel.UiState.Loading
@@ -80,10 +79,16 @@ fun EditSeekerProfileScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Редактировать профиль") },
+                title = { 
+                    Text(
+                        text = "Редактировать профиль"
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -95,8 +100,11 @@ fun EditSeekerProfileScreen(
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         if (isLoading) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = Indigo60)
+            Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
             return@Scaffold
         }
@@ -178,15 +186,18 @@ fun EditSeekerProfileScreen(
             Spacer(modifier = Modifier.height(4.dp))
 
             if (isSaving) {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Indigo60)
+                Box(
+                    Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             } else {
                 Button(
                     onClick = { viewModel.save(firstName, lastName, phone, city, about) },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text("Сохранить", style = MaterialTheme.typography.labelLarge)
                 }

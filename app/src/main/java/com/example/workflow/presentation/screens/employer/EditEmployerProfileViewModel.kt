@@ -20,14 +20,6 @@ class EditEmployerProfileViewModel @Inject constructor(
     private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
-    sealed class UiState {
-        object Loading : UiState()
-        data class Ready(val employer: Employer) : UiState()
-        object Saving : UiState()
-        object Success : UiState()
-        data class Error(val message: String) : UiState()
-    }
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
@@ -78,5 +70,13 @@ class EditEmployerProfileViewModel @Inject constructor(
             }.onSuccess { _uiState.value = UiState.Success }
              .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка сохранения") }
         }
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        data class Ready(val employer: Employer) : UiState()
+        object Saving : UiState()
+        object Success : UiState()
+        data class Error(val message: String) : UiState()
     }
 }

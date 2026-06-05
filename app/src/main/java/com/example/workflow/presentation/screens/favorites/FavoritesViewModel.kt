@@ -19,12 +19,6 @@ class FavoritesViewModel @Inject constructor(
     private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
-    sealed class UiState {
-        object Loading : UiState()
-        data class Success(val vacancies: List<Vacancy>) : UiState()
-        data class Error(val message: String) : UiState()
-    }
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
@@ -73,5 +67,11 @@ class FavoritesViewModel @Inject constructor(
             runCatching { removeFavoriteUseCase(vacancyId) }
                 .onFailure { _uiState.value = UiState.Success(current.vacancies) }
         }
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        data class Success(val vacancies: List<Vacancy>) : UiState()
+        data class Error(val message: String) : UiState()
     }
 }

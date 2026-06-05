@@ -11,7 +11,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateResumeViewModel @Inject constructor(private val createResumeUseCase: CreateResumeUseCase) : ViewModel() {
+class CreateResumeViewModel @Inject constructor(
+    private val createResumeUseCase: CreateResumeUseCase
+) : ViewModel() {
 
     sealed class UiState {
         object Idle : UiState()

@@ -44,9 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.Application
-import com.example.workflow.presentation.ui.theme.Coral40
-import com.example.workflow.presentation.ui.theme.Green40
-import com.example.workflow.presentation.ui.theme.Indigo60
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -56,9 +53,10 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyApplicationsScreen(
+    viewModel: MyApplicationsViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    val viewModel: MyApplicationsViewModel = hiltViewModel()
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 
@@ -74,19 +72,32 @@ fun MyApplicationsScreen(
     if (cancelTargetId != null) {
         AlertDialog(
             onDismissRequest = { cancelTargetId = null },
-            title = { Text("Отменить отклик?") },
-            text = { Text("Отклик будет удалён и работодатель его больше не увидит.") },
+            title = { 
+                Text(
+                    text = "Отменить отклик?"
+                ) },
+            text = { Text(
+                text = "Отклик будет удалён и работодатель его больше не увидит."
+            ) },
             confirmButton = {
-                TextButton(onClick = {
+                TextButton(
+                    onClick = {
                     cancelTargetId?.let { viewModel.cancel(it) }
                     cancelTargetId = null
                 }) {
-                    Text("Отменить отклик", color = Coral40)
+                    Text(
+                        text = "Отменить отклик",
+                        color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { cancelTargetId = null }) {
-                    Text("Оставить")
+                TextButton(
+                    onClick = {
+                        cancelTargetId = null
+                    }) {
+                    Text(
+                        text = "Оставить"
+                    )
                 }
             }
         )
@@ -99,8 +110,12 @@ fun MyApplicationsScreen(
     ) {
         when (val state = uiState) {
             is MyApplicationsViewModel.UiState.Loading -> ApplicationsListSkeleton()
+
             is MyApplicationsViewModel.UiState.Error -> {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
                         text = state.message,
                         modifier = Modifier.padding(16.dp),
@@ -108,9 +123,13 @@ fun MyApplicationsScreen(
                     )
                 }
             }
+
             is MyApplicationsViewModel.UiState.Success -> {
                 if (state.applications.isEmpty()) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -122,7 +141,7 @@ fun MyApplicationsScreen(
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
-                                "Вы ещё не откликались на вакансии",
+                                text = "Вы ещё не откликались на вакансии",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -159,7 +178,14 @@ private fun ApplicationCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 14.dp)) {
+        Column(
+            modifier = Modifier.padding(
+                start = 18.dp,
+                end = 18.dp,
+                top = 14.dp,
+                bottom = 14.dp
+            )
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -206,10 +232,13 @@ private fun ApplicationCard(
                     onClick = onCancel,
                     modifier = Modifier.fillMaxWidth().height(40.dp),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Coral40),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Coral40)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.error)
                 ) {
-                    Text("Отменить отклик", style = MaterialTheme.typography.labelMedium)
+                    Text(
+                        text = "Отменить отклик",
+                        style = MaterialTheme.typography.labelMedium
+                    )
                 }
             }
         }
@@ -239,7 +268,7 @@ private fun statusLabel(status: String) = when (status) {
 
 @Composable
 private fun statusColor(status: String) = when (status) {
-    "ACCEPTED" -> Green40
-    "REJECTED" -> Coral40
-    else -> Indigo60
+    "ACCEPTED" -> MaterialTheme.colorScheme.tertiary
+    "REJECTED" -> MaterialTheme.colorScheme.error
+    else -> MaterialTheme.colorScheme.primary
 }

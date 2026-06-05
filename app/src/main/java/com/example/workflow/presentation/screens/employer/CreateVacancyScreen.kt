@@ -44,19 +44,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 
-import com.example.workflow.presentation.ui.theme.Indigo60
-
 private val employmentTypes = listOf("Полная занятость", "Частичная занятость", "Удалённо")
 private val experienceOptions = listOf("Без опыта", "1-3 года", "3-6 лет", "Более 6 лет")
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateVacancyScreen(
+    viewModel: CreateVacancyViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onCreated: () -> Unit
 ) {
-    val viewModel: CreateVacancyViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var title by remember { mutableStateOf("") }
@@ -76,9 +73,9 @@ fun CreateVacancyScreen(
     }
 
     val fieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = Indigo60,
-        unfocusedBorderColor = Indigo60.copy(alpha = 0.4f),
-        focusedLabelColor = Indigo60
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+        focusedLabelColor = MaterialTheme.colorScheme.primary
     )
     val fieldShape = RoundedCornerShape(14.dp)
     val isLoading = uiState is CreateVacancyViewModel.UiState.Loading
@@ -86,10 +83,16 @@ fun CreateVacancyScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Новая вакансия") },
+                title = { 
+                    Text(
+                        text = "Новая вакансия"
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -157,7 +160,9 @@ fun CreateVacancyScreen(
                 colors = fieldColors
             )
 
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp))
+            {
                 OutlinedTextField(
                     value = salaryFrom,
                     onValueChange = { salaryFrom = it },
@@ -204,8 +209,11 @@ fun CreateVacancyScreen(
             Spacer(modifier = Modifier.height(4.dp))
 
             if (isLoading) {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Indigo60)
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center)
+                {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             } else {
                 Button(
@@ -214,9 +222,12 @@ fun CreateVacancyScreen(
                     },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text("Опубликовать", style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        text = "Опубликовать",
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
             }
         }
@@ -234,7 +245,12 @@ fun EnumDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(expanded = expanded && enabled, onExpandedChange = { if (enabled) expanded = it }) {
+    ExposedDropdownMenuBox(
+        expanded = expanded && enabled,
+        onExpandedChange = {
+            if (enabled) expanded = it
+        }
+    ) {
         OutlinedTextField(
             value = selected,
             onValueChange = {},
@@ -245,12 +261,17 @@ fun EnumDropdown(
             enabled = enabled,
             shape = RoundedCornerShape(14.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Indigo60,
-                unfocusedBorderColor = Indigo60.copy(alpha = 0.4f),
-                focusedLabelColor = Indigo60
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                focusedLabelColor = MaterialTheme.colorScheme.primary
             )
         )
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
             options.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option) },

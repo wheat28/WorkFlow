@@ -27,15 +27,6 @@ class EditVacancyViewModel @Inject constructor(
 
     private val vacancyId: String = checkNotNull(savedStateHandle["vacancyId"])
 
-    sealed class UiState {
-        object Loading : UiState()
-        data class Ready(val vacancy: Vacancy) : UiState()
-        data class Saving(val vacancy: Vacancy) : UiState()
-        object Saved : UiState()
-        object Deleted : UiState()
-        data class Error(val message: String) : UiState()
-    }
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
@@ -116,5 +107,14 @@ class EditVacancyViewModel @Inject constructor(
                 .onSuccess { _uiState.value = UiState.Deleted }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка удаления") }
         }
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        data class Ready(val vacancy: Vacancy) : UiState()
+        data class Saving(val vacancy: Vacancy) : UiState()
+        object Saved : UiState()
+        object Deleted : UiState()
+        data class Error(val message: String) : UiState()
     }
 }

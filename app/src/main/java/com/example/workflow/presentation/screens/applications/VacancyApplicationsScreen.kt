@@ -47,27 +47,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.Application
-import com.example.workflow.presentation.ui.theme.Coral40
-import com.example.workflow.presentation.ui.theme.Coral90
-import com.example.workflow.presentation.ui.theme.Green40
-import com.example.workflow.presentation.ui.theme.Green90
-import com.example.workflow.presentation.ui.theme.Indigo60
-import com.example.workflow.presentation.ui.theme.Indigo90
-
-private val filters = listOf(
-    null to "Все",
-    "PENDING" to "На рассмотрении",
-    "ACCEPTED" to "Принятые",
-    "REJECTED" to "Отклонённые"
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VacancyApplicationsScreen(
+    viewModel: VacancyApplicationsViewModel = hiltViewModel(),
     onBack: () -> Unit,
-    onViewResume: (resumeId: String) -> Unit = {}
+    onViewResume: (resumeId: String) -> Unit
 ) {
-    val viewModel: VacancyApplicationsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val activeFilter by viewModel.filterStatus.collectAsStateWithLifecycle()
 
@@ -76,21 +63,41 @@ fun VacancyApplicationsScreen(
     pendingAction?.let { (appId, newStatus, message) ->
         AlertDialog(
             onDismissRequest = { pendingAction = null },
-            title = { Text(if (newStatus == "ACCEPTED") "Принять кандидата?" else "Отклонить кандидата?") },
+            title = {
+                Text(
+                    if (newStatus == "ACCEPTED") {
+                    "Принять кандидата?"
+                } else "Отклонить кандидата?"
+                ) },
             text = { Text(message) },
             confirmButton = {
-                TextButton(onClick = {
+                TextButton(
+                    onClick = {
                     viewModel.updateStatus(appId, newStatus)
                     pendingAction = null
-                }) {
+                }
+                ) {
                     Text(
-                        if (newStatus == "ACCEPTED") "Принять" else "Отклонить",
-                        color = if (newStatus == "ACCEPTED") Green40 else Coral40
+                        if (newStatus == "ACCEPTED") {
+                            "Принять"
+                        } else {
+                            "Отклонить"
+                        },
+                        color = if (newStatus == "ACCEPTED") {
+                            MaterialTheme.colorScheme.tertiary
+                        } else MaterialTheme.colorScheme.error
                     )
                 }
             },
             dismissButton = {
-                TextButton(onClick = { pendingAction = null }) { Text("Отмена") }
+                TextButton(
+                    onClick = { pendingAction = null }
+                )
+                {
+                    Text(
+                        text = "Отмена"
+                    )
+                }
             }
         )
     }
@@ -98,10 +105,17 @@ fun VacancyApplicationsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Отклики", maxLines = 1) },
+                title = { 
+                    Text(
+                        text = "Отклики",
+                        maxLines = 1
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -112,7 +126,8 @@ fun VacancyApplicationsScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -123,24 +138,29 @@ fun VacancyApplicationsScreen(
                         onClick = { viewModel.setFilter(status) },
                         label = { Text(label, style = MaterialTheme.typography.labelMedium) },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = Indigo90,
-                            selectedLabelColor = Indigo60
+                            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            selectedLabelColor = MaterialTheme.colorScheme.primary
                         ),
                         border = FilterChipDefaults.filterChipBorder(
                             enabled = true,
                             selected = activeFilter == status,
-                            selectedBorderColor = Indigo60,
+                            selectedBorderColor = MaterialTheme.colorScheme.primary,
                             borderColor = MaterialTheme.colorScheme.outline
                         )
                     )
                 }
             }
 
-            Box(modifier = Modifier.weight(1f)) {
+            Box(
+                modifier = Modifier.weight(1f)
+            ) {
                 when (val state = uiState) {
                     is VacancyApplicationsViewModel.UiState.Loading -> {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = Indigo60)
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = MaterialTheme.colorScheme.primary)
                     }
+
                     is VacancyApplicationsViewModel.UiState.Error -> {
                         Text(
                             text = state.message,
@@ -148,6 +168,7 @@ fun VacancyApplicationsScreen(
                             color = MaterialTheme.colorScheme.error
                         )
                     }
+
                     is VacancyApplicationsViewModel.UiState.Success -> {
                         if (state.applications.isEmpty()) {
                             Column(
@@ -162,7 +183,11 @@ fun VacancyApplicationsScreen(
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    text = if (activeFilter == null) "Откликов пока нет" else "Нет откликов в этой категории",
+                                    text = if (activeFilter == null) {
+                                        "Откликов пока нет"
+                                    } else {
+                                        "Нет откликов в этой категории"
+                                    },
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -244,10 +269,13 @@ private fun ApplicantCard(
                 onClick = onViewResume,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Indigo60),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Indigo60)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
-                Text("Смотреть резюме", style = MaterialTheme.typography.labelMedium)
+                Text(
+                    text = "Смотреть резюме",
+                    style = MaterialTheme.typography.labelMedium
+                )
             }
 
             if (application.status == "PENDING") {
@@ -259,17 +287,23 @@ private fun ApplicantCard(
                         onClick = onAccept,
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Green40)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
                     ) {
-                        Text("Принять", style = MaterialTheme.typography.labelMedium)
+                        Text(
+                            text = "Принять",
+                            style = MaterialTheme.typography.labelMedium
+                        )
                     }
                     OutlinedButton(
                         onClick = onReject,
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Coral40)
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
                     ) {
-                        Text("Отклонить", style = MaterialTheme.typography.labelMedium)
+                        Text(
+                            text = "Отклонить",
+                            style = MaterialTheme.typography.labelMedium
+                        )
                     }
                 }
             }
@@ -280,14 +314,25 @@ private fun ApplicantCard(
 @Composable
 private fun StatusChip(status: String) {
     val (label, bg, fg) = when (status) {
-        "ACCEPTED" -> Triple("Принят", Green90, Green40)
-        "REJECTED" -> Triple("Отклонён", Coral90, Coral40)
-        else -> Triple("На рассмотрении", Indigo90, Indigo60)
+        "ACCEPTED" -> Triple("Принят", MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.tertiary)
+        "REJECTED" -> Triple("Отклонён", MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.error)
+        else -> Triple("На рассмотрении", MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.primary)
     }
     SuggestionChip(
         onClick = {},
-        label = { Text(label, style = MaterialTheme.typography.labelSmall) },
+        label = {
+            Text(
+                label,
+                style = MaterialTheme.typography.labelSmall
+            ) },
         colors = SuggestionChipDefaults.suggestionChipColors(containerColor = bg, labelColor = fg),
         border = null
     )
 }
+
+private val filters = listOf(
+    null to "Все",
+    "PENDING" to "На рассмотрении",
+    "ACCEPTED" to "Принятые",
+    "REJECTED" to "Отклонённые"
+)

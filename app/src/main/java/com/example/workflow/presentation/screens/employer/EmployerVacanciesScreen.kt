@@ -40,20 +40,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.Vacancy
-import com.example.workflow.presentation.ui.theme.Coral40
-import com.example.workflow.presentation.ui.theme.Coral90
-import com.example.workflow.presentation.ui.theme.Green40
-import com.example.workflow.presentation.ui.theme.Green90
-import com.example.workflow.presentation.ui.theme.Indigo60
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmployerVacanciesScreen(
+    viewModel: EmployerVacanciesViewModel = hiltViewModel(),
     onVacancyClick: (String) -> Unit,
     onCreateVacancy: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: EmployerVacanciesViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 
@@ -77,16 +72,23 @@ fun EmployerVacanciesScreen(
             when (val state = uiState) {
                 is EmployerVacanciesViewModel.UiState.Loading -> EmployerVacanciesListSkeleton()
                 is EmployerVacanciesViewModel.UiState.Error -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
                             text = state.message,
                             color = MaterialTheme.colorScheme.error
                         )
                     }
                 }
+
                 is EmployerVacanciesViewModel.UiState.Success -> {
                     if (state.vacancies.isEmpty()) {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Box(
+                            Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -125,13 +127,15 @@ fun EmployerVacanciesScreen(
                 .padding(horizontal = 16.dp, vertical = 12.dp)
                 .height(54.dp),
             shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Text("Создать вакансию", style = MaterialTheme.typography.labelLarge)
+            Text(
+                text = "Создать вакансию",
+                style = MaterialTheme.typography.labelLarge
+            )
         }
     }
 }
-
 
 private fun applicationLabel(count: Int) = when {
     count % 100 in 11..19 -> "откликов"
@@ -149,7 +153,10 @@ private fun EmployerVacancyCard(vacancy: Vacancy, onClick: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Column(
+            modifier = Modifier.padding(18.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp))
+        {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -170,8 +177,8 @@ private fun EmployerVacancyCard(vacancy: Vacancy, onClick: () -> Unit) {
                         )
                     },
                     colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = if (vacancy.isActive) Green90 else Coral90,
-                        labelColor = if (vacancy.isActive) Green40 else Coral40
+                        containerColor = if (vacancy.isActive) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.errorContainer,
+                        labelColor = if (vacancy.isActive) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error
                     ),
                     border = null
                 )
@@ -187,7 +194,7 @@ private fun EmployerVacancyCard(vacancy: Vacancy, onClick: () -> Unit) {
                 Text(
                     text = "${vacancy.applicationCount} ${applicationLabel(vacancy.applicationCount)}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Indigo60
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
 
@@ -200,7 +207,7 @@ private fun EmployerVacancyCard(vacancy: Vacancy, onClick: () -> Unit) {
                 Text(
                     text = salary,
                     style = MaterialTheme.typography.titleSmall,
-                    color = Green40
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             }
         }

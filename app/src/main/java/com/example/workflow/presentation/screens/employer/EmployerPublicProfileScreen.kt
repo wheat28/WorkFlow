@@ -44,26 +44,29 @@ import com.example.workflow.domain.model.Employer
 import com.example.workflow.domain.model.Vacancy
 import androidx.compose.foundation.background
 import com.example.workflow.presentation.screens.common.shimmerBrush
-import com.example.workflow.presentation.ui.theme.Green40
-import com.example.workflow.presentation.ui.theme.Indigo60
-import com.example.workflow.presentation.ui.theme.Indigo90
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmployerPublicProfileScreen(
+    viewModel: EmployerPublicProfileViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onVacancyClick: (String) -> Unit
 ) {
-    val viewModel: EmployerPublicProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Профиль компании") },
+                title = { 
+                    Text(
+                        text = "Профиль компании"
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -78,6 +81,7 @@ fun EmployerPublicProfileScreen(
             is EmployerPublicProfileViewModel.UiState.Loading -> {
                 EmployerProfileSkeleton(modifier = Modifier.padding(innerPadding))
             }
+
             is EmployerPublicProfileViewModel.UiState.Error -> {
                 Box(
                     Modifier.fillMaxSize().padding(innerPadding),
@@ -86,6 +90,7 @@ fun EmployerPublicProfileScreen(
                     Text(state.message, color = MaterialTheme.colorScheme.error)
                 }
             }
+
             is EmployerPublicProfileViewModel.UiState.Success -> {
                 EmployerPublicProfileContent(
                     employer = state.employer,
@@ -121,7 +126,9 @@ private fun EmployerPublicProfileContent(
                     modifier = Modifier.padding(20.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Box(
                             modifier = Modifier
                                 .size(56.dp)
@@ -132,7 +139,7 @@ private fun EmployerPublicProfileContent(
                                 Icons.Outlined.Business,
                                 contentDescription = null,
                                 modifier = Modifier.size(44.dp),
-                                tint = Indigo60
+                                tint = MaterialTheme.colorScheme.primary
                             )
                         }
                         Column {
@@ -152,15 +159,17 @@ private fun EmployerPublicProfileContent(
                         }
                     }
 
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
                         employer.city?.let {
-                            InfoRow(icon = { Icon(Icons.Outlined.LocationOn, null, tint = Indigo60, modifier = Modifier.size(18.dp)) }, text = it)
+                            InfoRow(icon = { Icon(Icons.Outlined.LocationOn, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp)) }, text = it)
                         }
                         employer.website?.let {
-                            InfoRow(icon = { Icon(Icons.Outlined.Language, null, tint = Indigo60, modifier = Modifier.size(18.dp)) }, text = it)
+                            InfoRow(icon = { Icon(Icons.Outlined.Language, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp)) }, text = it)
                         }
                         employer.phone?.let {
-                            InfoRow(icon = { Icon(Icons.Outlined.Phone, null, tint = Indigo60, modifier = Modifier.size(18.dp)) }, text = it)
+                            InfoRow(icon = { Icon(Icons.Outlined.Phone, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp)) }, text = it)
                         }
                     }
                 }
@@ -176,9 +185,19 @@ private fun EmployerPublicProfileContent(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {
-                        Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text("О компании", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text(desc, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+                        Column(
+                            modifier = Modifier.padding(20.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "О компании",
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(
+                                desc,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                     }
                 }
@@ -195,7 +214,9 @@ private fun EmployerPublicProfileContent(
                 )
             }
             items(vacancies, key = { it.id }) { vacancy ->
-                PublicVacancyCard(vacancy = vacancy, onClick = { onVacancyClick(vacancy.id) })
+                PublicVacancyCard(
+                    vacancy = vacancy,
+                    onClick = { onVacancyClick(vacancy.id) })
             }
         } else {
             item {
@@ -211,18 +232,27 @@ private fun EmployerPublicProfileContent(
 }
 
 @Composable
-private fun InfoRow(icon: @Composable () -> Unit, text: String) {
+private fun InfoRow(
+    icon: @Composable () -> Unit,
+    text: String
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         icon()
-        Text(text = text, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
 @Composable
-private fun PublicVacancyCard(vacancy: Vacancy, onClick: () -> Unit) {
+private fun PublicVacancyCard(
+    vacancy: Vacancy,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -245,13 +275,19 @@ private fun PublicVacancyCard(vacancy: Vacancy, onClick: () -> Unit) {
                     if (vacancy.salaryTo != null) append(" до ${vacancy.salaryTo}")
                     if (vacancy.currency != null) append(" ${vacancy.currency}")
                 }
-                Text(text = salary, style = MaterialTheme.typography.bodyMedium, color = Green40)
+                Text(
+                    text = salary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(6.dp))
+            {
                 SuggestionChip(
                     onClick = {},
                     label = { Text((vacancy.employmentType), style = MaterialTheme.typography.labelSmall) },
-                    colors = SuggestionChipDefaults.suggestionChipColors(containerColor = Indigo90, labelColor = Indigo60),
+                    colors = SuggestionChipDefaults.suggestionChipColors(containerColor = MaterialTheme.colorScheme.primaryContainer, labelColor = MaterialTheme.colorScheme.primary),
                     border = null
                 )
                 vacancy.city?.let {
@@ -268,17 +304,30 @@ private fun PublicVacancyCard(vacancy: Vacancy, onClick: () -> Unit) {
 }
 
 @Composable
-private fun EmployerProfileSkeleton(modifier: Modifier = Modifier) {
+private fun EmployerProfileSkeleton(
+    modifier: Modifier = Modifier
+) {
     val brush = shimmerBrush()
     Column(
         modifier = modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp), elevation = CardDefaults.cardElevation(2.dp)) {
-            Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.size(44.dp).background(brush, RoundedCornerShape(12.dp)))
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Card(modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
+            elevation = CardDefaults.cardElevation(2.dp)
+        ) {
+            Column(modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically)
+                {
+                    Box(
+                        Modifier.size(44.dp).background(brush, RoundedCornerShape(12.dp))
+                    )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
                         Box(Modifier.fillMaxWidth(0.6f).height(20.dp).background(brush, RoundedCornerShape(6.dp)))
                         Box(Modifier.fillMaxWidth(0.4f).height(14.dp).background(brush, RoundedCornerShape(6.dp)))
                     }

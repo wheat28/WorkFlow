@@ -21,16 +21,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.workflow.data.local.TokenDataStore
-import com.example.workflow.presentation.ui.theme.Indigo60
-import com.example.workflow.presentation.ui.theme.Indigo90
-import com.example.workflow.presentation.ui.theme.Indigo95
-import com.example.workflow.presentation.ui.theme.Gray40
+import com.example.workflow.presentation.ui.theme.navigationBarContainerColor
 import com.example.workflow.presentation.screens.applications.MyApplicationsScreen
 import com.example.workflow.presentation.screens.employer.EmployerDashboardScreen
 import com.example.workflow.presentation.screens.employer.EmployerVacanciesScreen
 import com.example.workflow.presentation.screens.favorites.FavoritesScreen
 import com.example.workflow.presentation.screens.profile.ProfileScreen
 import com.example.workflow.presentation.screens.vacancies.VacancyListScreen
+import androidx.compose.material3.MaterialTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,13 +49,13 @@ fun MainScreen(
     Scaffold(
         bottomBar = {
             val navItemColors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Indigo60,
-                unselectedIconColor = Gray40,
-                selectedTextColor = Indigo60,
-                unselectedTextColor = Gray40,
-                indicatorColor = Indigo90
+                selectedIconColor = MaterialTheme.colorScheme.primary,
+                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                selectedTextColor = MaterialTheme.colorScheme.primary,
+                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                indicatorColor = MaterialTheme.colorScheme.primaryContainer
             )
-            NavigationBar(containerColor = Indigo95) {
+            NavigationBar(containerColor = MaterialTheme.navigationBarContainerColor) {
                 if (userType == "EMPLOYER") {
 
                     NavigationBarItem(

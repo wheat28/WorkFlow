@@ -36,18 +36,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.Vacancy
-import com.example.workflow.presentation.ui.theme.Coral40
-import com.example.workflow.presentation.ui.theme.Green40
-import com.example.workflow.presentation.ui.theme.Indigo60
-import com.example.workflow.presentation.ui.theme.Indigo90
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
+    viewModel: FavoritesViewModel = hiltViewModel(),
     onVacancyClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: FavoritesViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 
@@ -63,7 +59,10 @@ fun FavoritesScreen(
         when (val state = uiState) {
             is FavoritesViewModel.UiState.Loading -> VacancyListSkeleton()
             is FavoritesViewModel.UiState.Error -> {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
                         text = state.message,
                         modifier = Modifier.padding(16.dp),
@@ -71,9 +70,13 @@ fun FavoritesScreen(
                     )
                 }
             }
+
             is FavoritesViewModel.UiState.Success -> {
                 if (state.vacancies.isEmpty()) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -134,7 +137,10 @@ private fun FavoriteVacancyCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     Text(
                         text = vacancy.title,
                         style = MaterialTheme.typography.titleSmall,
@@ -143,14 +149,17 @@ private fun FavoriteVacancyCard(
                     Text(
                         text = vacancy.companyName,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Indigo60
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
-                IconButton(onClick = onRemove, modifier = Modifier.size(36.dp)) {
+                IconButton(
+                    onClick = onRemove,
+                    modifier = Modifier.size(36.dp)
+                ) {
                     Icon(
                         Icons.Default.Favorite,
                         contentDescription = "Удалить из избранного",
-                        tint = Coral40,
+                        tint = MaterialTheme.colorScheme.error,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -162,7 +171,11 @@ private fun FavoriteVacancyCard(
                     if (vacancy.salaryTo != null) append(" до ${vacancy.salaryTo}")
                     if (vacancy.currency != null) append(" ${vacancy.currency}")
                 }
-                Text(text = salary, style = MaterialTheme.typography.bodySmall, color = Green40)
+                Text(
+                    text = salary,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
             }
 
             vacancy.city?.let {
@@ -175,7 +188,7 @@ private fun FavoriteVacancyCard(
                 SuggestionChip(
                     onClick = {},
                     label = { Text(vacancy.employmentType, style = MaterialTheme.typography.labelSmall) },
-                    colors = SuggestionChipDefaults.suggestionChipColors(containerColor = Indigo90, labelColor = Indigo60),
+                    colors = SuggestionChipDefaults.suggestionChipColors(containerColor = MaterialTheme.colorScheme.primaryContainer, labelColor = MaterialTheme.colorScheme.primary),
                     border = null
                 )
             }

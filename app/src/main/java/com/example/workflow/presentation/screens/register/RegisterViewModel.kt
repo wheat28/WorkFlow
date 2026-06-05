@@ -49,11 +49,11 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun resetState() { _uiState.value = RegisterUiState.Idle }
-}
 
-sealed class RegisterUiState {
-    object Idle : RegisterUiState()
-    object Loading : RegisterUiState()
-    object Success : RegisterUiState()
-    data class Error(val message: String) : RegisterUiState()
+    sealed class RegisterUiState {
+        object Idle : RegisterUiState()
+        object Loading : RegisterUiState()
+        object Success : RegisterUiState()
+        data class Error(val message: String) : RegisterUiState()
+    }
 }

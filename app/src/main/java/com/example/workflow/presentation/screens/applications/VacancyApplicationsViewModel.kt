@@ -23,12 +23,6 @@ class VacancyApplicationsViewModel @Inject constructor(
 
     private val vacancyId: String = checkNotNull(savedStateHandle["vacancyId"])
 
-    sealed class UiState {
-        object Loading : UiState()
-        data class Success(val applications: List<Application>) : UiState()
-        data class Error(val message: String) : UiState()
-    }
-
     private val _allApplications = MutableStateFlow<List<Application>>(emptyList())
     private val _loadState = MutableStateFlow<UiState>(UiState.Loading)
     val filterStatus = MutableStateFlow<String?>(null)
@@ -75,5 +69,11 @@ class VacancyApplicationsViewModel @Inject constructor(
             runCatching { updateApplicationStatusUseCase(applicationId, status) }
                 .onFailure { _allApplications.value = previous }
         }
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        data class Success(val applications: List<Application>) : UiState()
+        data class Error(val message: String) : UiState()
     }
 }

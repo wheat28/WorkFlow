@@ -39,15 +39,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.workflow.presentation.ui.theme.Indigo60
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditEmployerProfileScreen(
+    viewModel: EditEmployerProfileViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onSaved: () -> Unit
 ) {
-    val viewModel: EditEmployerProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var companyName by rememberSaveable { mutableStateOf("") }
@@ -73,8 +72,8 @@ fun EditEmployerProfileScreen(
     }
 
     val fieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = Indigo60,
-        focusedLabelColor = Indigo60
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        focusedLabelColor = MaterialTheme.colorScheme.primary
     )
     val fieldShape = RoundedCornerShape(14.dp)
     val isLoading = uiState is EditEmployerProfileViewModel.UiState.Loading
@@ -83,10 +82,16 @@ fun EditEmployerProfileScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Профиль компании") },
+                title = { 
+                    Text(
+                        text = "Профиль компании"
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -98,8 +103,11 @@ fun EditEmployerProfileScreen(
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         if (isLoading) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = Indigo60)
+            Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
             return@Scaffold
         }
@@ -113,41 +121,64 @@ fun EditEmployerProfileScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             OutlinedTextField(
-                value = companyName, onValueChange = { companyName = it },
+                value = companyName,
+                onValueChange = { companyName = it },
                 label = { Text("Название компании *") },
-                modifier = Modifier.fillMaxWidth(), singleLine = true,
-                enabled = !isSaving, shape = fieldShape, colors = fieldColors
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = !isSaving,
+                shape = fieldShape,
+                colors = fieldColors
             )
             OutlinedTextField(
-                value = description, onValueChange = { description = it },
+                value = description,
+                onValueChange = { description = it },
                 label = { Text("О компании") },
-                modifier = Modifier.fillMaxWidth(), minLines = 3,
-                enabled = !isSaving, shape = fieldShape, colors = fieldColors
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 3,
+                enabled = !isSaving,
+                shape = fieldShape,
+                colors = fieldColors
             )
             OutlinedTextField(
-                value = city, onValueChange = { city = it },
+                value = city,
+                onValueChange = { city = it },
                 label = { Text("Город") },
-                modifier = Modifier.fillMaxWidth(), singleLine = true,
-                enabled = !isSaving, shape = fieldShape, colors = fieldColors
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = !isSaving,
+                shape = fieldShape,
+                colors = fieldColors
             )
             OutlinedTextField(
-                value = industry, onValueChange = { industry = it },
+                value = industry,
+                onValueChange = { industry = it },
                 label = { Text("Отрасль") },
                 modifier = Modifier.fillMaxWidth(), singleLine = true,
-                enabled = !isSaving, shape = fieldShape, colors = fieldColors
+                enabled = !isSaving,
+                shape = fieldShape,
+                colors = fieldColors
             )
             OutlinedTextField(
-                value = website, onValueChange = { website = it },
+                value = website,
+                onValueChange = { website = it },
                 label = { Text("Сайт") },
-                modifier = Modifier.fillMaxWidth(), singleLine = true,
-                enabled = !isSaving, shape = fieldShape, colors = fieldColors,
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = !isSaving,
+                shape = fieldShape,
+                colors = fieldColors,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)
             )
             OutlinedTextField(
-                value = phone, onValueChange = { phone = it },
+                value = phone,
+                onValueChange = { phone = it },
                 label = { Text("Телефон") },
-                modifier = Modifier.fillMaxWidth(), singleLine = true,
-                enabled = !isSaving, shape = fieldShape, colors = fieldColors,
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = !isSaving,
+                shape = fieldShape,
+                colors = fieldColors,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
             )
 
@@ -162,17 +193,23 @@ fun EditEmployerProfileScreen(
             Spacer(modifier = Modifier.height(4.dp))
 
             if (isSaving) {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Indigo60)
+                Box(
+                    Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             } else {
                 Button(
                     onClick = { viewModel.save(companyName, description, website, city, industry, phone) },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text("Сохранить", style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        text = "Сохранить",
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
             }
         }

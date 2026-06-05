@@ -19,12 +19,6 @@ class MyApplicationsViewModel @Inject constructor(
     private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
-    sealed class UiState {
-        object Loading : UiState()
-        data class Success(val applications: List<Application>) : UiState()
-        data class Error(val message: String) : UiState()
-    }
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
@@ -65,5 +59,11 @@ class MyApplicationsViewModel @Inject constructor(
             runCatching { cancelApplicationUseCase(applicationId) }
                 .onFailure { _uiState.value = current }
         }
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        data class Success(val applications: List<Application>) : UiState()
+        data class Error(val message: String) : UiState()
     }
 }

@@ -67,10 +67,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.domain.model.Vacancy
-import com.example.workflow.presentation.ui.theme.Coral40
-import com.example.workflow.presentation.ui.theme.Green40
-import com.example.workflow.presentation.ui.theme.Indigo60
-import com.example.workflow.presentation.ui.theme.Indigo90
 import kotlinx.coroutines.launch
 
 private val employmentTypes = listOf("", "Полная занятость", "Частичная занятость", "Удалённо", "Стажировка")
@@ -81,10 +77,10 @@ private fun employmentFilterLabel(type: String) =
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VacancyListScreen(
+    viewModel: VacancyListViewModel = hiltViewModel(),
     onVacancyClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: VacancyListViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
@@ -134,7 +130,9 @@ fun VacancyListScreen(
         end = Offset(Float.POSITIVE_INFINITY, 0f)
     )
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
         Row(
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 0.dp)
@@ -170,14 +168,14 @@ fun VacancyListScreen(
             )
 
             BadgedBox(
-                badge = { if (hasActiveFilters) Badge(containerColor = Coral40) },
+                badge = { if (hasActiveFilters) Badge(containerColor = MaterialTheme.colorScheme.error) },
                 modifier = Modifier.padding(end = 4.dp)
             ) {
                 IconButton(onClick = { showFilters = true }) {
                     Icon(
                         Icons.Outlined.Tune,
                         contentDescription = "Фильтры",
-                        tint = if (hasActiveFilters) Indigo60 else MaterialTheme.colorScheme.onSurfaceVariant,
+                        tint = if (hasActiveFilters) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -192,13 +190,20 @@ fun VacancyListScreen(
             when (val state = uiState) {
                 is VacancyListViewModel.UiState.Loading -> VacancyListSkeleton()
                 is VacancyListViewModel.UiState.Error -> {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(state.message, color = MaterialTheme.colorScheme.error)
                     }
                 }
+
                 is VacancyListViewModel.UiState.Success -> {
                     if (state.vacancies.isEmpty()) {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Box(
+                            Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -210,7 +215,7 @@ fun VacancyListScreen(
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    "Вакансии не найдены",
+                                    text = "Вакансии не найдены",
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -255,7 +260,7 @@ private fun FilterSheetContent(
     onApply: () -> Unit
 ) {
     val fieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = Indigo60,
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
         unfocusedBorderColor = MaterialTheme.colorScheme.outline
     )
     val fieldShape = RoundedCornerShape(14.dp)
@@ -276,7 +281,7 @@ private fun FilterSheetContent(
             Text("Фильтры", style = MaterialTheme.typography.titleMedium)
             if (hasActiveFilters) {
                 TextButton(onClick = onClear) {
-                    Text("Сбросить", color = Coral40)
+                    Text("Сбросить", color = MaterialTheme.colorScheme.error)
                 }
             }
         }
@@ -324,7 +329,7 @@ private fun FilterSheetContent(
             onClick = onApply,
             modifier = Modifier.fillMaxWidth().height(54.dp),
             shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text("Применить", style = MaterialTheme.typography.labelLarge)
         }
@@ -340,7 +345,11 @@ private fun EmploymentTypeDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }, modifier = modifier) {
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        modifier = modifier
+    ) {
         OutlinedTextField(
             value = employmentFilterLabel(selected),
             onValueChange = {},
@@ -350,11 +359,14 @@ private fun EmploymentTypeDropdown(
             modifier = Modifier.menuAnchor().fillMaxWidth(),
             shape = RoundedCornerShape(14.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Indigo60,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.outline
             )
         )
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
             employmentTypes.forEach { type ->
                 DropdownMenuItem(
                     text = { Text(employmentFilterLabel(type)) },
@@ -379,13 +391,18 @@ private fun VacancyCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(start = 18.dp, end = 8.dp, top = 14.dp, bottom = 14.dp)) {
+        Column(
+            modifier = Modifier.padding(start = 18.dp, end = 8.dp, top = 14.dp, bottom = 14.dp)
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     Text(
                         text = vacancy.title,
                         style = MaterialTheme.typography.titleMedium,
@@ -394,7 +411,7 @@ private fun VacancyCard(
                     Text(
                         text = vacancy.companyName,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Indigo60
+                        color = MaterialTheme.colorScheme.primary
                     )
                     if (vacancy.salaryFrom != null || vacancy.salaryTo != null) {
                         val salary = buildString {
@@ -405,7 +422,7 @@ private fun VacancyCard(
                         Text(
                             text = salary,
                             style = MaterialTheme.typography.titleSmall,
-                            color = Green40
+                            color = MaterialTheme.colorScheme.tertiary
                         )
                     }
                 }
@@ -415,7 +432,7 @@ private fun VacancyCard(
                         Icon(
                             imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = if (isFavorite) "Убрать из избранного" else "Добавить в избранное",
-                            tint = if (isFavorite) Coral40 else MaterialTheme.colorScheme.onSurfaceVariant,
+                            tint = if (isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(22.dp)
                         )
                     }
@@ -424,7 +441,9 @@ private fun VacancyCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 if (!vacancy.city.isNullOrBlank()) {
                     SuggestionChip(
                         onClick = {},
@@ -439,8 +458,8 @@ private fun VacancyCard(
                     onClick = {},
                     label = { Text(vacancy.employmentType, style = MaterialTheme.typography.labelSmall) },
                     colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = Indigo90,
-                        labelColor = Indigo60
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        labelColor = MaterialTheme.colorScheme.primary
                     ),
                     border = null
                 )

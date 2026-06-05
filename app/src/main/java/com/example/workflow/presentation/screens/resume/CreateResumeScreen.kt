@@ -42,17 +42,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.workflow.presentation.ui.theme.Indigo60
 
 private val employmentTypes = listOf("Полная занятость", "Частичная занятость", "Удалённо", "Стажировка")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateResumeScreen(
+    viewModel: CreateResumeViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onCreated: () -> Unit
 ) {
-    val viewModel: CreateResumeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var title by remember { mutableStateOf("") }
@@ -70,8 +69,8 @@ fun CreateResumeScreen(
     }
 
     val fieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = Indigo60,
-        focusedLabelColor = Indigo60
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        focusedLabelColor = MaterialTheme.colorScheme.primary
     )
     val fieldShape = RoundedCornerShape(14.dp)
     val isLoading = uiState is CreateResumeViewModel.UiState.Loading
@@ -79,10 +78,16 @@ fun CreateResumeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Создать резюме") },
+                title = { 
+                    Text(
+                        text = "Создать резюме"
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -139,7 +144,10 @@ fun CreateResumeScreen(
                     shape = fieldShape,
                     colors = fieldColors
                 )
-                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
                     employmentTypes.forEach { type ->
                         DropdownMenuItem(
                             text = { Text(type) },
@@ -194,17 +202,22 @@ fun CreateResumeScreen(
             Spacer(modifier = Modifier.height(4.dp))
 
             if (isLoading) {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Indigo60)
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             } else {
                 Button(
                     onClick = { viewModel.create(title, position, employmentType, salaryExpected, city, about) },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text("Сохранить резюме", style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        text = "Сохранить резюме",
+                        style = MaterialTheme.typography.labelLarge)
                 }
             }
         }

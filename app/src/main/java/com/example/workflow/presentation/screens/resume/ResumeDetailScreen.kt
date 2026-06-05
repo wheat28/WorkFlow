@@ -35,25 +35,28 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.domain.model.Resume
 import com.example.workflow.domain.model.WorkExperience
 import com.example.workflow.presentation.screens.common.ResumeDetailSkeleton
-import com.example.workflow.presentation.ui.theme.Green40
-import com.example.workflow.presentation.ui.theme.Indigo60
-import com.example.workflow.presentation.ui.theme.Indigo90
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResumeDetailScreen(
+    viewModel: ResumeDetailViewModel = hiltViewModel(),
     onBack: () -> Unit
 ) {
-    val viewModel: ResumeDetailViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Резюме") },
+                title = { 
+                    Text(
+                        text = "Резюме"
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -68,11 +71,16 @@ fun ResumeDetailScreen(
             is ResumeDetailViewModel.UiState.Loading -> {
                 ResumeDetailSkeleton(modifier = Modifier.padding(innerPadding))
             }
+
             is ResumeDetailViewModel.UiState.Error -> {
-                Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(state.message, color = MaterialTheme.colorScheme.error)
                 }
             }
+
             is ResumeDetailViewModel.UiState.Success -> {
                 ResumeDetailContent(
                     resume = state.resume,
@@ -99,7 +107,10 @@ private fun ResumeDetailContent(resume: Resume, modifier: Modifier = Modifier) {
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
-            Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
                 Text(
                     text = resume.title,
                     style = MaterialTheme.typography.headlineSmall,
@@ -108,7 +119,7 @@ private fun ResumeDetailContent(resume: Resume, modifier: Modifier = Modifier) {
                 Text(
                     text = resume.position,
                     style = MaterialTheme.typography.titleSmall,
-                    color = Indigo60
+                    color = MaterialTheme.colorScheme.primary
                 )
                 resume.city?.let {
                     Text(it, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -117,13 +128,13 @@ private fun ResumeDetailContent(resume: Resume, modifier: Modifier = Modifier) {
                     Text(
                         text = "от $it ${resume.currency}",
                         style = MaterialTheme.typography.titleMedium,
-                        color = Green40
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                 }
                 SuggestionChip(
                     onClick = {},
                     label = { Text(employmentTypeLabel(resume.employmentType), style = MaterialTheme.typography.labelSmall) },
-                    colors = SuggestionChipDefaults.suggestionChipColors(containerColor = Indigo90, labelColor = Indigo60),
+                    colors = SuggestionChipDefaults.suggestionChipColors(containerColor = MaterialTheme.colorScheme.primaryContainer, labelColor = MaterialTheme.colorScheme.primary),
                     border = null
                 )
             }
@@ -137,7 +148,10 @@ private fun ResumeDetailContent(resume: Resume, modifier: Modifier = Modifier) {
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
-                    Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         Text("О себе", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text(about, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                     }
@@ -152,9 +166,14 @@ private fun ResumeDetailContent(resume: Resume, modifier: Modifier = Modifier) {
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
-                Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
                     Text("Навыки", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         resume.skills.forEach { skill ->
                             SuggestionChip(
                                 onClick = {},
@@ -177,7 +196,10 @@ private fun ResumeDetailContent(resume: Resume, modifier: Modifier = Modifier) {
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
-                Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     Text("Опыт работы", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     resume.workExperiences.forEach { exp ->
                         WorkExperienceItem(exp)
@@ -190,9 +212,11 @@ private fun ResumeDetailContent(resume: Resume, modifier: Modifier = Modifier) {
 
 @Composable
 private fun WorkExperienceItem(exp: WorkExperience) {
-    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
         Text(exp.position, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurface)
-        Text(exp.companyName, style = MaterialTheme.typography.bodyMedium, color = Indigo60)
+        Text(exp.companyName, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary)
         val period = if (exp.endDate != null) "${exp.startDate} — ${exp.endDate}" else "${exp.startDate} — по н.в."
         Text(period, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         exp.description?.let {

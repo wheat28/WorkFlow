@@ -17,12 +17,6 @@ class ProfileViewModel @Inject constructor(
     private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
-    sealed class ResumeState {
-        object Loading : ResumeState()
-        data class Success(val resumes: List<Resume>) : ResumeState()
-        data class Error(val message: String) : ResumeState()
-    }
-
     private val _resumeState = MutableStateFlow<ResumeState>(ResumeState.Loading)
     val resumeState: StateFlow<ResumeState> = _resumeState
 
@@ -42,5 +36,11 @@ class ProfileViewModel @Inject constructor(
                 .onSuccess { _resumeState.value = ResumeState.Success(it) }
                 .onFailure { _resumeState.value = ResumeState.Error(it.message ?: "Ошибка") }
         }
+    }
+
+    sealed class ResumeState {
+        object Loading : ResumeState()
+        data class Success(val resumes: List<Resume>) : ResumeState()
+        data class Error(val message: String) : ResumeState()
     }
 }

@@ -49,19 +49,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workflow.presentation.ui.theme.Coral40
-import com.example.workflow.presentation.ui.theme.Indigo60
 
 private val employmentTypes = listOf("Полная занятость", "Частичная занятость", "Удалённо", "Стажировка")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditResumeScreen(
+    viewModel: EditResumeViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onSaved: () -> Unit,
     onDeleted: () -> Unit
 ) {
-    val viewModel: EditResumeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isActive by viewModel.isActive.collectAsStateWithLifecycle()
     val toggleError by viewModel.toggleError.collectAsStateWithLifecycle()
@@ -93,11 +91,14 @@ fun EditResumeScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Удалить резюме?") },
+            title = { 
+                Text(
+                    text = "Удалить резюме?"
+                ) },
             text = { Text("Это действие нельзя отменить. Резюме будет удалено безвозвратно.") },
             confirmButton = {
                 TextButton(onClick = { showDeleteDialog = false; viewModel.delete() }) {
-                    Text("Удалить", color = Coral40)
+                    Text("Удалить", color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
@@ -109,8 +110,8 @@ fun EditResumeScreen(
     }
 
     val fieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = Indigo60,
-        focusedLabelColor = Indigo60
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        focusedLabelColor = MaterialTheme.colorScheme.primary
     )
     val fieldShape = RoundedCornerShape(14.dp)
     val isLoading = uiState is EditResumeViewModel.UiState.Loading
@@ -119,10 +120,16 @@ fun EditResumeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Редактировать резюме") },
+                title = { 
+                    Text(
+                        text = "Редактировать резюме"
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -134,8 +141,11 @@ fun EditResumeScreen(
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         if (isLoading) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = Indigo60)
+            Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
             return@Scaffold
         }
@@ -157,7 +167,7 @@ fun EditResumeScreen(
                     Text(
                         text = if (isActive) "Активно" else "Скрыто",
                         style = MaterialTheme.typography.titleSmall,
-                        color = if (isActive) Indigo60 else Coral40
+                        color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
                     )
                     Text(
                         text = if (isActive) "Резюме видно работодателям" else "Резюме скрыто от работодателей",
@@ -169,10 +179,10 @@ fun EditResumeScreen(
                     checked = isActive,
                     onCheckedChange = { viewModel.setActive(it) },
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = Indigo60,
-                        checkedTrackColor = Indigo60.copy(alpha = 0.3f),
-                        uncheckedThumbColor = Coral40,
-                        uncheckedTrackColor = Coral40.copy(alpha = 0.3f)
+                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                        uncheckedThumbColor = MaterialTheme.colorScheme.error,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.error.copy(alpha = 0.3f)
                     )
                 )
             }
@@ -187,16 +197,24 @@ fun EditResumeScreen(
             }
 
             OutlinedTextField(
-                value = title, onValueChange = { title = it },
+                value = title,
+                onValueChange = { title = it },
                 label = { Text("Название резюме *") },
-                modifier = Modifier.fillMaxWidth(), singleLine = true,
-                enabled = !isSaving, shape = fieldShape, colors = fieldColors
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = !isSaving,
+                shape = fieldShape,
+                colors = fieldColors
             )
             OutlinedTextField(
-                value = position, onValueChange = { position = it },
+                value = position,
+                onValueChange = { position = it },
                 label = { Text("Желаемая должность *") },
-                modifier = Modifier.fillMaxWidth(), singleLine = true,
-                enabled = !isSaving, shape = fieldShape, colors = fieldColors
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = !isSaving,
+                shape = fieldShape,
+                colors = fieldColors
             )
 
             var expanded by remember { mutableStateOf(false) }
@@ -209,9 +227,14 @@ fun EditResumeScreen(
                     readOnly = true, label = { Text("Тип занятости") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
                     modifier = Modifier.menuAnchor().fillMaxWidth(),
-                    enabled = !isSaving, shape = fieldShape, colors = fieldColors
+                    enabled = !isSaving,
+                    shape = fieldShape,
+                    colors = fieldColors
                 )
-                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
                     employmentTypes.forEach { type ->
                         DropdownMenuItem(
                             text = { Text(type) },
@@ -222,23 +245,35 @@ fun EditResumeScreen(
             }
 
             OutlinedTextField(
-                value = salaryExpected, onValueChange = { salaryExpected = it },
+                value = salaryExpected,
+                onValueChange = { salaryExpected = it },
                 label = { Text("Ожидаемая зарплата") },
-                modifier = Modifier.fillMaxWidth(), singleLine = true,
-                enabled = !isSaving, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                shape = fieldShape, colors = fieldColors
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = !isSaving,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                shape = fieldShape,
+                colors = fieldColors
             )
             OutlinedTextField(
-                value = city, onValueChange = { city = it },
+                value = city,
+                onValueChange = { city = it },
                 label = { Text("Город") },
-                modifier = Modifier.fillMaxWidth(), singleLine = true,
-                enabled = !isSaving, shape = fieldShape, colors = fieldColors
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = !isSaving,
+                shape = fieldShape,
+                colors = fieldColors
             )
             OutlinedTextField(
-                value = about, onValueChange = { about = it },
+                value = about,
+                onValueChange = { about = it },
                 label = { Text("О себе") },
-                modifier = Modifier.fillMaxWidth(), minLines = 3,
-                enabled = !isSaving, shape = fieldShape, colors = fieldColors
+                modifier = Modifier.fillMaxWidth(),
+                minLines = 3,
+                enabled = !isSaving,
+                shape = fieldShape,
+                colors = fieldColors
             )
 
             if (uiState is EditResumeViewModel.UiState.Error) {
@@ -252,15 +287,18 @@ fun EditResumeScreen(
             Spacer(modifier = Modifier.height(4.dp))
 
             if (isSaving) {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Indigo60)
+                Box(
+                    Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             } else {
                 Button(
                     onClick = { viewModel.save(title, position, employmentType, salaryExpected, city, about) },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text("Сохранить", style = MaterialTheme.typography.labelLarge)
                 }
@@ -268,8 +306,8 @@ fun EditResumeScreen(
                     onClick = { showDeleteDialog = true },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Coral40),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Coral40)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.error)
                 ) {
                     Text("Удалить резюме", style = MaterialTheme.typography.labelLarge)
                 }

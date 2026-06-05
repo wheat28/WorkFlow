@@ -51,14 +51,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.domain.model.Vacancy
 import com.example.workflow.presentation.screens.common.VacancyDetailSkeleton
-import com.example.workflow.presentation.ui.theme.Coral40
-import com.example.workflow.presentation.ui.theme.Green40
-import com.example.workflow.presentation.ui.theme.Indigo60
-import com.example.workflow.presentation.ui.theme.Indigo90
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VacancyDetailScreen(
+    viewModel: VacancyDetailViewModel = hiltViewModel(),
     userType: String,
     appliedSignal: Boolean = false,
     onBack: () -> Unit,
@@ -68,7 +65,6 @@ fun VacancyDetailScreen(
     onDeleted: (() -> Unit)? = null,
     onViewEmployerProfile: ((String) -> Unit)? = null
 ) {
-    val viewModel: VacancyDetailViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -83,10 +79,16 @@ fun VacancyDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Вакансия") },
+                title = { 
+                    Text(
+                        text = "Вакансия"
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 actions = {
@@ -96,7 +98,7 @@ fun VacancyDetailScreen(
                             Icon(
                                 imageVector = if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 contentDescription = if (isFav) "Убрать из избранного" else "Добавить в избранное",
-                                tint = if (isFav) Coral40 else MaterialTheme.colorScheme.onSurfaceVariant
+                                tint = if (isFav) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -115,7 +117,7 @@ fun VacancyDetailScreen(
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "Удалить вакансию",
-                                tint = Coral40
+                                tint = MaterialTheme.colorScheme.error
                             )
                         }
                     }
@@ -132,14 +134,17 @@ fun VacancyDetailScreen(
         if (showDeleteDialog) {
             AlertDialog(
                 onDismissRequest = { showDeleteDialog = false },
-                title = { Text("Удалить вакансию?") },
+                title = { 
+                    Text(
+                        text = "Удалить вакансию?"
+                    ) },
                 text = { Text("Это действие нельзя отменить. Вакансия будет удалена безвозвратно.") },
                 confirmButton = {
                     TextButton(onClick = {
                         showDeleteDialog = false
                         viewModel.deleteVacancy()
                     }) {
-                        Text("Удалить", color = Coral40)
+                        Text("Удалить", color = MaterialTheme.colorScheme.error)
                     }
                 },
                 dismissButton = {
@@ -154,6 +159,7 @@ fun VacancyDetailScreen(
             is VacancyDetailViewModel.UiState.Loading -> {
                 VacancyDetailSkeleton(modifier = Modifier.padding(innerPadding))
             }
+
             is VacancyDetailViewModel.UiState.Error -> {
                 Box(
                     Modifier.fillMaxSize().padding(innerPadding),
@@ -162,6 +168,7 @@ fun VacancyDetailScreen(
                     Text(state.message, color = MaterialTheme.colorScheme.error)
                 }
             }
+
             is VacancyDetailViewModel.UiState.Success -> {
                 VacancyDetailContent(
                     vacancy = state.vacancy,
@@ -177,6 +184,7 @@ fun VacancyDetailScreen(
                     modifier = Modifier.padding(innerPadding)
                 )
             }
+
             is VacancyDetailViewModel.UiState.Deleted -> {}
         }
     }
@@ -215,7 +223,7 @@ private fun VacancyDetailContent(
                 Text(
                     text = vacancy.companyName,
                     style = MaterialTheme.typography.titleSmall,
-                    color = Indigo60,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = if (onViewEmployerProfile != null) {
                         Modifier.clickable { onViewEmployerProfile() }
                     } else Modifier
@@ -236,19 +244,23 @@ private fun VacancyDetailContent(
                     Text(
                         text = salary,
                         style = MaterialTheme.typography.titleMedium,
-                        color = Green40
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     SuggestionChip(
                         onClick = {},
-                        label = { Text(vacancy.employmentType, style = MaterialTheme.typography.labelSmall) },
+                        label = {
+                            Text(vacancy.employmentType,
+                            style = MaterialTheme.typography.labelSmall) },
                         colors = SuggestionChipDefaults.suggestionChipColors(
-                            containerColor = Indigo90,
-                            labelColor = Indigo60
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            labelColor = MaterialTheme.colorScheme.primary
                         ),
                         border = null
                     )
@@ -270,7 +282,10 @@ private fun VacancyDetailContent(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
-            Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Text(
                     text = "Описание",
                     style = MaterialTheme.typography.titleSmall,
@@ -319,7 +334,7 @@ private fun VacancyDetailContent(
                 onClick = onViewApplications,
                 modifier = Modifier.fillMaxWidth().height(54.dp),
                 shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text("Отклики", style = MaterialTheme.typography.labelLarge)
             }
@@ -334,7 +349,7 @@ private fun VacancyDetailContent(
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(
-                        disabledContainerColor = Green40,
+                        disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                         disabledContentColor = androidx.compose.ui.graphics.Color.White
                     )
                 ) {
@@ -345,7 +360,7 @@ private fun VacancyDetailContent(
                     onClick = onApply,
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Coral40)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                 ) {
                     Text("Откликнуться", style = MaterialTheme.typography.labelLarge)
                 }

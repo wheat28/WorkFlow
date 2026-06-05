@@ -20,14 +20,6 @@ class EditSeekerProfileViewModel @Inject constructor(
     private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
-    sealed class UiState {
-        object Loading : UiState()
-        object Ready : UiState()
-        object Saving : UiState()
-        object Success : UiState()
-        data class Error(val message: String) : UiState()
-    }
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
@@ -86,5 +78,13 @@ class EditSeekerProfileViewModel @Inject constructor(
                 .onSuccess { _uiState.value = UiState.Success }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка сохранения") }
         }
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        object Ready : UiState()
+        object Saving : UiState()
+        object Success : UiState()
+        data class Error(val message: String) : UiState()
     }
 }

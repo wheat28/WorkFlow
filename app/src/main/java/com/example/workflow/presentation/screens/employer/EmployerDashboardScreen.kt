@@ -27,16 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.EmployerStats
-import com.example.workflow.presentation.ui.theme.Coral40
-import com.example.workflow.presentation.ui.theme.Green40
-import com.example.workflow.presentation.ui.theme.Indigo60
-import com.example.workflow.presentation.ui.theme.Indigo90
 
 @Composable
 fun EmployerDashboardScreen(
+    viewModel: EmployerDashboardViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    val viewModel: EmployerDashboardViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Box(
@@ -46,8 +42,9 @@ fun EmployerDashboardScreen(
     ) {
         when (val state = uiState) {
             is EmployerDashboardViewModel.UiState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = Indigo60)
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = MaterialTheme.colorScheme.primary)
             }
+
             is EmployerDashboardViewModel.UiState.Error -> {
                 Text(
                     text = state.message,
@@ -55,6 +52,7 @@ fun EmployerDashboardScreen(
                     color = MaterialTheme.colorScheme.error
                 )
             }
+
             is EmployerDashboardViewModel.UiState.Success -> {
                 DashboardContent(stats = state.stats)
             }
@@ -84,13 +82,13 @@ private fun DashboardContent(stats: EmployerStats) {
             StatCard(
                 label = "Всего вакансий",
                 value = stats.totalVacancies.toString(),
-                accentColor = Indigo60,
+                accentColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f)
             )
             StatCard(
                 label = "Активных",
                 value = stats.activeVacancies.toString(),
-                accentColor = Green40,
+                accentColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -102,13 +100,13 @@ private fun DashboardContent(stats: EmployerStats) {
             StatCard(
                 label = "Всего откликов",
                 value = stats.totalApplications.toString(),
-                accentColor = Indigo60,
+                accentColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f)
             )
             StatCard(
                 label = "Ожидают ответа",
                 value = stats.pendingApplications.toString(),
-                accentColor = Coral40,
+                accentColor = MaterialTheme.colorScheme.error,
                 modifier = Modifier.weight(1f)
             )
         }

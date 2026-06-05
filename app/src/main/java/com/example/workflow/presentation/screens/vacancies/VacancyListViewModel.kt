@@ -27,16 +27,6 @@ class VacancyListViewModel @Inject constructor(
     private val tokenDataStore: TokenDataStore
 ) : ViewModel() {
 
-    sealed class UiState {
-        object Loading : UiState()
-        data class Success(
-            val vacancies: List<Vacancy>,
-            val favoriteIds: Set<String>,
-            val canToggleFavorite: Boolean
-        ) : UiState()
-        data class Error(val message: String) : UiState()
-    }
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
@@ -159,5 +149,15 @@ class VacancyListViewModel @Inject constructor(
                 (vacancy.salaryTo == null && vacancy.salaryFrom != null && vacancy.salaryFrom <= filterTo))
         }
         _uiState.value = UiState.Success(filtered, allFavoriteIds, seekerId != null)
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        data class Success(
+            val vacancies: List<Vacancy>,
+            val favoriteIds: Set<String>,
+            val canToggleFavorite: Boolean
+        ) : UiState()
+        data class Error(val message: String) : UiState()
     }
 }

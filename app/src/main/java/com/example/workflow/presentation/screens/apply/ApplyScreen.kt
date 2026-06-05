@@ -43,18 +43,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.Resume
-import com.example.workflow.presentation.ui.theme.Coral40
-import com.example.workflow.presentation.ui.theme.Indigo60
-import com.example.workflow.presentation.ui.theme.Indigo90
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplyScreen(
+    viewModel: ApplyViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onApplied: () -> Unit,
     onCreateResume: () -> Unit
 ) {
-    val viewModel: ApplyViewModel = hiltViewModel()
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var selectedResumeId by remember { mutableStateOf<String?>(null) }
@@ -67,10 +65,16 @@ fun ApplyScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Откликнуться") },
+                title = {
+                    Text(
+                        text = "Откликнуться"
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -83,34 +87,50 @@ fun ApplyScreen(
     ) { innerPadding ->
         when (val state = uiState) {
             is ApplyViewModel.UiState.Loading -> {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Indigo60)
+                Box(
+                    Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             }
+
             is ApplyViewModel.UiState.Error -> {
-                Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                    Text(state.message, color = MaterialTheme.colorScheme.error)
+                Box(
+                    Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        state.message,
+                        color = MaterialTheme.colorScheme.error
+                    )
                 }
             }
+
             is ApplyViewModel.UiState.Ready -> {
                 if (state.resumes.isEmpty()) {
-                    Box(Modifier.fillMaxSize().padding(innerPadding).padding(24.dp), contentAlignment = Alignment.Center) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Box(Modifier.fillMaxSize().padding(innerPadding).padding(24.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
                             Text(
-                                "У вас нет резюме",
+                                text = "У вас нет резюме",
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Text(
-                                "Создайте резюме, чтобы откликнуться на вакансию",
+                                text = "Создайте резюме, чтобы откликнуться на вакансию",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Button(
                                 onClick = onCreateResume,
                                 shape = RoundedCornerShape(14.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
+                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                             ) {
-                                Text("Создать резюме")
+                                Text(text = "Создать резюме")
                             }
                         }
                     }
@@ -120,10 +140,14 @@ fun ApplyScreen(
                             .fillMaxSize()
                             .padding(innerPadding)
                             .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 20.dp, vertical = 16.dp),
+                            .padding(
+                                horizontal = 20.dp,
+                                vertical = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text("Выберите резюме", style = MaterialTheme.typography.titleSmall,
+                        Text(
+                            text = "Выберите резюме",
+                            style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
 
                         state.resumes.forEach { resume ->
@@ -140,23 +164,27 @@ fun ApplyScreen(
                         OutlinedTextField(
                             value = coverLetter,
                             onValueChange = { if (it.length <= coverLetterLimit) coverLetter = it },
-                            label = { Text("Сопроводительное письмо (необязательно)") },
+                            label = {
+                                Text(
+                                    text = "Сопроводительное письмо (необязательно)"
+                                )},
                             modifier = Modifier.fillMaxWidth(),
                             minLines = 3,
                             shape = RoundedCornerShape(14.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Indigo60,
-                                focusedLabelColor = Indigo60
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary
                             ),
                             supportingText = {
                                 Text(
                                     "${coverLetter.length}/$coverLetterLimit",
                                     modifier = Modifier.fillMaxWidth(),
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = if (coverLetter.length >= coverLetterLimit)
+                                    color = if (coverLetter.length >= coverLetterLimit) {
                                         MaterialTheme.colorScheme.error
-                                    else
+                                    } else {
                                         MaterialTheme.colorScheme.onSurfaceVariant
+                                    }
                                 )
                             }
                         )
@@ -170,18 +198,26 @@ fun ApplyScreen(
                             enabled = selectedResumeId != null,
                             modifier = Modifier.fillMaxWidth().height(54.dp),
                             shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Coral40)
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                         ) {
-                            Text("Откликнуться", style = MaterialTheme.typography.labelLarge)
+                            Text(
+                                text = "Откликнуться",
+                                style = MaterialTheme.typography.labelLarge
+                            )
                         }
                     }
                 }
             }
+
             is ApplyViewModel.UiState.Submitting -> {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Coral40)
+                Box(
+                    Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.error)
                 }
             }
+
             is ApplyViewModel.UiState.Success -> {}
         }
     }
@@ -197,21 +233,42 @@ private fun ResumeSelectCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .then(
-                if (isSelected) Modifier.border(2.dp, Indigo60, RoundedCornerShape(20.dp))
+            .then(if (isSelected) {
+                    Modifier.border(
+                        2.dp,
+                        MaterialTheme.colorScheme.primary,
+                        RoundedCornerShape(20.dp))
+                }
                 else Modifier
             ),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) Indigo90 else MaterialTheme.colorScheme.surface
+            containerColor = if (isSelected) {
+                MaterialTheme.colorScheme.primaryContainer
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(resume.title, style = MaterialTheme.typography.titleSmall,
-                color = if (isSelected) Indigo60 else MaterialTheme.colorScheme.onSurface)
-            Text(resume.position, style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                resume.title,
+                style = MaterialTheme.typography.titleSmall,
+                color = if (isSelected) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                })
+
+            Text(
+                resume.position,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

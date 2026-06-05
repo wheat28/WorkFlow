@@ -47,18 +47,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.Vacancy
-import com.example.workflow.presentation.ui.theme.Coral40
-import com.example.workflow.presentation.ui.theme.Green40
-import com.example.workflow.presentation.ui.theme.Indigo60
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditVacancyScreen(
+    viewModel: EditVacancyViewModel = hiltViewModel(),
     onBack: () -> Unit,
     onSaved: () -> Unit,
     onDeleted: () -> Unit
 ) {
-    val viewModel: EditVacancyViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isActive by viewModel.isActive.collectAsStateWithLifecycle()
     val toggleError by viewModel.toggleError.collectAsStateWithLifecycle()
@@ -74,10 +71,16 @@ fun EditVacancyScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Редактировать") },
+                title = { 
+                    Text(
+                        text = "Редактировать"
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -90,15 +93,23 @@ fun EditVacancyScreen(
     ) { innerPadding ->
         when (val state = uiState) {
             is EditVacancyViewModel.UiState.Loading -> {
-                Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Indigo60)
+                Box(
+                    Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             }
+
             is EditVacancyViewModel.UiState.Error -> {
-                Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(state.message, color = MaterialTheme.colorScheme.error)
                 }
             }
+
             is EditVacancyViewModel.UiState.Ready,
             is EditVacancyViewModel.UiState.Saving -> {
                 val vacancy = when (state) {
@@ -150,25 +161,41 @@ private fun EditVacancyForm(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     val fieldColors = OutlinedTextFieldDefaults.colors(
-        focusedBorderColor = Indigo60,
-        unfocusedBorderColor = Indigo60.copy(alpha = 0.4f),
-        focusedLabelColor = Indigo60
+        focusedBorderColor = MaterialTheme.colorScheme.primary,
+        unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+        focusedLabelColor = MaterialTheme.colorScheme.primary
     )
     val fieldShape = RoundedCornerShape(14.dp)
 
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Удалить вакансию?") },
-            text = { Text("Это действие нельзя отменить. Все отклики на вакансию также будут удалены.") },
+            title = { 
+                Text(
+                    text = "Удалить вакансию?"
+                ) },
+            text = {
+                Text(
+                    text = "Это действие нельзя отменить. Все отклики на вакансию также будут удалены."
+                ) },
             confirmButton = {
-                TextButton(onClick = { showDeleteDialog = false; onDelete() }) {
-                    Text("Удалить", color = Coral40)
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false;
+                        onDelete()
+                    })
+                {
+                    Text(
+                        text = "Удалить",
+                        color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Отмена")
+                TextButton(
+                    onClick = { showDeleteDialog = false }) {
+                    Text(
+                        text = "Отмена"
+                    )
                 }
             }
         )
@@ -190,7 +217,7 @@ private fun EditVacancyForm(
                 Text(
                     text = if (isActive) "Активна" else "Закрыта",
                     style = MaterialTheme.typography.titleSmall,
-                    color = if (isActive) Green40 else Coral40
+                    color = if (isActive) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error
                 )
                 Text(
                     text = if (isActive) "Вакансия открыта для откликов" else "Приём откликов приостановлен",
@@ -202,10 +229,10 @@ private fun EditVacancyForm(
                 checked = isActive,
                 onCheckedChange = onSetActive,
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = Green40,
-                    checkedTrackColor = Green40.copy(alpha = 0.3f),
-                    uncheckedThumbColor = Coral40,
-                    uncheckedTrackColor = Coral40.copy(alpha = 0.3f)
+                    checkedThumbColor = MaterialTheme.colorScheme.tertiary,
+                    checkedTrackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),
+                    uncheckedThumbColor = MaterialTheme.colorScheme.error,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.error.copy(alpha = 0.3f)
                 )
             )
         }
@@ -223,7 +250,7 @@ private fun EditVacancyForm(
             Text(
                 text = "Откликов: ${vacancy.applicationCount}",
                 style = MaterialTheme.typography.bodySmall,
-                color = Indigo60
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -315,27 +342,36 @@ private fun EditVacancyForm(
         Spacer(modifier = Modifier.height(4.dp))
 
         if (isSaving) {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = Indigo60)
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
         } else {
             Button(
                 onClick = { onSave(title, description, employmentType, experience, city, salaryFrom, salaryTo, currency) },
                 modifier = Modifier.fillMaxWidth().height(54.dp),
                 shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Сохранить", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    text = "Сохранить",
+                    style = MaterialTheme.typography.labelLarge
+                )
             }
 
             OutlinedButton(
                 onClick = { showDeleteDialog = true },
                 modifier = Modifier.fillMaxWidth().height(54.dp),
                 shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Coral40),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Coral40)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.error)
             ) {
-                Text("Удалить вакансию", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    text = "Удалить вакансию",
+                    style = MaterialTheme.typography.labelLarge
+                )
             }
         }
     }

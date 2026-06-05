@@ -23,15 +23,6 @@ class EmployerPublicProfileViewModel @Inject constructor(
 
     private val employerId: String = checkNotNull(savedStateHandle["employerId"])
 
-    sealed class UiState {
-        object Loading : UiState()
-        data class Success(
-            val employer: Employer,
-            val vacancies: List<Vacancy>
-        ) : UiState()
-        data class Error(val message: String) : UiState()
-    }
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
@@ -53,5 +44,14 @@ class EmployerPublicProfileViewModel @Inject constructor(
                 _uiState.value = UiState.Error(it.message ?: "Ошибка загрузки")
             }
         }
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        data class Success(
+            val employer: Employer,
+            val vacancies: List<Vacancy>
+        ) : UiState()
+        data class Error(val message: String) : UiState()
     }
 }

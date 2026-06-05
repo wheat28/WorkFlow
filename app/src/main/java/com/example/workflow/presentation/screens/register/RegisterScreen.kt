@@ -50,16 +50,14 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.workflow.presentation.ui.theme.Indigo60
-import com.example.workflow.presentation.ui.theme.Indigo90
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
+    viewModel: RegisterViewModel = hiltViewModel(),
     onRegisterSuccess: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    val viewModel: RegisterViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -115,10 +113,16 @@ fun RegisterScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Регистрация") },
+                title = { 
+                    Text(
+                        text = "Регистрация"
+                    ) },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                    IconButton(
+                        onClick = onNavigateBack
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -140,11 +144,11 @@ fun RegisterScreen(
             TabRow(
                 selectedTabIndex = selectedTab,
                 containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = Indigo60,
+                contentColor = MaterialTheme.colorScheme.primary,
                 indicator = { tabPositions ->
                     TabRowDefaults.SecondaryIndicator(
                         modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                        color = Indigo60
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             ) {
@@ -153,8 +157,8 @@ fun RegisterScreen(
                     onClick = { selectedTab = 0 },
                     text = {
                         Text(
-                            "Соискатель",
-                            color = if (selectedTab == 0) Indigo60 else MaterialTheme.colorScheme.onSurfaceVariant
+                            text = "Соискатель",
+                            color = if (selectedTab == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 )
@@ -163,8 +167,8 @@ fun RegisterScreen(
                     onClick = { selectedTab = 1 },
                     text = {
                         Text(
-                            "Работодатель",
-                            color = if (selectedTab == 1) Indigo60 else MaterialTheme.colorScheme.onSurfaceVariant
+                            text = "Работодатель",
+                            color = if (selectedTab == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 )
@@ -173,26 +177,31 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(4.dp))
 
             val fieldColors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Indigo60,
-                focusedLabelColor = Indigo60
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary
             )
             val fieldShape = RoundedCornerShape(14.dp)
 
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it; emailError = null },
-                label = { Text("Email") }, modifier = Modifier.fillMaxWidth(),
-                singleLine = true, enabled = uiState != RegisterUiState.Loading,
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = uiState != RegisterUiState.Loading,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 isError = emailError != null,
                 supportingText = emailError?.let { { Text(it) } },
-                shape = fieldShape, colors = fieldColors
+                shape = fieldShape,
+                colors = fieldColors
             )
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it; passwordError = null },
-                label = { Text("Пароль") }, modifier = Modifier.fillMaxWidth(),
-                singleLine = true, enabled = uiState != RegisterUiState.Loading,
+                label = { Text("Пароль") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                enabled = uiState != RegisterUiState.Loading,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
@@ -205,70 +214,98 @@ fun RegisterScreen(
                 },
                 isError = passwordError != null,
                 supportingText = passwordError?.let { { Text(it) } },
-                shape = fieldShape, colors = fieldColors
+                shape = fieldShape,
+                colors = fieldColors
             )
 
             if (selectedTab == 0) {
                 OutlinedTextField(
                     value = firstName,
                     onValueChange = { firstName = it; firstNameError = null },
-                    label = { Text("Имя *") }, modifier = Modifier.fillMaxWidth(),
-                    singleLine = true, enabled = uiState != RegisterUiState.Loading,
+                    label = { Text("Имя *") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    enabled = uiState != RegisterUiState.Loading,
                     isError = firstNameError != null,
                     supportingText = firstNameError?.let { { Text(it) } },
-                    shape = fieldShape, colors = fieldColors
+                    shape = fieldShape,
+                    colors = fieldColors
                 )
                 OutlinedTextField(
                     value = lastName,
                     onValueChange = { lastName = it; lastNameError = null },
-                    label = { Text("Фамилия *") }, modifier = Modifier.fillMaxWidth(),
-                    singleLine = true, enabled = uiState != RegisterUiState.Loading,
+                    label = { Text("Фамилия *") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    enabled = uiState != RegisterUiState.Loading,
                     isError = lastNameError != null,
                     supportingText = lastNameError?.let { { Text(it) } },
-                    shape = fieldShape, colors = fieldColors
+                    shape = fieldShape,
+                    colors = fieldColors
                 )
             } else {
                 OutlinedTextField(
                     value = companyName,
                     onValueChange = { companyName = it; companyNameError = null },
-                    label = { Text("Название компании *") }, modifier = Modifier.fillMaxWidth(),
-                    singleLine = true, enabled = uiState != RegisterUiState.Loading,
+                    label = { Text("Название компании *") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    enabled = uiState != RegisterUiState.Loading,
                     isError = companyNameError != null,
                     supportingText = companyNameError?.let { { Text(it) } },
-                    shape = fieldShape, colors = fieldColors
+                    shape = fieldShape,
+                    colors = fieldColors
                 )
                 OutlinedTextField(
-                    value = industry, onValueChange = { industry = it },
-                    label = { Text("Отрасль") }, modifier = Modifier.fillMaxWidth(),
-                    singleLine = true, enabled = uiState != RegisterUiState.Loading,
-                    shape = fieldShape, colors = fieldColors
-                )
-                OutlinedTextField(
-                    value = description, onValueChange = { description = it },
-                    label = { Text("Описание") }, modifier = Modifier.fillMaxWidth(),
+                    value = industry,
+                    onValueChange = { industry = it },
+                    label = { Text("Отрасль") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
                     enabled = uiState != RegisterUiState.Loading,
-                    minLines = 2, shape = fieldShape, colors = fieldColors
+                    shape = fieldShape,
+                    colors = fieldColors
                 )
                 OutlinedTextField(
-                    value = website, onValueChange = { website = it },
-                    label = { Text("Сайт") }, modifier = Modifier.fillMaxWidth(),
-                    singleLine = true, enabled = uiState != RegisterUiState.Loading,
-                    shape = fieldShape, colors = fieldColors
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Описание") },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = uiState != RegisterUiState.Loading,
+                    minLines = 2,
+                    shape = fieldShape,
+                    colors = fieldColors
+                )
+                OutlinedTextField(
+                    value = website,
+                    onValueChange = { website = it },
+                    label = { Text("Сайт") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    enabled = uiState != RegisterUiState.Loading,
+                    shape = fieldShape,
+                    colors = fieldColors
                 )
             }
 
             OutlinedTextField(
-                value = phone, onValueChange = { phone = it },
-                label = { Text("Телефон") }, modifier = Modifier.fillMaxWidth(),
+                value = phone,
+                onValueChange = { phone = it },
+                label = { Text("Телефон") },
+                modifier = Modifier.fillMaxWidth(),
                 singleLine = true, enabled = uiState != RegisterUiState.Loading,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                shape = fieldShape, colors = fieldColors
+                shape = fieldShape,
+                colors = fieldColors
             )
             OutlinedTextField(
-                value = city, onValueChange = { city = it },
-                label = { Text("Город") }, modifier = Modifier.fillMaxWidth(),
+                value = city,
+                onValueChange = { city = it },
+                label = { Text("Город") },
+                modifier = Modifier.fillMaxWidth(),
                 singleLine = true, enabled = uiState != RegisterUiState.Loading,
-                shape = fieldShape, colors = fieldColors
+                shape = fieldShape,
+                colors = fieldColors
             )
 
             if (uiState is RegisterUiState.Error) {
@@ -282,8 +319,11 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(4.dp))
 
             if (uiState == RegisterUiState.Loading) {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Indigo60)
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             } else {
                 Button(
@@ -296,9 +336,12 @@ fun RegisterScreen(
                     },
                     modifier = Modifier.fillMaxWidth().height(54.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Indigo60)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text("Зарегистрироваться", style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        text = "Зарегистрироваться",
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
             }
 
@@ -306,7 +349,10 @@ fun RegisterScreen(
                 onClick = onNavigateBack,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text("Уже есть аккаунт? Войти", color = Indigo60)
+                Text(
+                    text = "Уже есть аккаунт? Войти",
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }
