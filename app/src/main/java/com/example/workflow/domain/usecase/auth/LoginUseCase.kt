@@ -1,8 +1,12 @@
 package com.example.workflow.domain.usecase.auth
 
 import com.example.workflow.domain.repository.AuthRepository
+import javax.inject.Inject
 
-class LoginUseCase(private val repository: AuthRepository) {
-    suspend operator fun invoke(email: String, password: String) =
-        repository.login(email, password)
+class LoginUseCase @Inject constructor(
+    private val repository: AuthRepository
+) {
+    suspend operator fun invoke(email: String, password: String) {
+        return repository.login(email, password)
+    }
 }

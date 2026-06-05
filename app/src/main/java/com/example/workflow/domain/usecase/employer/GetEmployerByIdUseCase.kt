@@ -1,7 +1,13 @@
 package com.example.workflow.domain.usecase.employer
 
+import com.example.workflow.domain.model.Employer
 import com.example.workflow.domain.repository.EmployerRepository
+import javax.inject.Inject
 
-class GetEmployerByIdUseCase(private val repository: EmployerRepository) {
-    suspend operator fun invoke(employerId: String) = repository.getById(employerId)
+class GetEmployerByIdUseCase @Inject constructor(
+    private val repository: EmployerRepository
+) {
+    suspend operator fun invoke(employerId: String): Employer {
+        return repository.getById(employerId)
+    }
 }

@@ -1,11 +1,11 @@
 package com.example.workflow.domain.repository
 
-import com.example.workflow.data.remote.dto.EmployerResponseDto
-import com.example.workflow.data.remote.dto.EmployerStatsDto
-import com.example.workflow.data.remote.dto.EmployerUpdateRequestDto
+import com.example.workflow.domain.model.Employer
+import com.example.workflow.domain.model.EmployerProfileInput
+import com.example.workflow.domain.model.EmployerStats
 
 interface EmployerRepository {
-    suspend fun getById(employerId: String): EmployerResponseDto
-    suspend fun updateProfile(employerId: String, request: EmployerUpdateRequestDto)
-    suspend fun getStats(employerId: String): EmployerStatsDto
+    suspend fun getById(employerId: String): Employer
+    suspend fun updateProfile(employerId: String, input: EmployerProfileInput)
+    suspend fun getStats(employerId: String): EmployerStats
 }
