@@ -49,6 +49,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 private val employmentTypes = listOf("Полная занятость", "Частичная занятость", "Удалённо", "Стажировка")
 
@@ -93,17 +95,17 @@ fun EditResumeScreen(
             onDismissRequest = { showDeleteDialog = false },
             title = { 
                 Text(
-                    text = "Удалить резюме?"
+                    text = stringResource(R.string.dialog_title_delete_resume)
                 ) },
-            text = { Text("Это действие нельзя отменить. Резюме будет удалено безвозвратно.") },
+            text = { Text(stringResource(R.string.msg_delete_resume_warning)) },
             confirmButton = {
                 TextButton(onClick = { showDeleteDialog = false; viewModel.delete() }) {
-                    Text("Удалить", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Отмена")
+                    Text(stringResource(R.string.action_cancel))
                 }
             }
         )
@@ -122,14 +124,14 @@ fun EditResumeScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Редактировать резюме"
+                        text = stringResource(R.string.action_edit_resume)
                     ) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -165,12 +167,12 @@ fun EditResumeScreen(
             ) {
                 Column {
                     Text(
-                        text = if (isActive) "Активно" else "Скрыто",
+                        text = if (isActive) stringResource(R.string.status_active) else stringResource(R.string.status_hidden),
                         style = MaterialTheme.typography.titleSmall,
                         color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
                     )
                     Text(
-                        text = if (isActive) "Резюме видно работодателям" else "Резюме скрыто от работодателей",
+                        text = if (isActive) stringResource(R.string.status_resume_visible) else stringResource(R.string.status_resume_hidden),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -199,7 +201,7 @@ fun EditResumeScreen(
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Название резюме *") },
+                label = { Text(stringResource(R.string.label_resume_title)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -209,7 +211,7 @@ fun EditResumeScreen(
             OutlinedTextField(
                 value = position,
                 onValueChange = { position = it },
-                label = { Text("Желаемая должность *") },
+                label = { Text(stringResource(R.string.label_desired_position)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -224,7 +226,7 @@ fun EditResumeScreen(
             ) {
                 OutlinedTextField(
                     value = employmentType, onValueChange = {},
-                    readOnly = true, label = { Text("Тип занятости") },
+                    readOnly = true, label = { Text(stringResource(R.string.label_employment_type)) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
                     modifier = Modifier.menuAnchor().fillMaxWidth(),
                     enabled = !isSaving,
@@ -247,7 +249,7 @@ fun EditResumeScreen(
             OutlinedTextField(
                 value = salaryExpected,
                 onValueChange = { salaryExpected = it },
-                label = { Text("Ожидаемая зарплата") },
+                label = { Text(stringResource(R.string.label_expected_salary)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -258,7 +260,7 @@ fun EditResumeScreen(
             OutlinedTextField(
                 value = city,
                 onValueChange = { city = it },
-                label = { Text("Город") },
+                label = { Text(stringResource(R.string.label_city)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -268,7 +270,7 @@ fun EditResumeScreen(
             OutlinedTextField(
                 value = about,
                 onValueChange = { about = it },
-                label = { Text("О себе") },
+                label = { Text(stringResource(R.string.label_about_me)) },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3,
                 enabled = !isSaving,
@@ -300,7 +302,7 @@ fun EditResumeScreen(
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text("Сохранить", style = MaterialTheme.typography.labelLarge)
+                    Text(stringResource(R.string.action_save), style = MaterialTheme.typography.labelLarge)
                 }
                 OutlinedButton(
                     onClick = { showDeleteDialog = true },
@@ -309,7 +311,7 @@ fun EditResumeScreen(
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
                     border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.error)
                 ) {
-                    Text("Удалить резюме", style = MaterialTheme.typography.labelLarge)
+                    Text(stringResource(R.string.action_delete_resume), style = MaterialTheme.typography.labelLarge)
                 }
             }
         }

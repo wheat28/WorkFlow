@@ -47,6 +47,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.Application
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +60,13 @@ fun VacancyApplicationsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val activeFilter by viewModel.filterStatus.collectAsStateWithLifecycle()
 
+    val filters = listOf(
+        null to stringResource(R.string.filter_all),
+        "PENDING" to stringResource(R.string.status_pending),
+        "ACCEPTED" to stringResource(R.string.filter_accepted),
+        "REJECTED" to stringResource(R.string.filter_rejected)
+    )
+
     var pendingAction by remember { mutableStateOf<Triple<String, String, String>?>(null) }
 
     pendingAction?.let { (appId, newStatus, message) ->
@@ -66,8 +75,8 @@ fun VacancyApplicationsScreen(
             title = {
                 Text(
                     if (newStatus == "ACCEPTED") {
-                    "Принять кандидата?"
-                } else "Отклонить кандидата?"
+                    stringResource(R.string.dialog_title_accept_candidate)
+                } else stringResource(R.string.dialog_title_reject_candidate)
                 ) },
             text = { Text(message) },
             confirmButton = {
@@ -79,9 +88,9 @@ fun VacancyApplicationsScreen(
                 ) {
                     Text(
                         if (newStatus == "ACCEPTED") {
-                            "Принять"
+                            stringResource(R.string.action_accept)
                         } else {
-                            "Отклонить"
+                            stringResource(R.string.action_reject)
                         },
                         color = if (newStatus == "ACCEPTED") {
                             MaterialTheme.colorScheme.tertiary
@@ -95,7 +104,7 @@ fun VacancyApplicationsScreen(
                 )
                 {
                     Text(
-                        text = "Отмена"
+                        text = stringResource(R.string.action_cancel)
                     )
                 }
             }
@@ -107,7 +116,7 @@ fun VacancyApplicationsScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Отклики",
+                        text = stringResource(R.string.nav_applications),
                         maxLines = 1
                     ) },
                 navigationIcon = {
@@ -115,7 +124,7 @@ fun VacancyApplicationsScreen(
                         onClick = onBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -184,9 +193,9 @@ fun VacancyApplicationsScreen(
                                 )
                                 Text(
                                     text = if (activeFilter == null) {
-                                        "Откликов пока нет"
+                                        stringResource(R.string.msg_no_applications_yet)
                                     } else {
-                                        "Нет откликов в этой категории"
+                                        stringResource(R.string.msg_no_applications_in_category)
                                     },
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -273,7 +282,7 @@ private fun ApplicantCard(
                 border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ) {
                 Text(
-                    text = "Смотреть резюме",
+                    text = stringResource(R.string.action_view_resume),
                     style = MaterialTheme.typography.labelMedium
                 )
             }
@@ -290,7 +299,7 @@ private fun ApplicantCard(
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
                     ) {
                         Text(
-                            text = "Принять",
+                            text = stringResource(R.string.action_accept),
                             style = MaterialTheme.typography.labelMedium
                         )
                     }
@@ -301,7 +310,7 @@ private fun ApplicantCard(
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
                     ) {
                         Text(
-                            text = "Отклонить",
+                            text = stringResource(R.string.action_reject),
                             style = MaterialTheme.typography.labelMedium
                         )
                     }
@@ -314,9 +323,9 @@ private fun ApplicantCard(
 @Composable
 private fun StatusChip(status: String) {
     val (label, bg, fg) = when (status) {
-        "ACCEPTED" -> Triple("Принят", MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.tertiary)
-        "REJECTED" -> Triple("Отклонён", MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.error)
-        else -> Triple("На рассмотрении", MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.primary)
+        "ACCEPTED" -> Triple(stringResource(R.string.status_accepted), MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.tertiary)
+        "REJECTED" -> Triple(stringResource(R.string.status_rejected), MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.error)
+        else -> Triple(stringResource(R.string.status_pending), MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.primary)
     }
     SuggestionChip(
         onClick = {},
@@ -330,9 +339,3 @@ private fun StatusChip(status: String) {
     )
 }
 
-private val filters = listOf(
-    null to "Все",
-    "PENDING" to "На рассмотрении",
-    "ACCEPTED" to "Принятые",
-    "REJECTED" to "Отклонённые"
-)

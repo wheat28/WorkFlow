@@ -42,6 +42,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.presentation.screens.login.LoginViewModel.LoginUiState
 import com.example.workflow.presentation.ui.theme.Indigo40
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @Composable
 fun LoginScreen(
@@ -83,12 +85,12 @@ fun LoginScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Вход",
+                text = stringResource(R.string.title_login),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = "Войдите в аккаунт WorkFlow",
+                text = stringResource(R.string.subtitle_login),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -98,7 +100,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") },
+                label = { Text(stringResource(R.string.label_email)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = uiState != LoginUiState.Loading,
@@ -113,7 +115,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Пароль") },
+                label = { Text(stringResource(R.string.label_password)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = uiState != LoginUiState.Loading,
@@ -161,7 +163,7 @@ fun LoginScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
-                        text = "Войти",
+                        text = stringResource(R.string.action_login),
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
@@ -172,7 +174,7 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Нет аккаунта? Зарегистрироваться",
+                    text = stringResource(R.string.action_go_to_register),
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -186,12 +188,12 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "WorkFlow",
+                text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.displayLarge,
                 color = androidx.compose.ui.graphics.Color.White
             )
             Text(
-                text = "Найди работу мечты",
+                text = stringResource(R.string.tagline),
                 style = MaterialTheme.typography.bodyLarge,
                 color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.7f)
             )

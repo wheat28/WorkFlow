@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.Resume
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,14 +69,14 @@ fun ApplyScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Откликнуться"
+                        text = stringResource(R.string.action_apply)
                     ) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -117,11 +119,11 @@ fun ApplyScreen(
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             Text(
-                                text = "У вас нет резюме",
+                                text = stringResource(R.string.msg_no_resumes_short),
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Text(
-                                text = "Создайте резюме, чтобы откликнуться на вакансию",
+                                text = stringResource(R.string.msg_create_resume_to_apply),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -130,7 +132,7 @@ fun ApplyScreen(
                                 shape = RoundedCornerShape(14.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                             ) {
-                                Text(text = "Создать резюме")
+                                Text(text = stringResource(R.string.action_create_resume))
                             }
                         }
                     }
@@ -146,7 +148,7 @@ fun ApplyScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            text = "Выберите резюме",
+                            text = stringResource(R.string.title_select_resume),
                             style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
 
@@ -166,7 +168,7 @@ fun ApplyScreen(
                             onValueChange = { if (it.length <= coverLetterLimit) coverLetter = it },
                             label = {
                                 Text(
-                                    text = "Сопроводительное письмо (необязательно)"
+                                    text = stringResource(R.string.label_cover_letter)
                                 )},
                             modifier = Modifier.fillMaxWidth(),
                             minLines = 3,
@@ -201,7 +203,7 @@ fun ApplyScreen(
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                         ) {
                             Text(
-                                text = "Откликнуться",
+                                text = stringResource(R.string.action_apply),
                                 style = MaterialTheme.typography.labelLarge
                             )
                         }

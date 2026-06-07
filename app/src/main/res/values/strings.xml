@@ -1,3 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">WorkFlow</string>
+    <string name="tagline">Найди работу мечты</string>
+
+    <string name="title_login">Вход</string>
+    <string name="subtitle_login">Войдите в аккаунт WorkFlow</string>
+    <string name="action_login">Войти</string>
+    <string name="action_go_to_register">Нет аккаунта? Зарегистрироваться</string>
+    <string name="title_register">Регистрация</string>
+    <string name="action_go_to_login">Уже есть аккаунт? Войти</string>
+    <string name="action_register">Зарегистрироваться</string>
+
+    <string name="label_email">Email</string>
+    <string name="label_password">Пароль</string>
+    <string name="label_first_name">Имя *</string>
+    <string name="label_last_name">Фамилия *</string>
+    <string name="label_company_name">Название компании *</string>
+    <string name="label_vacancy_title">Название вакансии *</string>
+    <string name="label_resume_title">Название резюме *</string>
+    <string name="label_description">Описание</string>
+    <string name="label_description_required">Описание *</string>
+    <string name="label_employment_type">Тип занятости</string>
+    <string name="label_salary_from">Зарплата от</string>
+    <string name="label_salary_to">до</string>
+    <string name="label_expected_salary">Ожидаемая зарплата</string>
+    <string name="label_desired_position">Желаемая должность *</string>
+    <string name="label_currency">Валюта</string>
+    <string name="label_city">Город</string>
+    <string name="label_industry">Отрасль</string>
+    <string name="label_website">Сайт</string>
+    <string name="label_phone">Телефон</string>
+    <string name="label_skills">Навыки</string>
+    <string name="label_about_company">О компании</string>
+    <string name="label_about_me">О себе</string>
+    <string name="label_cover_letter">Сопроводительное письмо (необязательно)</string>
+    <string name="label_work_experience">Опыт работы</string>
+    <string name="hint_search">Должность, компания…</string>
+    <string name="hint_email">Введите email</string>
+    <string name="hint_first_name">Введите имя</string>
+    <string name="hint_last_name">Введите фамилию</string>
+    <string name="hint_password">Введите пароль</string>
+    <string name="hint_company_name">Введите название компании</string>
+
+    <string name="nav_vacancies">Вакансии</string>
+    <string name="nav_favorites">Избранное</string>
+    <string name="nav_applications">Отклики</string>
+    <string name="nav_profile">Профиль</string>
+    <string name="nav_dashboard">Дашборд</string>
+
+    <string name="role_seeker">Соискатель</string>
+    <string name="role_employer">Работодатель</string>
+
+    <string name="employment_full_time">Полная занятость</string>
+    <string name="employment_part_time">Частичная занятость</string>
+    <string name="employment_internship">Стажировка</string>
+    <string name="employment_remote">Удалённо</string>
+
+    <string name="action_save">Сохранить</string>
+    <string name="action_create">Создать</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_edit">Редактировать</string>
+    <string name="action_publish">Опубликовать</string>
+    <string name="action_apply">Откликнуться</string>
+    <string name="action_cancel_application">Отменить отклик</string>
+    <string name="action_accept">Принять</string>
+    <string name="action_reject">Отклонить</string>
+    <string name="action_keep">Оставить</string>
+    <string name="action_apply_filter">Применить</string>
+    <string name="action_reset">Сбросить</string>
+    <string name="action_view_resume">Смотреть резюме</string>
+    <string name="action_edit_profile">Редактировать профиль</string>
+    <string name="action_edit_resume">Редактировать резюме</string>
+    <string name="action_create_resume">Создать резюме</string>
+    <string name="action_create_vacancy">Создать вакансию</string>
+    <string name="action_delete_vacancy">Удалить вакансию</string>
+    <string name="action_delete_resume">Удалить резюме</string>
+    <string name="action_save_resume">Сохранить резюме</string>
+    <string name="action_add_to_favorites">Добавить в избранное</string>
+    <string name="action_remove_from_favorites">Убрать из избранного</string>
+    <string name="action_logout">Выйти из аккаунта</string>
+
+    <string name="title_vacancy">Вакансия</string>
+    <string name="title_resume">Резюме</string>
+    <string name="title_statistics">Статистика</string>
+    <string name="title_new_vacancy">Новая вакансия</string>
+    <string name="title_company_profile">Профиль компании</string>
+    <string name="title_select_resume">Выберите резюме</string>
+    <string name="title_my_resumes">Мои резюме</string>
+    <string name="title_overview">Обзор</string>
+
+    <string name="dialog_title_delete_vacancy">Удалить вакансию?</string>
+    <string name="dialog_title_delete_resume">Удалить резюме?</string>
+    <string name="dialog_title_cancel_application">Отменить отклик?</string>
+    <string name="dialog_title_accept_candidate">Принять кандидата?</string>
+    <string name="dialog_title_reject_candidate">Отклонить кандидата?</string>
+
+    <string name="status_pending">На рассмотрении</string>
+    <string name="status_accepted">Принят</string>
+    <string name="status_rejected">Отклонён</string>
+    <string name="status_applied">Вы откликнулись</string>
+    <string name="status_active">Активно</string>
+    <string name="status_active_f">Активна</string>
+    <string name="status_closed">Закрыта</string>
+    <string name="status_hidden">Скрыто</string>
+    <string name="status_vacancy_open">Вакансия открыта для откликов</string>
+    <string name="status_vacancy_paused">Приём откликов приостановлен</string>
+    <string name="status_resume_visible">Резюме видно работодателям</string>
+    <string name="status_resume_hidden">Резюме скрыто от работодателей</string>
+    <string name="filter_all_types">Все типы</string>
+    <string name="filter_pending">Ожидают ответа</string>
+    <string name="filter_accepted">Принятые</string>
+    <string name="filter_rejected">Отклонённые</string>
+
+    <string name="stats_total_vacancies">Всего вакансий</string>
+    <string name="stats_total_applications">Всего откликов</string>
+    <string name="stats_active">Активных</string>
+    <string name="stats_closed_vacancies">Закрытых вакансий</string>
+    <string name="stats_accepted_candidates">Принятых кандидатов</string>
+    <string name="stats_processed_applications">Обработано откликов</string>
+    <string name="label_today">Сегодня</string>
+    <string name="label_yesterday">Вчера</string>
+
+    <string name="msg_vacancies_not_found">Вакансии не найдены</string>
+    <string name="msg_no_vacancies">У вас пока нет вакансий</string>
+    <string name="msg_no_open_vacancies">Нет открытых вакансий</string>
+    <string name="msg_no_saved_vacancies">Нет сохранённых вакансий</string>
+    <string name="msg_no_applications">Вы ещё не откликались на вакансии</string>
+    <string name="msg_no_applications_in_category">Нет откликов в этой категории</string>
+    <string name="msg_no_applications_yet">Откликов пока нет</string>
+    <string name="msg_no_resumes">Резюме ещё нет. Создайте первое!</string>
+    <string name="msg_no_resumes_short">У вас нет резюме</string>
+    <string name="msg_create_resume_to_apply">Создайте резюме, чтобы откликнуться на вакансию</string>
+    <string name="msg_fill_company_info">Заполните информацию о компании</string>
+    <string name="msg_delete_vacancy_warning">Это действие нельзя отменить. Вакансия будет удалена безвозвратно.</string>
+    <string name="msg_delete_vacancy_with_applications">Это действие нельзя отменить. Все отклики на вакансию также будут удалены.</string>
+    <string name="msg_delete_resume_warning">Это действие нельзя отменить. Резюме будет удалено безвозвратно.</string>
+    <string name="msg_cancel_application_warning">Отклик будет удалён и работодатель его больше не увидит.</string>
+
+    <string name="msg_invalid_email">Некорректный email</string>
+    <string name="msg_min_6_chars">Минимум 6 символов</string>
+
+    <string name="filter_all">Все</string>
+
+    <string name="cd_back">Назад</string>
+    <string name="cd_filters">Фильтры</string>
+    <string name="cd_remove_from_favorites">Удалить из избранного</string>
 </resources>

@@ -50,6 +50,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.presentation.screens.register.RegisterViewModel.RegisterUiState
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,23 +81,31 @@ fun RegisterScreen(
     var lastNameError by remember { mutableStateOf<String?>(null) }
     var companyNameError by remember { mutableStateOf<String?>(null) }
 
+    val strEnterEmail = stringResource(R.string.hint_email)
+    val strInvalidEmail = stringResource(R.string.msg_invalid_email)
+    val strEnterPassword = stringResource(R.string.hint_password)
+    val strMinChars = stringResource(R.string.msg_min_6_chars)
+    val strEnterFirstName = stringResource(R.string.hint_first_name)
+    val strEnterLastName = stringResource(R.string.hint_last_name)
+    val strEnterCompanyName = stringResource(R.string.hint_company_name)
+
     fun validate(): Boolean {
         emailError = when {
-            email.isBlank() -> "Введите email"
-            !email.contains("@") || !email.contains(".") -> "Некорректный email"
+            email.isBlank() -> strEnterEmail
+            !email.contains("@") || !email.contains(".") -> strInvalidEmail
             else -> null
         }
         passwordError = when {
-            password.isBlank() -> "Введите пароль"
-            password.length < 6 -> "Минимум 6 символов"
+            password.isBlank() -> strEnterPassword
+            password.length < 6 -> strMinChars
             else -> null
         }
         if (selectedTab == 0) {
-            firstNameError = if (firstName.isBlank()) "Введите имя" else null
-            lastNameError = if (lastName.isBlank()) "Введите фамилию" else null
+            firstNameError = if (firstName.isBlank()) strEnterFirstName else null
+            lastNameError = if (lastName.isBlank()) strEnterLastName else null
             companyNameError = null
         } else {
-            companyNameError = if (companyName.isBlank()) "Введите название компании" else null
+            companyNameError = if (companyName.isBlank()) strEnterCompanyName else null
             firstNameError = null
             lastNameError = null
         }
@@ -115,14 +125,14 @@ fun RegisterScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Регистрация"
+                        text = stringResource(R.string.title_register)
                     ) },
                 navigationIcon = {
                     IconButton(
                         onClick = onNavigateBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -157,7 +167,7 @@ fun RegisterScreen(
                     onClick = { selectedTab = 0 },
                     text = {
                         Text(
-                            text = "Соискатель",
+                            text = stringResource(R.string.role_seeker),
                             color = if (selectedTab == 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -167,7 +177,7 @@ fun RegisterScreen(
                     onClick = { selectedTab = 1 },
                     text = {
                         Text(
-                            text = "Работодатель",
+                            text = stringResource(R.string.role_employer),
                             color = if (selectedTab == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -185,7 +195,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it; emailError = null },
-                label = { Text("Email") },
+                label = { Text(stringResource(R.string.label_email)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = uiState != RegisterUiState.Loading,
@@ -198,7 +208,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it; passwordError = null },
-                label = { Text("Пароль") },
+                label = { Text(stringResource(R.string.label_password)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = uiState != RegisterUiState.Loading,
@@ -222,7 +232,7 @@ fun RegisterScreen(
                 OutlinedTextField(
                     value = firstName,
                     onValueChange = { firstName = it; firstNameError = null },
-                    label = { Text("Имя *") },
+                    label = { Text(stringResource(R.string.label_first_name)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     enabled = uiState != RegisterUiState.Loading,
@@ -234,7 +244,7 @@ fun RegisterScreen(
                 OutlinedTextField(
                     value = lastName,
                     onValueChange = { lastName = it; lastNameError = null },
-                    label = { Text("Фамилия *") },
+                    label = { Text(stringResource(R.string.label_last_name)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     enabled = uiState != RegisterUiState.Loading,
@@ -247,7 +257,7 @@ fun RegisterScreen(
                 OutlinedTextField(
                     value = companyName,
                     onValueChange = { companyName = it; companyNameError = null },
-                    label = { Text("Название компании *") },
+                    label = { Text(stringResource(R.string.label_company_name)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     enabled = uiState != RegisterUiState.Loading,
@@ -259,7 +269,7 @@ fun RegisterScreen(
                 OutlinedTextField(
                     value = industry,
                     onValueChange = { industry = it },
-                    label = { Text("Отрасль") },
+                    label = { Text(stringResource(R.string.label_industry)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     enabled = uiState != RegisterUiState.Loading,
@@ -269,7 +279,7 @@ fun RegisterScreen(
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Описание") },
+                    label = { Text(stringResource(R.string.label_description)) },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = uiState != RegisterUiState.Loading,
                     minLines = 2,
@@ -279,7 +289,7 @@ fun RegisterScreen(
                 OutlinedTextField(
                     value = website,
                     onValueChange = { website = it },
-                    label = { Text("Сайт") },
+                    label = { Text(stringResource(R.string.label_website)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     enabled = uiState != RegisterUiState.Loading,
@@ -291,7 +301,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = phone,
                 onValueChange = { phone = it },
-                label = { Text("Телефон") },
+                label = { Text(stringResource(R.string.label_phone)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true, enabled = uiState != RegisterUiState.Loading,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -301,7 +311,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = city,
                 onValueChange = { city = it },
-                label = { Text("Город") },
+                label = { Text(stringResource(R.string.label_city)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true, enabled = uiState != RegisterUiState.Loading,
                 shape = fieldShape,
@@ -339,7 +349,7 @@ fun RegisterScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
-                        text = "Зарегистрироваться",
+                        text = stringResource(R.string.action_register),
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
@@ -350,7 +360,7 @@ fun RegisterScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text(
-                    text = "Уже есть аккаунт? Войти",
+                    text = stringResource(R.string.action_go_to_login),
                     color = MaterialTheme.colorScheme.primary
                 )
             }

@@ -42,6 +42,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 private val employmentTypes = listOf("Полная занятость", "Частичная занятость", "Удалённо", "Стажировка")
 
@@ -80,14 +82,14 @@ fun CreateResumeScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Создать резюме"
+                        text = stringResource(R.string.action_create_resume)
                     ) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -109,7 +111,7 @@ fun CreateResumeScreen(
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Название резюме *") },
+                label = { Text(stringResource(R.string.label_resume_title)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isLoading,
@@ -120,7 +122,7 @@ fun CreateResumeScreen(
             OutlinedTextField(
                 value = position,
                 onValueChange = { position = it },
-                label = { Text("Желаемая должность *") },
+                label = { Text(stringResource(R.string.label_desired_position)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isLoading,
@@ -137,7 +139,7 @@ fun CreateResumeScreen(
                     value = employmentType,
                     onValueChange = {},
                     readOnly = true,
-                    label = { Text("Тип занятости") },
+                    label = { Text(stringResource(R.string.label_employment_type)) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
                     modifier = Modifier.menuAnchor().fillMaxWidth(),
                     enabled = !isLoading,
@@ -160,7 +162,7 @@ fun CreateResumeScreen(
             OutlinedTextField(
                 value = salaryExpected,
                 onValueChange = { salaryExpected = it },
-                label = { Text("Ожидаемая зарплата") },
+                label = { Text(stringResource(R.string.label_expected_salary)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isLoading,
@@ -172,7 +174,7 @@ fun CreateResumeScreen(
             OutlinedTextField(
                 value = city,
                 onValueChange = { city = it },
-                label = { Text("Город") },
+                label = { Text(stringResource(R.string.label_city)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isLoading,
@@ -183,7 +185,7 @@ fun CreateResumeScreen(
             OutlinedTextField(
                 value = about,
                 onValueChange = { about = it },
-                label = { Text("О себе") },
+                label = { Text(stringResource(R.string.label_about_me)) },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3,
                 enabled = !isLoading,
@@ -216,7 +218,7 @@ fun CreateResumeScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
-                        text = "Сохранить резюме",
+                        text = stringResource(R.string.action_save_resume),
                         style = MaterialTheme.typography.labelLarge)
                 }
             }

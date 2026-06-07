@@ -51,6 +51,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.domain.model.Vacancy
 import com.example.workflow.presentation.screens.common.VacancyDetailSkeleton
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,14 +83,14 @@ fun VacancyDetailScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Вакансия"
+                        text = stringResource(R.string.title_vacancy)
                     ) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 actions = {
@@ -97,7 +99,7 @@ fun VacancyDetailScreen(
                         IconButton(onClick = { viewModel.toggleFavorite() }) {
                             Icon(
                                 imageVector = if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                contentDescription = if (isFav) "Убрать из избранного" else "Добавить в избранное",
+                                contentDescription = if (isFav) stringResource(R.string.action_remove_from_favorites) else stringResource(R.string.action_add_to_favorites),
                                 tint = if (isFav) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -107,7 +109,7 @@ fun VacancyDetailScreen(
                         IconButton(onClick = { vacId?.let { onEditVacancy(it) } }) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
-                                contentDescription = "Редактировать",
+                                contentDescription = stringResource(R.string.action_edit),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -116,7 +118,7 @@ fun VacancyDetailScreen(
                         IconButton(onClick = { showDeleteDialog = true }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
-                                contentDescription = "Удалить вакансию",
+                                contentDescription = stringResource(R.string.action_delete_vacancy),
                                 tint = MaterialTheme.colorScheme.error
                             )
                         }
@@ -136,20 +138,20 @@ fun VacancyDetailScreen(
                 onDismissRequest = { showDeleteDialog = false },
                 title = { 
                     Text(
-                        text = "Удалить вакансию?"
+                        text = stringResource(R.string.dialog_title_delete_vacancy)
                     ) },
-                text = { Text("Это действие нельзя отменить. Вакансия будет удалена безвозвратно.") },
+                text = { Text(stringResource(R.string.msg_delete_vacancy_warning)) },
                 confirmButton = {
                     TextButton(onClick = {
                         showDeleteDialog = false
                         viewModel.deleteVacancy()
                     }) {
-                        Text("Удалить", color = MaterialTheme.colorScheme.error)
+                        Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showDeleteDialog = false }) {
-                        Text("Отмена")
+                        Text(stringResource(R.string.action_cancel))
                     }
                 }
             )
@@ -287,7 +289,7 @@ private fun VacancyDetailContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Описание",
+                    text = stringResource(R.string.label_description),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -308,7 +310,7 @@ private fun VacancyDetailContent(
             ) {
                 Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
-                        text = "Навыки",
+                        text = stringResource(R.string.label_skills),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -336,7 +338,7 @@ private fun VacancyDetailContent(
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Отклики", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.nav_applications), style = MaterialTheme.typography.labelLarge)
             }
         }
 
@@ -353,7 +355,7 @@ private fun VacancyDetailContent(
                         disabledContentColor = androidx.compose.ui.graphics.Color.White
                     )
                 ) {
-                    Text("Вы откликнулись", style = MaterialTheme.typography.labelLarge)
+                    Text(stringResource(R.string.status_applied), style = MaterialTheme.typography.labelLarge)
                 }
             } else {
                 Button(
@@ -362,7 +364,7 @@ private fun VacancyDetailContent(
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                 ) {
-                    Text("Откликнуться", style = MaterialTheme.typography.labelLarge)
+                    Text(stringResource(R.string.action_apply), style = MaterialTheme.typography.labelLarge)
                 }
             }
         }

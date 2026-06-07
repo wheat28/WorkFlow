@@ -35,6 +35,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.domain.model.Resume
 import com.example.workflow.domain.model.WorkExperience
 import com.example.workflow.presentation.screens.common.ResumeDetailSkeleton
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,14 +51,14 @@ fun ResumeDetailScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Резюме"
+                        text = stringResource(R.string.title_resume)
                     ) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -152,7 +154,7 @@ private fun ResumeDetailContent(resume: Resume, modifier: Modifier = Modifier) {
                         modifier = Modifier.padding(20.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text("О себе", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.label_about_me), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text(about, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                     }
                 }
@@ -170,7 +172,7 @@ private fun ResumeDetailContent(resume: Resume, modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(20.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Text("Навыки", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.label_skills), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -200,7 +202,7 @@ private fun ResumeDetailContent(resume: Resume, modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(20.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text("Опыт работы", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.label_work_experience), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     resume.workExperiences.forEach { exp ->
                         WorkExperienceItem(exp)
                     }
@@ -227,10 +229,11 @@ private fun WorkExperienceItem(exp: WorkExperience) {
     }
 }
 
+@Composable
 private fun employmentTypeLabel(type: String) = when (type) {
-    "FULL_TIME" -> "Полная занятость"
-    "PART_TIME" -> "Частичная занятость"
-    "REMOTE" -> "Удалённо"
-    "INTERNSHIP" -> "Стажировка"
+    "FULL_TIME" -> stringResource(R.string.employment_full_time)
+    "PART_TIME" -> stringResource(R.string.employment_part_time)
+    "REMOTE" -> stringResource(R.string.employment_remote)
+    "INTERNSHIP" -> stringResource(R.string.employment_internship)
     else -> type
 }

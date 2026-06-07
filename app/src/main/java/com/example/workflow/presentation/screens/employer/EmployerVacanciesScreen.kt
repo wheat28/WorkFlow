@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.Vacancy
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,7 +102,7 @@ fun EmployerVacanciesScreen(
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    text = "У вас пока нет вакансий",
+                                    text = stringResource(R.string.msg_no_vacancies),
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -130,7 +132,7 @@ fun EmployerVacanciesScreen(
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text(
-                text = "Создать вакансию",
+                text = stringResource(R.string.action_create_vacancy),
                 style = MaterialTheme.typography.labelLarge
             )
         }
@@ -172,7 +174,7 @@ private fun EmployerVacancyCard(vacancy: Vacancy, onClick: () -> Unit) {
                     onClick = {},
                     label = {
                         Text(
-                            text = if (vacancy.isActive) "Активна" else "Закрыта",
+                            text = if (vacancy.isActive) stringResource(R.string.status_active_f) else stringResource(R.string.status_closed),
                             style = MaterialTheme.typography.labelSmall
                         )
                     },

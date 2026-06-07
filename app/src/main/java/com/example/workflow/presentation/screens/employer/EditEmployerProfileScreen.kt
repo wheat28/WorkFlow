@@ -39,6 +39,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,14 +86,14 @@ fun EditEmployerProfileScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Профиль компании"
+                        text = stringResource(R.string.title_company_profile)
                     ) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -123,7 +125,7 @@ fun EditEmployerProfileScreen(
             OutlinedTextField(
                 value = companyName,
                 onValueChange = { companyName = it },
-                label = { Text("Название компании *") },
+                label = { Text(stringResource(R.string.label_company_name)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -133,7 +135,7 @@ fun EditEmployerProfileScreen(
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text("О компании") },
+                label = { Text(stringResource(R.string.label_about_company)) },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3,
                 enabled = !isSaving,
@@ -143,7 +145,7 @@ fun EditEmployerProfileScreen(
             OutlinedTextField(
                 value = city,
                 onValueChange = { city = it },
-                label = { Text("Город") },
+                label = { Text(stringResource(R.string.label_city)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -153,7 +155,7 @@ fun EditEmployerProfileScreen(
             OutlinedTextField(
                 value = industry,
                 onValueChange = { industry = it },
-                label = { Text("Отрасль") },
+                label = { Text(stringResource(R.string.label_industry)) },
                 modifier = Modifier.fillMaxWidth(), singleLine = true,
                 enabled = !isSaving,
                 shape = fieldShape,
@@ -162,7 +164,7 @@ fun EditEmployerProfileScreen(
             OutlinedTextField(
                 value = website,
                 onValueChange = { website = it },
-                label = { Text("Сайт") },
+                label = { Text(stringResource(R.string.label_website)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -173,7 +175,7 @@ fun EditEmployerProfileScreen(
             OutlinedTextField(
                 value = phone,
                 onValueChange = { phone = it },
-                label = { Text("Телефон") },
+                label = { Text(stringResource(R.string.label_phone)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -207,7 +209,7 @@ fun EditEmployerProfileScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
-                        text = "Сохранить",
+                        text = stringResource(R.string.action_save),
                         style = MaterialTheme.typography.labelLarge
                     )
                 }

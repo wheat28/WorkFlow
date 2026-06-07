@@ -47,6 +47,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.Vacancy
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,14 +75,14 @@ fun EditVacancyScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Редактировать"
+                        text = stringResource(R.string.action_edit)
                     ) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -172,11 +174,11 @@ private fun EditVacancyForm(
             onDismissRequest = { showDeleteDialog = false },
             title = { 
                 Text(
-                    text = "Удалить вакансию?"
+                    text = stringResource(R.string.dialog_title_delete_vacancy)
                 ) },
             text = {
                 Text(
-                    text = "Это действие нельзя отменить. Все отклики на вакансию также будут удалены."
+                    text = stringResource(R.string.msg_delete_vacancy_with_applications)
                 ) },
             confirmButton = {
                 TextButton(
@@ -186,7 +188,7 @@ private fun EditVacancyForm(
                     })
                 {
                     Text(
-                        text = "Удалить",
+                        text = stringResource(R.string.action_delete),
                         color = MaterialTheme.colorScheme.error)
                 }
             },
@@ -194,7 +196,7 @@ private fun EditVacancyForm(
                 TextButton(
                     onClick = { showDeleteDialog = false }) {
                     Text(
-                        text = "Отмена"
+                        text = stringResource(R.string.action_cancel)
                     )
                 }
             }
@@ -215,12 +217,12 @@ private fun EditVacancyForm(
         ) {
             Column {
                 Text(
-                    text = if (isActive) "Активна" else "Закрыта",
+                    text = if (isActive) stringResource(R.string.status_active_f) else stringResource(R.string.status_closed),
                     style = MaterialTheme.typography.titleSmall,
                     color = if (isActive) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error
                 )
                 Text(
-                    text = if (isActive) "Вакансия открыта для откликов" else "Приём откликов приостановлен",
+                    text = if (isActive) stringResource(R.string.status_vacancy_open) else stringResource(R.string.status_vacancy_paused),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -257,7 +259,7 @@ private fun EditVacancyForm(
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
-            label = { Text("Название вакансии *") },
+            label = { Text(stringResource(R.string.label_vacancy_title)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             enabled = !isSaving,
@@ -268,7 +270,7 @@ private fun EditVacancyForm(
         OutlinedTextField(
             value = description,
             onValueChange = { description = it },
-            label = { Text("Описание *") },
+            label = { Text(stringResource(R.string.label_description_required)) },
             modifier = Modifier.fillMaxWidth(),
             minLines = 3,
             enabled = !isSaving,
@@ -277,7 +279,7 @@ private fun EditVacancyForm(
         )
 
         EnumDropdown(
-            label = "Тип занятости",
+            label = stringResource(R.string.label_employment_type),
             options = listOf("FULL_TIME", "PART_TIME", "REMOTE", "INTERNSHIP"),
             selected = employmentType,
             onSelected = { employmentType = it },
@@ -285,7 +287,7 @@ private fun EditVacancyForm(
         )
 
         EnumDropdown(
-            label = "Опыт работы",
+            label = stringResource(R.string.label_work_experience),
             options = listOf("NO_EXPERIENCE", "1_3", "3_6", "6_PLUS"),
             selected = experience,
             onSelected = { experience = it },
@@ -295,7 +297,7 @@ private fun EditVacancyForm(
         OutlinedTextField(
             value = city,
             onValueChange = { city = it },
-            label = { Text("Город") },
+            label = { Text(stringResource(R.string.label_city)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             enabled = !isSaving,
@@ -307,7 +309,7 @@ private fun EditVacancyForm(
             OutlinedTextField(
                 value = salaryFrom,
                 onValueChange = { salaryFrom = it },
-                label = { Text("Зарплата от") },
+                label = { Text(stringResource(R.string.label_salary_from)) },
                 modifier = Modifier.weight(1f),
                 singleLine = true,
                 enabled = !isSaving,
@@ -318,7 +320,7 @@ private fun EditVacancyForm(
             OutlinedTextField(
                 value = salaryTo,
                 onValueChange = { salaryTo = it },
-                label = { Text("до") },
+                label = { Text(stringResource(R.string.label_salary_to)) },
                 modifier = Modifier.weight(1f),
                 singleLine = true,
                 enabled = !isSaving,
@@ -331,7 +333,7 @@ private fun EditVacancyForm(
         OutlinedTextField(
             value = currency,
             onValueChange = { currency = it },
-            label = { Text("Валюта") },
+            label = { Text(stringResource(R.string.label_currency)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             enabled = !isSaving,
@@ -356,7 +358,7 @@ private fun EditVacancyForm(
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text(
-                    text = "Сохранить",
+                    text = stringResource(R.string.action_save),
                     style = MaterialTheme.typography.labelLarge
                 )
             }
@@ -369,7 +371,7 @@ private fun EditVacancyForm(
                 border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.error)
             ) {
                 Text(
-                    text = "Удалить вакансию",
+                    text = stringResource(R.string.action_delete_vacancy),
                     style = MaterialTheme.typography.labelLarge
                 )
             }

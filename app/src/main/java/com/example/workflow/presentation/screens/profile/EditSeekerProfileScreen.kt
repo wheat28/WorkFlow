@@ -39,6 +39,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,14 +83,14 @@ fun EditSeekerProfileScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Редактировать профиль"
+                        text = stringResource(R.string.action_edit_profile)
                     ) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -126,7 +128,7 @@ fun EditSeekerProfileScreen(
             OutlinedTextField(
                 value = firstName,
                 onValueChange = { firstName = it },
-                label = { Text("Имя *") },
+                label = { Text(stringResource(R.string.label_first_name)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -136,7 +138,7 @@ fun EditSeekerProfileScreen(
             OutlinedTextField(
                 value = lastName,
                 onValueChange = { lastName = it },
-                label = { Text("Фамилия *") },
+                label = { Text(stringResource(R.string.label_last_name)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -146,7 +148,7 @@ fun EditSeekerProfileScreen(
             OutlinedTextField(
                 value = phone,
                 onValueChange = { phone = it },
-                label = { Text("Телефон") },
+                label = { Text(stringResource(R.string.label_phone)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -157,7 +159,7 @@ fun EditSeekerProfileScreen(
             OutlinedTextField(
                 value = city,
                 onValueChange = { city = it },
-                label = { Text("Город") },
+                label = { Text(stringResource(R.string.label_city)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isSaving,
@@ -167,7 +169,7 @@ fun EditSeekerProfileScreen(
             OutlinedTextField(
                 value = about,
                 onValueChange = { about = it },
-                label = { Text("О себе") },
+                label = { Text(stringResource(R.string.label_about_me)) },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3,
                 enabled = !isSaving,
@@ -199,7 +201,7 @@ fun EditSeekerProfileScreen(
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
-                    Text("Сохранить", style = MaterialTheme.typography.labelLarge)
+                    Text(stringResource(R.string.action_save), style = MaterialTheme.typography.labelLarge)
                 }
             }
         }

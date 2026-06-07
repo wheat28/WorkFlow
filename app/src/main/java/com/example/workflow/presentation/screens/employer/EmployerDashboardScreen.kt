@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.EmployerStats
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @Composable
 fun EmployerDashboardScreen(
@@ -70,7 +72,7 @@ private fun DashboardContent(stats: EmployerStats) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Обзор",
+            text = stringResource(R.string.title_overview),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -80,13 +82,13 @@ private fun DashboardContent(stats: EmployerStats) {
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             StatCard(
-                label = "Всего вакансий",
+                label = stringResource(R.string.stats_total_vacancies),
                 value = stats.totalVacancies.toString(),
                 accentColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f)
             )
             StatCard(
-                label = "Активных",
+                label = stringResource(R.string.stats_active),
                 value = stats.activeVacancies.toString(),
                 accentColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier.weight(1f)
@@ -98,13 +100,13 @@ private fun DashboardContent(stats: EmployerStats) {
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             StatCard(
-                label = "Всего откликов",
+                label = stringResource(R.string.stats_total_applications),
                 value = stats.totalApplications.toString(),
                 accentColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.weight(1f)
             )
             StatCard(
-                label = "Ожидают ответа",
+                label = stringResource(R.string.filter_pending),
                 value = stats.pendingApplications.toString(),
                 accentColor = MaterialTheme.colorScheme.error,
                 modifier = Modifier.weight(1f)
@@ -123,22 +125,22 @@ private fun DashboardContent(stats: EmployerStats) {
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "Статистика",
+                        text = stringResource(R.string.title_statistics),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     StatRow(
-                        label = "Закрытых вакансий",
+                        label = stringResource(R.string.stats_closed_vacancies),
                         value = (stats.totalVacancies - stats.activeVacancies).toString()
                     )
                     StatRow(
-                        label = "Принятых кандидатов",
+                        label = stringResource(R.string.stats_accepted_candidates),
                         value = (stats.totalApplications - stats.pendingApplications).toString()
                     )
                     if (stats.totalApplications > 0) {
                         val conversionRate = (stats.totalApplications - stats.pendingApplications) * 100 / stats.totalApplications
                         StatRow(
-                            label = "Обработано откликов",
+                            label = stringResource(R.string.stats_processed_applications),
                             value = "$conversionRate%"
                         )
                     }

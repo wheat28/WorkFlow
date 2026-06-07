@@ -43,6 +43,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 private val employmentTypes = listOf("Полная занятость", "Частичная занятость", "Удалённо")
 private val experienceOptions = listOf("Без опыта", "1-3 года", "3-6 лет", "Более 6 лет")
@@ -85,14 +87,14 @@ fun CreateVacancyScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Новая вакансия"
+                        text = stringResource(R.string.title_new_vacancy)
                     ) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -114,7 +116,7 @@ fun CreateVacancyScreen(
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Название вакансии *") },
+                label = { Text(stringResource(R.string.label_vacancy_title)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isLoading,
@@ -125,7 +127,7 @@ fun CreateVacancyScreen(
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text("Описание *") },
+                label = { Text(stringResource(R.string.label_description_required)) },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3,
                 enabled = !isLoading,
@@ -134,7 +136,7 @@ fun CreateVacancyScreen(
             )
 
             EnumDropdown(
-                label = "Тип занятости",
+                label = stringResource(R.string.label_employment_type),
                 options = employmentTypes,
                 selected = employmentType,
                 onSelected = { employmentType = it },
@@ -142,7 +144,7 @@ fun CreateVacancyScreen(
             )
 
             EnumDropdown(
-                label = "Опыт работы",
+                label = stringResource(R.string.label_work_experience),
                 options = experienceOptions,
                 selected = experience,
                 onSelected = { experience = it },
@@ -152,7 +154,7 @@ fun CreateVacancyScreen(
             OutlinedTextField(
                 value = city,
                 onValueChange = { city = it },
-                label = { Text("Город") },
+                label = { Text(stringResource(R.string.label_city)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isLoading,
@@ -166,7 +168,7 @@ fun CreateVacancyScreen(
                 OutlinedTextField(
                     value = salaryFrom,
                     onValueChange = { salaryFrom = it },
-                    label = { Text("Зарплата от") },
+                    label = { Text(stringResource(R.string.label_salary_from)) },
                     modifier = Modifier.weight(1f),
                     singleLine = true,
                     enabled = !isLoading,
@@ -177,7 +179,7 @@ fun CreateVacancyScreen(
                 OutlinedTextField(
                     value = salaryTo,
                     onValueChange = { salaryTo = it },
-                    label = { Text("до") },
+                    label = { Text(stringResource(R.string.label_salary_to)) },
                     modifier = Modifier.weight(1f),
                     singleLine = true,
                     enabled = !isLoading,
@@ -190,7 +192,7 @@ fun CreateVacancyScreen(
             OutlinedTextField(
                 value = currency,
                 onValueChange = { currency = it },
-                label = { Text("Валюта") },
+                label = { Text(stringResource(R.string.label_currency)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !isLoading,
@@ -225,7 +227,7 @@ fun CreateVacancyScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(
-                        text = "Опубликовать",
+                        text = stringResource(R.string.action_publish),
                         style = MaterialTheme.typography.labelLarge
                     )
                 }

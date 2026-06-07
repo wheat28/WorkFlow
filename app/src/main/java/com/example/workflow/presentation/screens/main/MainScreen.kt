@@ -29,6 +29,8 @@ import com.example.workflow.presentation.screens.favorites.FavoritesScreen
 import com.example.workflow.presentation.screens.profile.ProfileScreen
 import com.example.workflow.presentation.screens.vacancies.VacancyListScreen
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,24 +63,24 @@ fun MainScreen(
                     NavigationBarItem(
                         selected = selectBottomBar == 0,
                         onClick = { selectBottomBar = 0 },
-                        icon = { Icon(Icons.Default.Work, contentDescription = "Вакансии") },
-                        label = { Text("Вакансии") },
+                        icon = { Icon(Icons.Default.Work, contentDescription = stringResource(R.string.nav_vacancies)) },
+                        label = { Text(stringResource(R.string.nav_vacancies)) },
                         colors = navItemColors
                     )
 
                     NavigationBarItem(
                         selected = selectBottomBar == 1,
                         onClick = { selectBottomBar = 1 },
-                        icon = { Icon(Icons.Outlined.BarChart, contentDescription = "Дашборд") },
-                        label = { Text("Дашборд") },
+                        icon = { Icon(Icons.Outlined.BarChart, contentDescription = stringResource(R.string.nav_dashboard)) },
+                        label = { Text(stringResource(R.string.nav_dashboard)) },
                         colors = navItemColors
                     )
 
                     NavigationBarItem(
                         selected = selectBottomBar == 2,
                         onClick = { selectBottomBar = 2 },
-                        icon = { Icon(Icons.Default.Person, contentDescription = "Профиль") },
-                        label = { Text("Профиль") },
+                        icon = { Icon(Icons.Default.Person, contentDescription = stringResource(R.string.nav_profile)) },
+                        label = { Text(stringResource(R.string.nav_profile)) },
                         colors = navItemColors
                     )
 
@@ -86,32 +88,32 @@ fun MainScreen(
                     NavigationBarItem(
                         selected = selectBottomBar == 0,
                         onClick = { selectBottomBar = 0 },
-                        icon = { Icon(Icons.Default.Work, contentDescription = "Вакансии") },
-                        label = { Text("Вакансии") },
+                        icon = { Icon(Icons.Default.Work, contentDescription = stringResource(R.string.nav_vacancies)) },
+                        label = { Text(stringResource(R.string.nav_vacancies)) },
                         colors = navItemColors
                     )
 
                     NavigationBarItem(
                         selected = selectBottomBar == 1,
                         onClick = { selectBottomBar = 1 },
-                        icon = { Icon(Icons.Default.Favorite, contentDescription = "Избранное") },
-                        label = { Text("Избранное") },
+                        icon = { Icon(Icons.Default.Favorite, contentDescription = stringResource(R.string.nav_favorites)) },
+                        label = { Text(stringResource(R.string.nav_favorites)) },
                         colors = navItemColors
                     )
 
                     NavigationBarItem(
                         selected = selectBottomBar == 2,
                         onClick = { selectBottomBar = 2 },
-                        icon = { Icon(Icons.Outlined.Description, contentDescription = "Отклики") },
-                        label = { Text("Отклики") },
+                        icon = { Icon(Icons.Outlined.Description, contentDescription = stringResource(R.string.nav_applications)) },
+                        label = { Text(stringResource(R.string.nav_applications)) },
                         colors = navItemColors
                     )
 
                     NavigationBarItem(
                         selected = selectBottomBar == 3,
                         onClick = { selectBottomBar = 3 },
-                        icon = { Icon(Icons.Default.Person, contentDescription = "Профиль") },
-                        label = { Text("Профиль") },
+                        icon = { Icon(Icons.Default.Person, contentDescription = stringResource(R.string.nav_profile)) },
+                        label = { Text(stringResource(R.string.nav_profile)) },
                         colors = navItemColors
                     )
                 }

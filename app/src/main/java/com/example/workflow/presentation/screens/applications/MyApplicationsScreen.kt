@@ -1,5 +1,6 @@
 package com.example.workflow.presentation.screens.applications
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +50,8 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,10 +77,10 @@ fun MyApplicationsScreen(
             onDismissRequest = { cancelTargetId = null },
             title = { 
                 Text(
-                    text = "Отменить отклик?"
+                    text = stringResource(R.string.dialog_title_cancel_application)
                 ) },
             text = { Text(
-                text = "Отклик будет удалён и работодатель его больше не увидит."
+                text = stringResource(R.string.msg_cancel_application_warning)
             ) },
             confirmButton = {
                 TextButton(
@@ -86,7 +89,7 @@ fun MyApplicationsScreen(
                     cancelTargetId = null
                 }) {
                     Text(
-                        text = "Отменить отклик",
+                        text = stringResource(R.string.action_cancel_application),
                         color = MaterialTheme.colorScheme.error)
                 }
             },
@@ -96,7 +99,7 @@ fun MyApplicationsScreen(
                         cancelTargetId = null
                     }) {
                     Text(
-                        text = "Оставить"
+                        text = stringResource(R.string.action_keep)
                     )
                 }
             }
@@ -141,7 +144,7 @@ fun MyApplicationsScreen(
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
-                                text = "Вы ещё не откликались на вакансии",
+                                text = stringResource(R.string.msg_no_applications),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -211,7 +214,7 @@ private fun ApplicationCard(
                 }
             }
             Text(
-                text = formatDate(application.createdAt),
+                text = formatDate(application.createdAt, stringResource(R.string.label_today), stringResource(R.string.label_yesterday)),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -233,10 +236,10 @@ private fun ApplicationCard(
                     modifier = Modifier.fillMaxWidth().height(40.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.error)
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
                 ) {
                     Text(
-                        text = "Отменить отклик",
+                        text = stringResource(R.string.action_cancel_application),
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
@@ -245,13 +248,13 @@ private fun ApplicationCard(
     }
 }
 
-private fun formatDate(isoDate: String): String {
+private fun formatDate(isoDate: String, today: String, yesterday: String): String {
     return try {
         val date = Instant.parse(isoDate).atZone(ZoneId.systemDefault()).toLocalDate()
-        val today = LocalDate.now()
+        val localToday = LocalDate.now()
         when (date) {
-            today -> "Сегодня"
-            today.minusDays(1) -> "Вчера"
+            localToday -> today
+            localToday.minusDays(1) -> yesterday
             else -> date.format(DateTimeFormatter.ofPattern("d MMM yyyy", Locale("ru")))
         }
     } catch (e: Exception) {
@@ -259,10 +262,11 @@ private fun formatDate(isoDate: String): String {
     }
 }
 
+@Composable
 private fun statusLabel(status: String) = when (status) {
-    "PENDING" -> "На рассмотрении"
-    "ACCEPTED" -> "Принят"
-    "REJECTED" -> "Отклонён"
+    "PENDING" -> stringResource(R.string.status_pending)
+    "ACCEPTED" -> stringResource(R.string.status_accepted)
+    "REJECTED" -> stringResource(R.string.status_rejected)
     else -> status
 }
 

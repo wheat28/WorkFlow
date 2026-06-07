@@ -48,6 +48,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.data.local.TokenDataStore
 import com.example.workflow.domain.model.Resume
 import com.example.workflow.presentation.screens.employer.EmployerProfileViewModel
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @Composable
 fun ProfileScreen(
@@ -64,8 +66,8 @@ fun ProfileScreen(
     val displayName by tokenDataStore.displayNameFlow.collectAsState(initial = null)
 
     val roleLabel = when (userType) {
-        "SEEKER" -> "Соискатель"
-        "EMPLOYER" -> "Работодатель"
+        "SEEKER" -> stringResource(R.string.role_seeker)
+        "EMPLOYER" -> stringResource(R.string.role_employer)
         else -> ""
     }
 
@@ -171,7 +173,7 @@ private fun SeekerProfileContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Мои резюме",
+                        text = stringResource(R.string.title_my_resumes),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -182,7 +184,7 @@ private fun SeekerProfileContent(
                         Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.primary)
                         Spacer(modifier = Modifier.size(4.dp))
                         Text(
-                            text = "Создать",
+                            text = stringResource(R.string.action_create),
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.labelMedium
                         )
@@ -208,7 +210,7 @@ private fun SeekerProfileContent(
                     if (state.resumes.isEmpty()) {
                         item {
                             Text(
-                                text = "Резюме ещё нет. Создайте первое!",
+                                text = stringResource(R.string.msg_no_resumes),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -239,7 +241,7 @@ private fun SeekerProfileContent(
                         modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(
-                        text = "Редактировать профиль",
+                        text = stringResource(R.string.action_edit_profile),
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
@@ -300,7 +302,7 @@ private fun EmployerProfileContent(
                             verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Text(
-                                text = "О компании",
+                                text = stringResource(R.string.label_about_company),
                                 style = MaterialTheme.typography.titleSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -318,19 +320,19 @@ private fun EmployerProfileContent(
                                 }
                             }
                             if (!e.website.isNullOrBlank()) {
-                                InfoRow(label = "Сайт", value = e.website)
+                                InfoRow(label = stringResource(R.string.label_website), value = e.website)
                             }
                             if (!e.phone.isNullOrBlank()) {
-                                InfoRow(label = "Телефон", value = e.phone)
+                                InfoRow(label = stringResource(R.string.label_phone), value = e.phone)
                             }
                             if (!e.email.isNullOrBlank()) {
-                                InfoRow(label = "Email", value = e.email)
+                                InfoRow(label = stringResource(R.string.label_email), value = e.email)
                             }
                             if (e.description.isNullOrBlank() && e.city.isNullOrBlank() &&
                                 e.industry.isNullOrBlank() && e.website.isNullOrBlank() && e.phone.isNullOrBlank()
                             ) {
                                 Text(
-                                    text = "Заполните информацию о компании",
+                                    text = stringResource(R.string.msg_fill_company_info),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -360,7 +362,7 @@ private fun EmployerProfileContent(
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(
-                        text = "Редактировать профиль",
+                        text = stringResource(R.string.action_edit_profile),
                         style = MaterialTheme.typography.labelLarge
                     )
                 }
@@ -412,7 +414,7 @@ private fun LogoutButton(onLogout: () -> Unit) {
         shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
     ) {
-        Text("Выйти из аккаунта", style = MaterialTheme.typography.labelLarge)
+        Text(stringResource(R.string.action_logout), style = MaterialTheme.typography.labelLarge)
     }
 }
 
@@ -444,7 +446,7 @@ private fun ResumeCard(resume: Resume, onClick: () -> Unit) {
                     color = if (resume.isActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
                 ) {
                     Text(
-                        text = if (resume.isActive) "Активно" else "Скрыто",
+                        text = if (resume.isActive) stringResource(R.string.status_active) else stringResource(R.string.status_hidden),
                         style = MaterialTheme.typography.labelSmall,
                         color = if (resume.isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)

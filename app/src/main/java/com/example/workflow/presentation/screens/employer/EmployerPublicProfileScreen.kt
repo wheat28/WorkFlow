@@ -44,6 +44,8 @@ import com.example.workflow.domain.model.Employer
 import com.example.workflow.domain.model.Vacancy
 import androidx.compose.foundation.background
 import com.example.workflow.presentation.screens.common.shimmerBrush
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,14 +61,14 @@ fun EmployerPublicProfileScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Профиль компании"
+                        text = stringResource(R.string.title_company_profile)
                     ) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад")
+                            contentDescription = stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -190,7 +192,7 @@ private fun EmployerPublicProfileContent(
                             verticalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             Text(
-                                text = "О компании",
+                                text = stringResource(R.string.label_about_company),
                                 style = MaterialTheme.typography.titleSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text(
@@ -222,7 +224,7 @@ private fun EmployerPublicProfileContent(
             item {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Нет открытых вакансий",
+                    text = stringResource(R.string.msg_no_open_vacancies),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

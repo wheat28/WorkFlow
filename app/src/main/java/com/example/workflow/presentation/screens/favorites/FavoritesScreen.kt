@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.workflow.domain.model.Vacancy
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,7 +90,7 @@ fun FavoritesScreen(
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
-                                "Нет сохранённых вакансий",
+                                stringResource(R.string.msg_no_saved_vacancies),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -158,7 +160,7 @@ private fun FavoriteVacancyCard(
                 ) {
                     Icon(
                         Icons.Default.Favorite,
-                        contentDescription = "Удалить из избранного",
+                        contentDescription = stringResource(R.string.cd_remove_from_favorites),
                         tint = MaterialTheme.colorScheme.error,
                         modifier = Modifier.size(20.dp)
                     )

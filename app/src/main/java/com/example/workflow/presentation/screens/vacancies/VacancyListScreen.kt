@@ -63,16 +63,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.workflow.domain.model.Vacancy
 import kotlinx.coroutines.launch
+import androidx.compose.ui.res.stringResource
+import com.example.workflow.R
+import com.example.workflow.presentation.ui.theme.Indigo50
 
 private val employmentTypes = listOf("", "Полная занятость", "Частичная занятость", "Удалённо", "Стажировка")
 
+@Composable
 private fun employmentFilterLabel(type: String) =
-    if (type.isEmpty()) "Все типы" else type
+    if (type.isEmpty()) stringResource(R.string.filter_all_types) else type
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -125,7 +130,7 @@ fun VacancyListScreen(
     }
 
     val searchGradient = Brush.linearGradient(
-        colors = listOf(com.example.workflow.presentation.ui.theme.Indigo50, androidx.compose.ui.graphics.Color(0xFF9B8FF5)),
+        colors = listOf(Indigo50, Color(0xFF9B8FF5)),
         start = Offset(0f, 0f),
         end = Offset(Float.POSITIVE_INFINITY, 0f)
     )
@@ -144,7 +149,7 @@ fun VacancyListScreen(
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { viewModel.onSearchQueryChanged(it) },
-                placeholder = { Text("Должность, компания...") },
+                placeholder = { Text(stringResource(R.string.hint_search)) },
                 leadingIcon = {
                     Icon(Icons.Default.Search, contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -153,10 +158,10 @@ fun VacancyListScreen(
                 singleLine = true,
                 shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                    unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                    focusedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    unfocusedContainerColor = androidx.compose.ui.graphics.Color.Transparent
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
                 )
             )
 
@@ -174,7 +179,7 @@ fun VacancyListScreen(
                 IconButton(onClick = { showFilters = true }) {
                     Icon(
                         Icons.Outlined.Tune,
-                        contentDescription = "Фильтры",
+                        contentDescription = stringResource(R.string.cd_filters),
                         tint = if (hasActiveFilters) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(24.dp)
                     )
@@ -215,7 +220,7 @@ fun VacancyListScreen(
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    text = "Вакансии не найдены",
+                                    text = stringResource(R.string.msg_vacancies_not_found),
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -278,10 +283,10 @@ private fun FilterSheetContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Фильтры", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.cd_filters), style = MaterialTheme.typography.titleMedium)
             if (hasActiveFilters) {
                 TextButton(onClick = onClear) {
-                    Text("Сбросить", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.action_reset), color = MaterialTheme.colorScheme.error)
                 }
             }
         }
@@ -289,7 +294,7 @@ private fun FilterSheetContent(
         OutlinedTextField(
             value = selectedCity,
             onValueChange = onCityChange,
-            label = { Text("Город") },
+            label = { Text(stringResource(R.string.label_city)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             shape = fieldShape,
@@ -306,7 +311,7 @@ private fun FilterSheetContent(
             OutlinedTextField(
                 value = salaryFrom,
                 onValueChange = onSalaryFromChange,
-                label = { Text("Зарплата от") },
+                label = { Text(stringResource(R.string.label_salary_from)) },
                 modifier = Modifier.weight(1f),
                 singleLine = true,
                 shape = fieldShape,
@@ -315,7 +320,7 @@ private fun FilterSheetContent(
             OutlinedTextField(
                 value = salaryTo,
                 onValueChange = onSalaryToChange,
-                label = { Text("до") },
+                label = { Text(stringResource(R.string.label_salary_to)) },
                 modifier = Modifier.weight(1f),
                 singleLine = true,
                 shape = fieldShape,
@@ -331,7 +336,7 @@ private fun FilterSheetContent(
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Text("Применить", style = MaterialTheme.typography.labelLarge)
+            Text(stringResource(R.string.action_apply_filter), style = MaterialTheme.typography.labelLarge)
         }
     }
 }
@@ -354,7 +359,7 @@ private fun EmploymentTypeDropdown(
             value = employmentFilterLabel(selected),
             onValueChange = {},
             readOnly = true,
-            label = { Text("Тип занятости") },
+            label = { Text(stringResource(R.string.label_employment_type)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             modifier = Modifier.menuAnchor().fillMaxWidth(),
             shape = RoundedCornerShape(14.dp),
@@ -431,7 +436,7 @@ private fun VacancyCard(
                     IconButton(onClick = onToggleFavorite, modifier = Modifier.size(40.dp)) {
                         Icon(
                             imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = if (isFavorite) "Убрать из избранного" else "Добавить в избранное",
+                            contentDescription = if (isFavorite) stringResource(R.string.action_remove_from_favorites) else stringResource(R.string.action_add_to_favorites),
                             tint = if (isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(22.dp)
                         )
