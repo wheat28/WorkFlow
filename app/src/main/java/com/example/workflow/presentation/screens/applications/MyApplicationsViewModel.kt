@@ -25,18 +25,14 @@ class MyApplicationsViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
-    private var seekerId: String = ""
-
     init {
-        viewModelScope.launch {
-            seekerId = tokenDataStore.getUserId() ?: ""
-            load()
-        }
+        load()
     }
 
     fun refresh() {
         viewModelScope.launch {
             _isRefreshing.value = true
+            val seekerId = tokenDataStore.getUserId() ?: ""
             runCatching { getMyApplicationsUseCase(seekerId) }
                 .onSuccess { _uiState.value = UiState.Success(it) }
             _isRefreshing.value = false
@@ -46,6 +42,7 @@ class MyApplicationsViewModel @Inject constructor(
     fun load() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
+            val seekerId = tokenDataStore.getUserId() ?: ""
             runCatching { getMyApplicationsUseCase(seekerId) }
                 .onSuccess { _uiState.value = UiState.Success(it) }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка загрузки") }

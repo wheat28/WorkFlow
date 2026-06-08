@@ -24,18 +24,14 @@ class EmployerVacanciesViewModel @Inject constructor(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
-    private var employerId: String = ""
-
     init {
-        viewModelScope.launch {
-            employerId = tokenDataStore.getUserId() ?: ""
-            loadVacancies()
-        }
+        loadVacancies()
     }
 
     fun refresh() {
         viewModelScope.launch {
             _isRefreshing.value = true
+            val employerId = tokenDataStore.getUserId() ?: ""
             runCatching { getEmployerVacanciesUseCase(employerId) }
                 .onSuccess { _uiState.value = UiState.Success(it.reversed()) }
             _isRefreshing.value = false
@@ -45,6 +41,7 @@ class EmployerVacanciesViewModel @Inject constructor(
     fun loadVacancies() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
+            val employerId = tokenDataStore.getUserId() ?: ""
             runCatching { getEmployerVacanciesUseCase(employerId) }
                 .onSuccess { _uiState.value = UiState.Success(it.reversed()) }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка загрузки") }

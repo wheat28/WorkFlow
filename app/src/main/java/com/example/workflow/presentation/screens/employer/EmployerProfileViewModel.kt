@@ -20,18 +20,14 @@ class EmployerProfileViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
-    private var employerId: String = ""
-
     init {
-        viewModelScope.launch {
-            employerId = tokenDataStore.getUserId() ?: ""
-            load()
-        }
+        load()
     }
 
     fun load() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
+            val employerId = tokenDataStore.getUserId() ?: ""
             runCatching { getEmployerByIdUseCase(employerId) }
                 .onSuccess { _uiState.value = UiState.Success(it) }
                 .onFailure { _uiState.value = UiState.Error(it.message ?: "Ошибка загрузки") }
