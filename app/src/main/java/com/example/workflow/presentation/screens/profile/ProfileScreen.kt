@@ -37,9 +37,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -59,6 +56,8 @@ fun ProfileScreen(
     onEditResume: (String) -> Unit,
     onEditEmployerProfile: (() -> Unit)? = null,
     onEditSeekerProfile: (() -> Unit)? = null,
+    profileChanged: Boolean = false,
+    onProfileRefreshed: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val userType by tokenDataStore.userTypeFlow.collectAsState(initial = null)
@@ -125,12 +124,16 @@ fun ProfileScreen(
                 onEditResume = onEditResume,
                 onEditProfile = onEditSeekerProfile,
                 onLogout = onLogout,
+                profileChanged = profileChanged,
+                onProfileRefreshed = onProfileRefreshed,
                 modifier = Modifier.weight(1f)
             )
         } else if (userType == "EMPLOYER" && userId != null) {
             EmployerProfileContent(
                 onEditProfile = onEditEmployerProfile,
                 onLogout = onLogout,
+                profileChanged = profileChanged,
+                onProfileRefreshed = onProfileRefreshed,
                 modifier = Modifier.weight(1f)
             )
         } else {
@@ -146,15 +149,17 @@ private fun SeekerProfileContent(
     onEditResume: (String) -> Unit,
     onEditProfile: (() -> Unit)?,
     onLogout: () -> Unit,
+    profileChanged: Boolean = false,
+    onProfileRefreshed: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val resumeState by profileViewModel.resumeState.collectAsStateWithLifecycle()
 
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    LaunchedEffect(lifecycle) {
-        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+    LaunchedEffect(profileChanged) {
+        if (profileChanged) {
             profileViewModel.loadResumes()
+            onProfileRefreshed()
         }
     }
 
@@ -255,15 +260,17 @@ private fun SeekerProfileContent(
 private fun EmployerProfileContent(
     onEditProfile: (() -> Unit)?,
     onLogout: () -> Unit,
+    profileChanged: Boolean = false,
+    onProfileRefreshed: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val viewModel: EmployerProfileViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    LaunchedEffect(lifecycle) {
-        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+    LaunchedEffect(profileChanged) {
+        if (profileChanged) {
             viewModel.load()
+            onProfileRefreshed()
         }
     }
 

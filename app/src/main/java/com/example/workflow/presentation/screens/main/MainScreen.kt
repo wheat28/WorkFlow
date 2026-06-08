@@ -43,7 +43,11 @@ fun MainScreen(
     onCreateResume: () -> Unit,
     onEditResume: (String) -> Unit,
     onEditEmployerProfile: () -> Unit = {},
-    onEditSeekerProfile: () -> Unit = {}
+    onEditSeekerProfile: () -> Unit = {},
+    vacanciesChanged: Boolean = false,
+    onVacanciesRefreshed: () -> Unit = {},
+    profileChanged: Boolean = false,
+    onProfileRefreshed: () -> Unit = {}
 ) {
 
     var selectBottomBar by rememberSaveable { mutableIntStateOf(0) }
@@ -126,6 +130,8 @@ fun MainScreen(
                 0 -> EmployerVacanciesScreen(
                     onVacancyClick = onVacancyClick,
                     onCreateVacancy = onCreateVacancy,
+                    vacanciesChanged = vacanciesChanged,
+                    onVacanciesRefreshed = onVacanciesRefreshed,
                     modifier = Modifier.padding(innerPadding)
                 )
 
@@ -139,6 +145,8 @@ fun MainScreen(
                     onCreateResume = onCreateResume,
                     onEditResume = onEditResume,
                     onEditEmployerProfile = onEditEmployerProfile,
+                    profileChanged = profileChanged,
+                    onProfileRefreshed = onProfileRefreshed,
                     modifier = Modifier.padding(innerPadding)
                 )
             }
@@ -165,6 +173,8 @@ fun MainScreen(
                     onCreateResume = onCreateResume,
                     onEditResume = onEditResume,
                     onEditSeekerProfile = onEditSeekerProfile,
+                    profileChanged = profileChanged,
+                    onProfileRefreshed = onProfileRefreshed,
                     modifier = Modifier.padding(innerPadding)
                 )
             }

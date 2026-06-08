@@ -65,10 +65,14 @@ fun NavGraph(
             )
         }
 
-        composable(Screen.Main.route) {
+        composable(Screen.Main.route) { backStackEntry ->
             val scope = rememberCoroutineScope()
             val userType by tokenDataStore.userTypeFlow.collectAsState(initial = null)
             val userId by tokenDataStore.userIdFlow.collectAsState(initial = null)
+            val vacanciesChanged by backStackEntry.savedStateHandle
+                .getStateFlow("vacancies_changed", false).collectAsState()
+            val profileChanged by backStackEntry.savedStateHandle
+                .getStateFlow("profile_changed", false).collectAsState()
 
             val onLogoutAction: () -> Unit = {
                 scope.launch {
@@ -92,7 +96,11 @@ fun NavGraph(
                     onEditResume = { resumeId ->
                         navController.navigate(Screen.EditResume.createRoute(resumeId)) },
                     onEditEmployerProfile = { navController.navigate(Screen.EditEmployerProfile.route) },
-                    onEditSeekerProfile = { navController.navigate(Screen.EditSeekerProfile.route) }
+                    onEditSeekerProfile = { navController.navigate(Screen.EditSeekerProfile.route) },
+                    vacanciesChanged = vacanciesChanged,
+                    onVacanciesRefreshed = { backStackEntry.savedStateHandle["vacancies_changed"] = false },
+                    profileChanged = profileChanged,
+                    onProfileRefreshed = { backStackEntry.savedStateHandle["profile_changed"] = false }
                 )
             } else {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -104,7 +112,11 @@ fun NavGraph(
         composable(Screen.CreateVacancy.route) {
             CreateVacancyScreen(
                 onBack = { navController.popBackStack() },
-                onCreated = { navController.popBackStack() }
+                onCreated = {
+                    navController.getBackStackEntry(Screen.Main.route)
+                        .savedStateHandle["vacancies_changed"] = true
+                    navController.popBackStack()
+                }
             )
         }
 
@@ -150,8 +162,14 @@ fun NavGraph(
         composable(Screen.EditVacancy.route) {
             EditVacancyScreen(
                 onBack = { navController.popBackStack() },
-                onSaved = { navController.popBackStack() },
+                onSaved = {
+                    navController.getBackStackEntry(Screen.Main.route)
+                        .savedStateHandle["vacancies_changed"] = true
+                    navController.popBackStack()
+                },
                 onDeleted = {
+                    navController.getBackStackEntry(Screen.Main.route)
+                        .savedStateHandle["vacancies_changed"] = true
                     navController.popBackStack()
                     navController.popBackStack()
                 }
@@ -186,29 +204,49 @@ fun NavGraph(
         composable(Screen.EditResume.route) {
             EditResumeScreen(
                 onBack = { navController.popBackStack() },
-                onSaved = { navController.popBackStack() },
-                onDeleted = { navController.popBackStack() }
+                onSaved = {
+                    navController.getBackStackEntry(Screen.Main.route)
+                        .savedStateHandle["profile_changed"] = true
+                    navController.popBackStack()
+                },
+                onDeleted = {
+                    navController.getBackStackEntry(Screen.Main.route)
+                        .savedStateHandle["profile_changed"] = true
+                    navController.popBackStack()
+                }
             )
         }
 
         composable(Screen.EditEmployerProfile.route) {
             EditEmployerProfileScreen(
                 onBack = { navController.popBackStack() },
-                onSaved = { navController.popBackStack() }
+                onSaved = {
+                    navController.getBackStackEntry(Screen.Main.route)
+                        .savedStateHandle["profile_changed"] = true
+                    navController.popBackStack()
+                }
             )
         }
 
         composable(Screen.EditSeekerProfile.route) {
             EditSeekerProfileScreen(
                 onBack = { navController.popBackStack() },
-                onSaved = { navController.popBackStack() }
+                onSaved = {
+                    navController.getBackStackEntry(Screen.Main.route)
+                        .savedStateHandle["profile_changed"] = true
+                    navController.popBackStack()
+                }
             )
         }
 
         composable(Screen.CreateResume.route) {
             CreateResumeScreen(
                 onBack = { navController.popBackStack() },
-                onCreated = { navController.popBackStack() }
+                onCreated = {
+                    navController.getBackStackEntry(Screen.Main.route)
+                        .savedStateHandle["profile_changed"] = true
+                    navController.popBackStack()
+                }
             )
         }
     }
